@@ -1,6 +1,8 @@
 import React from 'react'
 import Navbar from './../components/Navbar';
 import HeaderQuienSomos from '../components/HeaderQuienSomos';
+import CarruselProducts from './../components/CarruselProducts';
+import InfoMetodoTrabajo from '../components/InfoMetodoTrabajo';
 
 function Home() {
   return (
@@ -8,22 +10,19 @@ function Home() {
     <Navbar/>
       
       <HeaderQuienSomos/>
+      <CarruselProducts/>
+      <InfoMetodoTrabajo/>
 
-    <div style={{border:"1px solid" } } >
-       
-    <div  style={{border:"1px solid", height:"250px", display:"flex", justifyContent:"space-around", alignItems:"center" }}>
-        <div style={{border:"1px solid", 
-            width:"200px", height:"200px", margin: "5px" }  } > 
-        </div>
-        <div style={{border:"1px solid", 
-            width:"200px", height:"200px", margin: "5px" }  } > 
-        </div>
-        <div style={{border:"1px solid", 
-            width:"200px", height:"200px", margin: "5px" }  } > 
-        </div>
-    </div>
 
-    </div>
+<div style={{border:"1px solid", height:"300px"}} > 
+      <button style={{height:"50px"}} > Ver Productos </button>
+</div> 
+
+<footer style={{border:"1px solid", background:"grey"}} >
+  <p>SaphireSouvenirs</p>
+</footer>
+
+
 
     </>
   )
