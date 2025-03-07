@@ -3,17 +3,15 @@ import Navbar from '../components/Navbar'
 import Products from '../components/Products/Products'
 import OrderDetail from '../components/Orders/OrderDetail'
 
-function Orders() {
+function ShopProducts() {
   return (
     <>
       <Navbar/>
 
   <Products/>
 
-
-
     </>
   )
 }
 
-export default Orders
+export default ShopProducts

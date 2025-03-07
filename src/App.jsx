@@ -1,13 +1,13 @@
 
 import './App.css'
 import Home from './views/Home'
-import Orders from './views/Orders'
+import ShopProducts from './views/ShopProducts';
 
 function App() {
 
   return (
     <>
-    <Orders/>
+    <ShopProducts/>
    {/* <Home/> */}
     </>
   )
