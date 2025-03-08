@@ -20,6 +20,91 @@ const handleOrderModal = ()=>{
 }
 
   return (
+<div style={{ minHeight: "300px", border: "1px solid #ddd", display: "flex" }}>
+
+
+
+  
+<div
+  style={{
+    border: "1px solid #ccc",
+    width: "70%",
+    padding: "20px",
+    margin: "10px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#fff",
+  }}
+>
+  <h2 style={{ color: "#333", marginBottom: "10px" }}>
+    MOSTRAR TODOS LOS PRODUCTOS
+  </h2>
+  {products &&
+    products.map((prod) => (
+      <Product
+        key={prod.id}
+        img={prod.img}
+        name={prod.name}
+        price={prod.price}
+        addToCart={addToCart}
+      />
+    ))}
+</div>
+
+  
+
+
+  <div
+    style={{
+      border: "1px solid #ccc",
+      width: "40%",
+      padding: "20px",
+      margin: "10px",
+      borderRadius: "8px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      backgroundColor: "#fff",
+    }}
+  >
+    Mostrar el producto que eligió
+    <h2 style={{ marginTop: "10px", color: "#333" }}>Carrito</h2>
+    <ul style={{ listStyle: "none", padding: 0, margin: "10px 0" }}>
+      {cart.map((item, index) => (
+        <OrderDetail
+          key={index}
+          name={item.name}
+          img={item.img}
+          price={item.price}
+          cuantity={3}
+        />
+      ))}
+    </ul>
+    <span style={{ fontWeight: "bold", color: "#333" }}>
+      Total= "precio total"
+    </span>
+    <br />
+    <button
+      onClick={handleOrderModal}
+      style={{
+        padding: "8px 12px",
+        cursor: "pointer",
+        border: "none",
+        background: "#007bff",
+        color: "white",
+        borderRadius: "5px",
+        marginTop: "10px",
+      }}
+    >
+      crear orden
+    </button>
+  </div>
+
+
+
+
+  <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
+</div>
+    
+    /* 
     <>
     <div style={{ minHeight:"300px", border:"1px solid" , display:"flex"}}>
 
@@ -50,7 +135,7 @@ const handleOrderModal = ()=>{
       <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
 
     </>
-
+*/
   )
 }
 
