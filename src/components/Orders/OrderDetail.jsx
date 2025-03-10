@@ -21,6 +21,11 @@ return (
       ${subtotal}
     </span>
 
+    <span style={{  fontWeight: "bold",  fontSize: "16px",  color: "#333",}} >
+      {cuantity}
+    </span>
+
+
     <button 
       // onClick={() => removeFromCart(prod)}
       style={{  padding: "8px 12px",  cursor: "pointer",  border: "none",  color: "white",  backgroundColor: "#ff4d4f",  borderRadius: "5px",  fontSize: "16px",}}>
