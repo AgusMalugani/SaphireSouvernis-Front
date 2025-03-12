@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Product from './Product';
 import OrderDetail from '../Orders/OrderDetail';
-import Modal from "react-modal";
 import ModalCreateOrder from '../Orders/ModalCreateOrder';
 import { fetchAllProducts } from '../../services/Products.service';
 
@@ -30,7 +29,7 @@ responseFetch()
 },[])
 
   const addToCart = (product) => {    
-    setCart((prevCart) => [...prevCart, product]); // Agrega el producto a la lista
+    setCart([...cart,product])
     const suma = total + (product.price * product.cuantity);
     setTotal( suma )
   };
@@ -87,40 +86,9 @@ const handleOrderModal = ()=>{
 
   <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
 </div>
-    
-    /* 
-    <>
-    <div style={{ minHeight:"300px", border:"1px solid" , display:"flex"}}>
-
-<div style={{border:"1px solid", width:"70%"}} >
-    MOSTRAR TODOS LOS PRODUCTOS
-    {products && products.map(prod=> {
-           return <Product img = {prod.img} name={prod.name} price={prod.price} addToCart = {addToCart} />
-        } )}
-</div>
-
-
-<div style={{border:"1px solid", width:"40%" }}>  
-    Mostrar el producto que eligio  
-    <h2>Carrito</h2>
-      <ul>
-        {cart.map((item) => (
-          <OrderDetail name={item.name} img={item.img} price={item.price} cuantity={3} />
-        ))}
-      </ul>
-    <span>Total= "precio total" </span> 
-    <br />
-     <button onClick={handleOrderModal}  
-     style={{padding: "8px 12px", cursor: "pointer", border: "none", background: "#007bff", color: "white", borderRadius: "5px" }}>crear orden</button>
-</div>
-
-    </div>
-
-      <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
-
-    </>
-*/
-  )
+      )
 }
 
 export default Products
+
+//<ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
