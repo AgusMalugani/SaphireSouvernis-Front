@@ -1,8 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 
-function ModalCreateOrder({isOpen,onClose}) {
-  const [formaEntrega, setFormaEntrega] = useState("Retiro en local");
+function ModalCreateOrder({isOpen,onClose,products}) {
+ // const [formaEntrega, setFormaEntrega] = useState("Retiro en local");
+  const [orderForm,setOrderForm] = useState({
+    endOrder:"",
+    transactionType:"",
+    address:"",
+    theme:"",
+    nameClient:"",
+    nameForCard:"",
+    numCel:"",
+    num2Cel:"",
+    products:[]
+  });
+  useEffect(() => {
+    if (products && products.length > 0) {
+      setOrderForm((prevOrderForm) => ({
+        ...prevOrderForm,
+        products
+      }));
+    }
+  }, [products]);
+
+  const handleOnChange=(event)=>{
+const {name,value}=event.target
+setOrderForm({...orderForm,[name]:value})
+  }
+
+  const handleOnSubmit=(e)=>{
+    e.preventDefault();
+    console.log(orderForm);
+    alert(JSON.stringify(orderForm))
+    alert("Orden creada")
+    onClose()
+    
+  }
 
   return (
     <Modal
@@ -20,63 +53,66 @@ function ModalCreateOrder({isOpen,onClose}) {
       ✖
     </button>
   
-    <form
+    <form onSubmit={handleOnSubmit}
       style={{display: "flex",flexDirection: "column",gap: "10px",}}>
       <label style={{ fontWeight: "bold" }}>
         Nombre completo
-        <input type="text"
+        <input type="text" name="nameClient" value={orderForm.nameClient} onChange={handleOnChange}
           style={{width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}}/>
       </label>
   
       <label style={{ fontWeight: "bold" }}>
         Nombre para tarjeta
-        <input type="text"
+        <input type="text" name='nameForCard' value={orderForm.nameForCard} onChange={handleOnChange}
           style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}}/>
       </label>
   
       <label style={{ fontWeight: "bold", display: "block" }}>
       Forma de entrega
       <select style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}}
-        value={formaEntrega}
-        onChange={(e) => setFormaEntrega(e.target.value)}>
+        name='transactionType'
+        value={orderForm.transactionType}
+        onChange={handleOnChange}>
         <option>Retiro en local</option>
         <option>Envío</option>
       </select>
 
-      {formaEntrega === "Envío" && (
         <div style={{ marginTop: "10px" }}>
           <label style={{ fontWeight: "bold" }}>
             Dirección de envío
-            <input
+            <input name='address' value={orderForm.address} onChange={handleOnChange}
               type="text"
               style={{width: "100%",padding: "8px",marginTop: "4px",borderRadius: "5px",border: "1px solid #ccc",}}
               placeholder="Ingrese su dirección"/>
           </label>
         </div>
-      )}
     </label>
   
       <label style={{ fontWeight: "bold" }}>
         Tema
-<textarea  style={{width: "100%",padding: "8px",marginTop: "4px",borderRadius: "5px",border: "1px solid #ccc",}} />
+<textarea name='theme' value={orderForm.theme} onChange={handleOnChange}
+ style={{width: "100%",padding: "8px",marginTop: "4px",borderRadius: "5px",border: "1px solid #ccc",}} />
       </label>
   
       <label style={{ fontWeight: "bold" }}>
         Teléfono principal
-        <input type="number"
+        <input type="tel" name='numCel' value={orderForm.numCel} onChange={handleOnChange}
           style={{width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
       </label>
   
       <label style={{ fontWeight: "bold" }}>
         Teléfono secundario
-        <input type="number" style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
+        <input type="tel" name='num2Cel' value={orderForm.num2Cel} onChange={handleOnChange}
+         style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
       </label>
+  
+      <button 
+      style={{ marginTop: "15px", padding: "10px", width: "100%", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer",}} >
+      Crear orden
+    </button>
+
     </form>
   
-    <button onClick={onClose}
-      style={{ marginTop: "15px", padding: "10px", width: "100%", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer",}} >
-      Cerrar
-    </button>
   </Modal>
   
   )

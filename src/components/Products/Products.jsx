@@ -84,7 +84,7 @@ const handleOrderModal = ()=>{
     </button>
   </div>
 
-  <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
+  <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)} products={cart}/>
 </div>
       )
 }
