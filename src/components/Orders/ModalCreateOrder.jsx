@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
+import { fetchCreateOrder } from '../../services/Orders.service';
 
 function ModalCreateOrder({isOpen,onClose,products}) {
  // const [formaEntrega, setFormaEntrega] = useState("Retiro en local");
@@ -31,7 +32,7 @@ setOrderForm({...orderForm,[name]:value})
   const handleOnSubmit=(e)=>{
     e.preventDefault();
     console.log(orderForm);
-    alert(JSON.stringify(orderForm))
+    fetchCreateOrder(orderForm);
     alert("Orden creada")
     onClose()
     
@@ -73,8 +74,9 @@ setOrderForm({...orderForm,[name]:value})
         name='transactionType'
         value={orderForm.transactionType}
         onChange={handleOnChange}>
-        <option>Retiro en local</option>
-        <option>Envío</option>
+        <option value={""}> Seleccione Envio - Retiro </option>
+        <option value={"withdraw"}>Retiro en local</option>
+        <option value={"send"}>Envío</option>
       </select>
 
         <div style={{ marginTop: "10px" }}>
@@ -103,6 +105,12 @@ setOrderForm({...orderForm,[name]:value})
       <label style={{ fontWeight: "bold" }}>
         Teléfono secundario
         <input type="tel" name='num2Cel' value={orderForm.num2Cel} onChange={handleOnChange}
+         style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
+      </label>
+
+      <label style={{ fontWeight: "bold" }}>
+        Fecha evento
+        <input type="date" name='endOrder' value={orderForm.endOrder} onChange={handleOnChange}
          style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
       </label>
   
