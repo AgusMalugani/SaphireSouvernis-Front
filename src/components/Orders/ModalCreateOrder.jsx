@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { fetchCreateOrder } from '../../services/Orders.service';
+import { useNavigate } from 'react-router-dom';
 
-function ModalCreateOrder({isOpen,onClose,products}) {
- // const [formaEntrega, setFormaEntrega] = useState("Retiro en local");
+function ModalCreateOrder({isOpen,onClose,products}) {  
+  const navigate = useNavigate()
   const [orderForm,setOrderForm] = useState({
     endOrder:"",
     transactionType:"",
@@ -29,18 +30,19 @@ const {name,value}=event.target
 setOrderForm({...orderForm,[name]:value})
   }
 
-  const handleOnSubmit=(e)=>{
+  const handleOnSubmit=async (e)=>{
     e.preventDefault();
-    console.log(orderForm);
-    fetchCreateOrder(orderForm);
+    console.log("orderform" +  JSON.stringify(orderForm));
+   const newOrder= await fetchCreateOrder(orderForm);
     alert("Orden creada")
     onClose()
-    
+    navigate(`/postShop/${newOrder.id}`)
   }
 
   return (
     <Modal
     isOpen={isOpen}
+    appElement={document.getElementById('root') || undefined}
     onRequestClose={onClose}
     shouldCloseOnOverlayClick={false} // Evita cerrar el modal al hacer clic fuera
     style={{overlay: { backgroundColor: "rgba(0, 0, 0, 0.8)",}, // Fondo oscuro para desactivar la página position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, // Asegura que el modal esté por encima de todo
@@ -98,13 +100,13 @@ setOrderForm({...orderForm,[name]:value})
   
       <label style={{ fontWeight: "bold" }}>
         Teléfono principal
-        <input type="tel" name='numCel' value={orderForm.numCel} onChange={handleOnChange}
+        <input type="text" name='numCel' value={orderForm.numCel} onChange={handleOnChange}
           style={{width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
       </label>
   
       <label style={{ fontWeight: "bold" }}>
         Teléfono secundario
-        <input type="tel" name='num2Cel' value={orderForm.num2Cel} onChange={handleOnChange}
+        <input type="text" name='num2Cel' value={orderForm.num2Cel} onChange={handleOnChange}
          style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}} />
       </label>
 

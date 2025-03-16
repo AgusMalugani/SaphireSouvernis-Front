@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
@@ -17,95 +18,54 @@ function Navbar() {
   }}
 >
   {/* Logo */}
+  <Link to={"/"} >
   <img
     src="#"
     alt="imagen empresa"
     style={{ height: "50px", cursor: "pointer" }}
-  />
+    />
+    </Link>
 
   {/* Menú */}
   <ul
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      gap: "20px",
-      listStyle: "none",
-      padding: "0",
-      margin: "0",
-    }}
-  >
+    style={{ display: "flex", justifyContent: "space-between", gap: "20px", listStyle: "none", padding: "0", margin: "0",}}>
     <li>
-      <a
+      <Link
         href="#"
-        style={{
-          textDecoration: "none",
-          color: "white",
-          fontWeight: "bold",
-          padding: "10px 15px",
-          borderRadius: "5px",
-          transition: "background 0.3s",
-        }}
+        style={{textDecoration: "none",color: "white", fontWeight: "bold",padding: "10px 15px",borderRadius: "5px",transition: "background 0.3s",}}
         onMouseEnter={(e) => (e.currentTarget.style.background = "#1A252F")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-      >
-        Sobre nosotros
-      </a>
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")} to={"/shopProducts"} >
+        Comprar
+      </Link>
     </li>
     <li>
       <a
         href="#"
-        style={{
-          textDecoration: "none",
-          color: "white",
-          fontWeight: "bold",
-          padding: "10px 15px",
-          borderRadius: "5px",
-          transition: "background 0.3s",
-        }}
+        style={{ textDecoration: "none", color: "white", fontWeight: "bold", padding: "10px 15px", borderRadius: "5px", transition: "background 0.3s",}}
         onMouseEnter={(e) => (e.currentTarget.style.background = "#1A252F")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-      >
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
         Preguntas frecuentes
       </a>
     </li>
     <li>
       <a
         href="#"
-        style={{
-          textDecoration: "none",
-          color: "white",
-          fontWeight: "bold",
-          padding: "10px 15px",
-          borderRadius: "5px",
-          transition: "background 0.3s",
-        }}
+        style={{ textDecoration: "none", color: "white", fontWeight: "bold", padding: "10px 15px", borderRadius: "5px", transition: "background 0.3s", }}
         onMouseEnter={(e) => (e.currentTarget.style.background = "#1A252F")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-      >
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
         Registrarse
       </a>
     </li>
     <li>
       <a
         href="#"
-        style={{
-          textDecoration: "none",
-          color: "#2C3E50",
-          fontWeight: "bold",
-          backgroundColor: "white",
-          padding: "10px 15px",
-          borderRadius: "5px",
-          transition: "background 0.3s, color 0.3s",
-        }}
+        style={{textDecoration: "none",color: "#2C3E50",fontWeight: "bold",backgroundColor: "white",padding: "10px 15px",borderRadius: "5px",transition: "background 0.3s, color 0.3s",}}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = "#1A252F";
-          e.currentTarget.style.color = "white";
-        }}
+          e.currentTarget.style.color = "white";}}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = "white";
-          e.currentTarget.style.color = "#2C3E50";
-        }}
-      >
+          e.currentTarget.style.color = "#2C3E50"; }}>
         Iniciar sesión
       </a>
     </li>

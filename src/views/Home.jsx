@@ -7,7 +7,6 @@ import InfoMetodoTrabajo from '../components/InfoMetodoTrabajo';
 function Home() {
   return (
     <>
-    <Navbar/>
       
       <HeaderQuienSomos/>
       <CarruselProducts/>

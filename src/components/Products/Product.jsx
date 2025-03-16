@@ -9,8 +9,6 @@ function Product({id,img,name,price,addToCart}) {
 
 const handleSubmit=(event)=>{
   event.preventDefault();
-  console.log("handleSub");
-  
   const prod = {id,img,name,price, cuantity:cantidad}
   return addToCart(prod);
 }

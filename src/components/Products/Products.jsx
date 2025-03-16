@@ -6,12 +6,11 @@ import { fetchAllProducts } from '../../services/Products.service';
 
 function Products() {
   const [cart, setCart] = useState([]); // Estado para los productos agregados
- const [isOpen, setIsOpen] = useState(false); // estado para abrir y cerrar modal
-const [products, setProducts] = useState([])
-const [isLoading, setIsLoading] = useState(true)
-
-const [total,setTotal] = useState(0);
-
+  const [products, setProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [productsCart,setProductsCart] = useState([])
+  const [total,setTotal] = useState(0);
+  const [isOpen, setIsOpen] = useState(false); // estado para abrir y cerrar modal
 
 useEffect(()=>{
  const responseFetch = async ()=>{
@@ -30,15 +29,15 @@ responseFetch()
 
   const addToCart = (product) => {    
     setCart([...cart,product])
+    setProductsCart([...productsCart,{productId:product.id,cuantity:product.cuantity}])
     const suma = total + (product.price * product.cuantity);
     setTotal( suma )
   };
 
 
 const handleOrderModal = ()=>{
-  setIsOpen(true) 
+  if(!isOpen)setIsOpen(true) 
 }
- 
  return (
 <div style={{ minHeight: "300px", border: "1px solid #ddd", display: "flex" }}>
 
@@ -84,11 +83,9 @@ const handleOrderModal = ()=>{
     </button>
   </div>
 
-  <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)} products={cart}/>
+  {isOpen && <ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)} products={productsCart}/>}
 </div>
       )
 }
 
 export default Products
-
-//<ModalCreateOrder isOpen={isOpen} onClose={()=> setIsOpen(false)}/>
