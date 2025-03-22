@@ -1,7 +1,7 @@
 import React from 'react'
 import Product from '../Products/Product'
 
-function OrderDetail({cuantity,img,name,price}) {
+function OrderDetail({cuantity,img_url,name,price}) {
  //al ahcer click en agregar va a pasarle por props esas props
  //esto evita que haga otra peticion a la bd
 const subtotal = price * cuantity;
@@ -9,7 +9,7 @@ return (
   <>
   
   <div style={{display: "flex",alignItems: "center",justifyContent: "space-between",margin: "10px",padding: "10px",border: "1px solid #ccc",borderRadius: "8px",width: "70%",maxWidth: "500px",gap: "15px", backgroundColor: "#fff",boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",}}>
-    <img src={img} alt={name}
+    <img src={img_url} alt={name}
        style={{ height: "100px", width: "100px", objectFit: "cover",borderRadius: "8px",}} />
     
     <h3 

@@ -43,11 +43,11 @@ const handleOrderModal = ()=>{
 
 <div style={{    border: "1px solid #ccc", width: "70%",padding: "20px", margin: "10px",borderRadius: "8px",boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", backgroundColor: "#fff",}}>
   
-  { isLoading ? <h1>cargando ...</h1> : products && products.map((prod) => (
+  { isLoading ? <h1>cargando ...</h1> : products.length === 0 ? <h1>No hay productos</h1> : products.map((prod) => (
       <Product
         key={prod.id}
         id={prod.id}
-        img={prod.img}
+        img_url={prod.img_url}
         name={prod.name}
         price={prod.price}
         addToCart={addToCart}
@@ -67,7 +67,7 @@ const handleOrderModal = ()=>{
         <OrderDetail
           key={index}
           name={prod.name}
-          img={prod.img}
+          img_url={prod.img_url}
           price={prod.price}
           cuantity={prod.cuantity}/> 
           ))}

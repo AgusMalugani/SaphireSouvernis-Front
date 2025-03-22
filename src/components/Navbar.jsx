@@ -17,12 +17,11 @@ function Navbar() {
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
   }}
 >
-  {/* Logo */}
   <Link to={"/"} >
   <img
-    src="#"
+    src="https://res.cloudinary.com/dxt4qdckz/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1742683464/logo-saphire_hj5yra.png"
     alt="imagen empresa"
-    style={{ height: "50px", cursor: "pointer" }}
+    style={{ height: "75px", cursor: "pointer" }}
     />
     </Link>
 

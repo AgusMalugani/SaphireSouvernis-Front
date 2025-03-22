@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function Product({id,img,name,price,addToCart}) {
+function Product({id,img_url,name,price,addToCart}) {
   const [cantidad,setCantidad]=useState(1);
 
   const handleChange=(event)=>{
@@ -9,7 +9,7 @@ function Product({id,img,name,price,addToCart}) {
 
 const handleSubmit=(event)=>{
   event.preventDefault();
-  const prod = {id,img,name,price, cuantity:cantidad}
+  const prod = {id,img_url,name,price, cuantity:cantidad}
   return addToCart(prod);
 }
 
@@ -17,7 +17,7 @@ const handleSubmit=(event)=>{
   return (
     <div style={{ display: "flex", alignItems: "center",  justifyContent: "space-between", margin: "10px", padding: "10px", border: "1px solid #ccc", borderRadius: "8px",width: "70%", maxWidth: "500px", gap: "15px", backgroundColor: "#fff",boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",}}>
   
-  <img  src={img}  alt={name} style={{ height: "100px", width: "100px", objectFit: "cover", borderRadius: "8px" }} />
+  <img  src={img_url}  alt={name} style={{ height: "100px", width: "100px", objectFit: "cover", borderRadius: "8px" }} />
 
   <h3 style={{ flex: 1, margin: 0, color: "#333" }}>{name}</h3> 
 

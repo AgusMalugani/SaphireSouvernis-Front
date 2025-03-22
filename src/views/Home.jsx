@@ -3,6 +3,8 @@ import Navbar from './../components/Navbar';
 import HeaderQuienSomos from '../components/HeaderQuienSomos';
 import CarruselProducts from './../components/CarruselProducts';
 import InfoMetodoTrabajo from '../components/InfoMetodoTrabajo';
+import Footer from '../components/Footer';
+import ProductHomeView from '../components/ProductHomeView';
 
 function Home() {
   return (
@@ -13,13 +15,9 @@ function Home() {
       <InfoMetodoTrabajo/>
 
 
-<div style={{border:"1px solid", height:"300px"}} > 
-      <button style={{height:"50px"}} > Ver Productos </button>
-</div> 
+<ProductHomeView/>
 
-<footer style={{border:"1px solid", background:"grey"}} >
-  <p>SaphireSouvenirs</p>
-</footer>
+<Footer/>
 
 
 

@@ -14,7 +14,8 @@ function ModalCreateOrder({isOpen,onClose,products}) {
     nameForCard:"",
     numCel:"",
     num2Cel:"",
-    products:[]
+    products:[],
+    email:""
   });
   useEffect(() => {
     if (products && products.length > 0) {
@@ -69,6 +70,20 @@ setOrderForm({...orderForm,[name]:value})
         <input type="text" name='nameForCard' value={orderForm.nameForCard} onChange={handleOnChange}
           style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}}/>
       </label>
+
+
+      <label style={{ fontWeight: "bold" }}>
+        Email
+        <input type="email" name="email" value={orderForm.email} onChange={handleOnChange}
+          style={{width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}}/>
+      </label>
+
+      <label style={{ fontWeight: "bold" }}>
+        Dirrecion
+        <input type="text" name='address' value={orderForm.address} onChange={handleOnChange}
+          style={{ width: "100%", padding: "8px", marginTop: "4px", borderRadius: "5px", border: "1px solid #ccc",}}/>
+      </label>
+
   
       <label style={{ fontWeight: "bold", display: "block" }}>
       Forma de entrega
