@@ -19,7 +19,6 @@ useEffect(()=>{
    setProducts(res);
    setIsLoading(false)
    console.log("efecct");
-   return res
  } catch (error) {
   console.log(error);
  }

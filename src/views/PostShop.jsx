@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import Product from '../components/Products/Product'
+import RedirectToWhatsapp from '../components/RedirectToWhatsapp'
 
 function PostShop() {
     const{id}=useParams()
     const[order,setOrder] = useState({})
+    const location = useLocation()
 
     useEffect(()=>{
         fetch(`http://localhost:3000/orders/${id}`)
@@ -85,6 +87,9 @@ console.log(order);
           </div>
         ))}
       </div>
+      
+      <RedirectToWhatsapp num="3413857748" msj={`Hola acabo de realizar una compra,
+       te brindo la url con el detalle para que la atencion sea mas rapida  http://localhost:5173${location.pathname}`}/>
     </div>
   )
 }
