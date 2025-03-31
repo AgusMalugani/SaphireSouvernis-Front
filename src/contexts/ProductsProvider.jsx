@@ -23,6 +23,12 @@ useEffect(()=>{
     response();
   },[])
 
+
+const editProduct = (product)=>{
+//aca recibo el producto, mando al back, con la id para modificar el producto y los datos modificados
+
+}
+
 const value = {
     products,
     setProducts
