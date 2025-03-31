@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { fetchAllProducts } from '../services/Products.service';
+import React, { useContext, useEffect, useState } from 'react'
+import { ProductsContext } from '../../contexts/ProductsContext';
+//import { fetchAllProducts } from '../services/Products.service';
+//import {productsJson} from "../../products"
 
 function CarruselProducts() {
   const [index, setIndex] = useState(0);
-  const [products, setProducts]=useState([])
-
-  useEffect(()=>{
-    const response = async ()=>{
-      const res = await fetchAllProducts();
-      setProducts(res);
-      return res;
-    }
-    response();
-  },[])
+  const {products} = useContext(ProductsContext);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,31 +15,25 @@ function CarruselProducts() {
     return () => clearInterval(interval);
   }, [products.length]);
 
-console.log(products);
-
 return (
-  <div
-      >
+  <div>
     <div
       style={{
         height: "350px",
         display: "flex",
         justifyContent: "space-around",
         alignItems: "center",
-        backgroundColor: "#ffffff", // Fondo blanco para el contenedor interno
         borderRadius: "10px", // Bordes redondeados para un toque más suave
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Sombra suave para profundidad
-     background: "linear-gradient(to right, #f5f7fa, #c3cfe2)", // Fondo degradado
-   
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Sombra suave para profundidad 
       }}
     >
-      {products.slice(index, index + 3).map((product) => (
+      { !products ? <h2>Cargando...</h2> : products.slice(index, index + 3).map((product) => (
         <div
           key={product.id}
           style={{
-            border: "1px solid",
+            border: "0,5px solid",
             width: "250px",
-            height: "300px",
+            height: "auto",
             margin: "5px",
             textAlign: "center",
             backgroundColor: "#fafafa", // Fondo suave para cada producto
@@ -60,13 +47,12 @@ return (
             alt={product.name}
             style={{
               width: "100%",
-              height: "150px",
+              height: "200px",
               objectFit: "cover",
               borderRadius: "8px", // Bordes redondeados en la imagen
             }}
           />
           <h4>{product.name}</h4>
-          <p>{product.details}</p>
         </div>
       ))}
     </div>

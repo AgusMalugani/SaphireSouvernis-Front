@@ -1,21 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 function Navbar() {
-  return (
+const{deleteToken} = useContext(AuthContext)
+const token = localStorage.getItem("token") ? true : false;
+return (
 <nav
   style={{
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    border: "1px solid #ccc",
+    border: "1px solid #a67c7c",
     height: "80px",
     padding: "0 20px",
-    backgroundColor: "#2C3E50", // Azul oscuro
-    color: "white",
-    borderRadius: "10px",
+    backgroundColor: "#c08585", // Azul oscuro
+    color: "#ffffff",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-  }}
+ 
+ }}
 >
   <Link to={"/"} >
   <img
@@ -46,18 +49,10 @@ function Navbar() {
         Preguntas frecuentes
       </a>
     </li>
-    <li>
-      <a
-        href="#"
-        style={{ textDecoration: "none", color: "white", fontWeight: "bold", padding: "10px 15px", borderRadius: "5px", transition: "background 0.3s", }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "#1A252F")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
-        Registrarse
-      </a>
-    </li>
-    <li>
-      <a
-        href="#"
+
+    { !token && <li>
+  <Link
+        to={"/login"}
         style={{textDecoration: "none",color: "#2C3E50",fontWeight: "bold",backgroundColor: "white",padding: "10px 15px",borderRadius: "5px",transition: "background 0.3s, color 0.3s",}}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = "#1A252F";
@@ -65,9 +60,40 @@ function Navbar() {
         onMouseLeave={(e) => {
           e.currentTarget.style.background = "white";
           e.currentTarget.style.color = "#2C3E50"; }}>
-        Iniciar sesión
-      </a>
+        Iniciar sesion
+      </Link>
     </li>
+        }
+    
+
+
+    { token && <li>
+  <Link
+        to={"/dashboard"}
+        style={{textDecoration: "none",color: "#2C3E50",fontWeight: "bold",backgroundColor: "white",padding: "10px 15px",borderRadius: "5px",transition: "background 0.3s, color 0.3s",}}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#1A252F";
+          e.currentTarget.style.color = "white";}}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "white";
+          e.currentTarget.style.color = "#2C3E50"; }}>
+        Dashboard
+      </Link>
+    </li>
+        }
+
+
+  { token && <li>
+      <Link
+        onClick={deleteToken}
+        to={"/"}
+        style={{ textDecoration: "none", color: "white", fontWeight: "bold", padding: "10px 15px", borderRadius: "5px", transition: "background 0.3s", }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#1A252F")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
+        Salir
+      </Link>
+    </li>
+  }
   </ul>
 </nav>
 

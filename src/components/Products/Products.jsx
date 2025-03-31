@@ -1,30 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Product from './Product';
 import OrderDetail from '../Orders/OrderDetail';
 import ModalCreateOrder from '../Orders/ModalCreateOrder';
-import { fetchAllProducts } from '../../services/Products.service';
+import { ProductsContext } from '../../contexts/ProductsContext';
+//import { fetchAllProducts } from '../../services/Products.service';
 
 function Products() {
   const [cart, setCart] = useState([]); // Estado para los productos agregados
-  const [products, setProducts] = useState([])
+ // const [productsState, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [productsCart,setProductsCart] = useState([])
   const [total,setTotal] = useState(0);
   const [isOpen, setIsOpen] = useState(false); // estado para abrir y cerrar modal
 
-useEffect(()=>{
- const responseFetch = async ()=>{
- try {
-   const res = await fetchAllProducts()
-   setProducts(res);
-   setIsLoading(false)
-   console.log("efecct");
- } catch (error) {
-  console.log(error);
- }
-} 
-responseFetch()
-},[])
+  const{products} = useContext(ProductsContext)
+
+  useEffect(()=>{
+    setIsLoading(false)
+  },[products])
 
   const addToCart = (product) => {    
     setCart([...cart,product])
@@ -40,7 +33,11 @@ const handleOrderModal = ()=>{
  return (
 <div style={{ minHeight: "300px", border: "1px solid #ddd", display: "flex" }}>
 
-<div style={{    border: "1px solid #ccc", width: "70%",padding: "20px", margin: "10px",borderRadius: "8px",boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", backgroundColor: "#fff",}}>
+<div style={{    border: "1px solid #ccc", width: "70%",padding: "20px", margin: "10px",borderRadius: "8px",boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", 
+  backgroundColor: "#fff",
+  maxHeight: "500px", // Ajusta la altura máxima según necesites
+  overflowY: "auto", // Agrega scroll vertical si el contenido excede la altura
+  }}>
   
   { isLoading ? <h1>cargando ...</h1> : products.length === 0 ? <h1>No hay productos</h1> : products.map((prod) => (
       <Product

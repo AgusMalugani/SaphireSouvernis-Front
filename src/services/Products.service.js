@@ -9,5 +9,7 @@ export async function fetchAllProducts() {
     return response.data
   } catch (error) {
     console.error(error);
+    throw new Error(error);
+    
   }
 }

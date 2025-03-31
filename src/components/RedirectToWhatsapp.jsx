@@ -19,9 +19,12 @@ function RedirectToWhatsapp({num,msj}) {
       }
 
   return (
-    <button
+<button
   onClick={redirectToWsp}
   style={{
+    position: 'fixed',        // Fija el botón en la pantalla
+    bottom: '100px',           // Espacio desde la parte inferior de la pantalla
+    right: '20px',            // Espacio desde la parte derecha de la pantalla
     backgroundColor: '#25D366', /* Color verde de WhatsApp */
     color: 'white',
     fontSize: '16px',
@@ -39,7 +42,7 @@ function RedirectToWhatsapp({num,msj}) {
   onMouseEnter={(e) => (e.target.style.backgroundColor = '#128C7E')} // Cambio de color al pasar el mouse
   onMouseLeave={(e) => (e.target.style.backgroundColor = '#25D366')} // Vuelve al color original al salir el mouse
 >
-<img
+  <img
     src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
     alt="WhatsApp"
     style={{
@@ -47,8 +50,8 @@ function RedirectToWhatsapp({num,msj}) {
       height: '24px',
     }}
   />
-  Comuniquese por Whatsapp
 </button>
+
 
   )
 }

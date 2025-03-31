@@ -4,11 +4,11 @@ function Footer() {
   return (
     <footer
   style={{
-    border: "1px solid #ccc",
-    background: "grey",
+    border: "1px solid #a67c7c",
+    background: "#c08585",
     padding: "20px",
     textAlign: "center",
-    color: "#fff",
+    color: "#ffffff",
     fontSize: "18px",
     fontWeight: "bold",
   }}

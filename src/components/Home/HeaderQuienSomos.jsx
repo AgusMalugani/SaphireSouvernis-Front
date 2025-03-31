@@ -4,10 +4,9 @@ function HeaderQuienSomos() {
   return (
 <header
   style={{
-    border: "1px solid #ccc",
-    height: "150px",
+    height: "300px",
     width: "100%",
-    backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj1RtM1NzlyHV_29yTD-kpiqGru4xRhIWMmw&s")`,
+    backgroundImage: `url("https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTEwL2pvYjEzOTctYmctMTBlLmpwZw.jpg")`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -41,11 +40,11 @@ function HeaderQuienSomos() {
   >
     <a href="#">
       <img
-        src="#"
+        src="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"
         alt="instagram ❤"
         style={{
-          width: "30px",
-          height: "30px",
+          width: "40px",
+          height: "40px",
           borderRadius: "50%",
           border: "2px solid white",
         }}
@@ -53,11 +52,11 @@ function HeaderQuienSomos() {
     </a>
     <a href="#">
       <img
-        src="#"
+       src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
         alt="whatsapp ❎"
         style={{
-          width: "30px",
-          height: "30px",
+          width: "40px",
+          height: "40px",
           borderRadius: "50%",
           border: "2px solid white",
         }}
