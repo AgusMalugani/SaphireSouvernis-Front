@@ -1,11 +1,18 @@
 import React, { useContext } from 'react'
 import { ProductsContext } from '../../contexts/ProductsContext';
+import { useNavigate } from 'react-router-dom';
 
 function TableProducts({viewProduct}) {
  const {products} = useContext(ProductsContext)
+ const navigate = useNavigate();
  //creo un stado con los datos modificados y los mando al contexto. 
  // Ahi los tengo que modificar. una vez modificados, deberia
  //volver a traer todos los productos y actualizar el context
+const handleEditProduct=(id)=>{
+alert(`Sera redirigido para editar el producto.`)
+navigate(`/product/edit/${id}`)
+}
+
 
    return (
        <div
@@ -46,7 +53,7 @@ function TableProducts({viewProduct}) {
                  <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{prod.name}</td>
                  <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{prod.price}</td>
                  <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> <button onClick={()=>viewProduct(prod.id)} >Ver</button> </td>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> <button onClick={()=>editProduct(prod.id)} >Editar</button></td>
+                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> <button onClick={()=>handleEditProduct(prod.id)} >Editar</button></td>
                </tr>
              ))}
            </tbody>

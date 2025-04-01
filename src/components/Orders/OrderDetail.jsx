@@ -4,6 +4,7 @@ import Product from '../Products/Product'
 function OrderDetail({cuantity,img_url,name,price}) {
  //al ahcer click en agregar va a pasarle por props esas props
  //esto evita que haga otra peticion a la bd
+
 const subtotal = price * cuantity;
 return (
   <>

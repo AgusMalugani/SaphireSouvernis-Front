@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchAllProducts } from "../services/Products.service";
 import {productsJson} from "../../products"
 import { ProductsContext } from "./ProductsContext";
+import { UpdateProduct } from "../services/UpdateProduct";
 
 
 export const ProductsProvider = ({children})=>{
@@ -21,17 +22,33 @@ useEffect(()=>{
       }
     }
     response();
+    console.log("context");
+    
   },[])
 
 
-const editProduct = (product)=>{
-//aca recibo el producto, mando al back, con la id para modificar el producto y los datos modificados
+const editProduct=(id,product)=>{
+    
+    const response = async ()=> {
+        const resp = await UpdateProduct(id,product); //aca mod bd
 
-}
+        const productsMod = products.map(prod =>{ 
+          if(prod.id === id){
+          return  resp
+          }else{ 
+            return prod
+          }
+          })
+          setProducts(productsMod) //ak evito rerenderizado, y actualizo estado
+    }
+    response()
+  }
+
 
 const value = {
     products,
-    setProducts
+    setProducts,
+    editProduct
 }
 
     return  <ProductsContext.Provider value={value}> {children} </ProductsContext.Provider> 

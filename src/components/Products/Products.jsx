@@ -19,7 +19,9 @@ function Products() {
     setIsLoading(false)
   },[products])
 
-  const addToCart = (product) => {    
+  const addToCart = (product) => {
+    console.log(product);
+        
     setCart([...cart,product])
     setProductsCart([...productsCart,{productId:product.id,cuantity:product.cuantity}])
     const suma = total + (product.price * product.cuantity);
