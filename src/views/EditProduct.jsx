@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { OneProductById } from '../services/OneProductById';
 import { UpdateProduct } from '../services/UpdateProduct';
 import { ProductsContext } from '../contexts/ProductsContext';
+import { ImageProduct } from '../services/ImageProduct';
 
 function EditProduct() {
     const{id} = useParams()
@@ -31,7 +32,6 @@ useEffect(()=>{
     response()
 },[id])
 
-
 const handleOnChange=(e)=>{
 const{name,value} = e.target
 setProduct({...product,[name]:value})
@@ -39,18 +39,18 @@ setProduct({...product,[name]:value})
 
 const handleSubmit= async (e)=>{
     e.preventDefault();
- //img   
-const formData = new FormData();
-  formData.append("file", file); // Solo enviamos la imagen
-        const resp =  await fetch(`http://localhost:3000/files/uploadImage/${id}`,{
-            method:"POST",
-              body:formData
-        })
-        const data = await resp.json()
-        console.log(data);
-//%%%%%%%%%%%%%%
-
-    await editProduct(id,product) 
+    
+    if(file){
+      const resp = await ImageProduct(id,file) //mod img
+        const updatedProduct = {
+          ...product,
+          img_url: resp.img,
+        };
+         setProduct(updatedProduct) //mod estado para context
+         await editProduct(id,updatedProduct) //mod context con img
+    } else {
+      await editProduct(id,product)  //mod context
+    }
     alert("Producto modificado")
     alert("Sera redirigido al Dashboard")
    navigate("/dashboard")
