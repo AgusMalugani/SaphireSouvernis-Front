@@ -4,6 +4,7 @@ import { OneProductById } from '../services/OneProductById';
 import { UpdateProduct } from '../services/UpdateProduct';
 import { ProductsContext } from '../contexts/ProductsContext';
 import { ImageProduct } from '../services/ImageProduct';
+import FormProduct from '../components/Products/FormProduct';
 
 function EditProduct() {
     const{id} = useParams()
@@ -73,84 +74,7 @@ return (
       <h1 style={{ fontSize: "22px", marginBottom: "20px" }}>
         Modificación de producto
       </h1>
-  
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-        }}
-      >
-        <label style={{ fontWeight: "bold", textAlign: "left" }}>
-          Nombre
-          <input
-            type="text"
-            name="name"
-            value={product.name}
-            onChange={handleOnChange}
-            style={{
-              width: "100%",
-              padding: "8px",
-              marginTop: "4px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-            }}
-          />
-        </label>
-  
-        <label style={{ fontWeight: "bold", textAlign: "left" }}>
-          Detalles
-          <textarea
-            name="details"
-            value={product.details}
-            onChange={handleOnChange}
-            style={{
-              width: "100%",
-              padding: "8px",
-              marginTop: "4px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              resize: "none",
-              height: "80px",
-            }}
-          />
-        </label>
-  
-        <label style={{ fontWeight: "bold", textAlign: "left" }}>
-          Precio unitario
-          <input
-            type="number"
-            name="price"
-            value={product.price}
-            onChange={handleOnChange}
-            style={{
-              width: "100%",
-              padding: "8px",
-              marginTop: "4px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-            }}
-          />
-        </label>
-        
-      <input type="file" name="file" onChange={handleOnChangeImage} />
-  
-        <button
-          style={{
-            padding: "10px",
-            border: "none",
-            borderRadius: "5px",
-            backgroundColor: "#007bff",
-            color: "white",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "0.3s",
-          }}
-        >
-          Modificar producto
-        </button>
-      </form>
+      <FormProduct handleOnChangeImage ={handleOnChangeImage} handleSubmit={handleSubmit} product={product} handleOnChange={handleOnChange} />
     </div>
   );
   
