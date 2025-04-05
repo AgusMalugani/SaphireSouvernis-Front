@@ -53,13 +53,11 @@ function CreateProduct() {
    const handleOnChangeImage=(e)=>{
        const file = e.target.files[0]
        setFile(file)
+       alert("Imagen cargada")
     }
 
     const handleSubmit= async (e)=>{
         e.preventDefault();
-      console.log(product);
-      console.log(file);
-      
       const formdata = new FormData()
       for (let key in product) {
         if(key === "categories"){
@@ -76,7 +74,10 @@ function CreateProduct() {
     }
 
   return (
-    <div>
+    <div >
+      <h1 style={{ fontSize: "22px", marginBottom: "20px", textAlign: "center" }}>
+        Creacion de producto
+      </h1>
       <FormProduct  categoriasSeleccionadas={categoriasSeleccionadas} categorias={categories} product={product} handleOnChange={handleOnChange} handleSubmit={handleSubmit} handleOnChangeImage={handleOnChangeImage}/>
     </div>
   )

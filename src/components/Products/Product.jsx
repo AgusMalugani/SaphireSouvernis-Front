@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
+import ModalViewProduct from './ModalViewProduct';
 
 function Product({id,img_url,name,price,addToCart}) {
   const [cantidad,setCantidad]=useState(1);
+const [isOpen,setIsOpen]= useState(false); 
 
+const [idProduct,setIdProduct]=useState("")
+const viewProduct=(id)=>{
+  setIdProduct(id)
+  setIsOpen(true)
+}
   const handleChange=(event)=>{
   setCantidad(event.target.value);
 }
@@ -26,11 +33,14 @@ const handleSubmit=(event)=>{
     <label> Cantidad 
   <input type="number"  value={cantidad} onChange={handleChange} min={1}  style={{   width: "50px",   height: "30px",   textAlign: "center",   fontSize: "16px",   border: "1px solid #ccc",   borderRadius: "5px",   padding: "5px",   outline: "none"}}/>
   </label>
-
+  <button onClick={()=>viewProduct(id)} >Ver</button> 
   <button onClick={handleSubmit} 
     style={{padding: "8px 12px", cursor: "pointer", border: "none", backgroundColor: "#007bff", color: "white", borderRadius: "5px"}}>
     Add
   </button>
+  { isOpen &&
+    <ModalViewProduct isOpen={isOpen} onClose={()=>{setIsOpen(false)}} idProduct={idProduct} />
+    }
 </div>
 
     /*
