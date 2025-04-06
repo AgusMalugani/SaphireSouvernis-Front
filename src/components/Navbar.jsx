@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
 function Navbar() {
-const{deleteToken} = useContext(AuthContext)
-const token = localStorage.getItem("token") ? true : false;
+const{deleteToken,isAuthenticated} = useContext(AuthContext)
 return (
 <nav
   style={{
@@ -50,7 +49,7 @@ return (
       </a>
     </li>
 
-    { !token && <li>
+    { !isAuthenticated && <li>
   <Link
         to={"/login"}
         style={{textDecoration: "none",color: "#2C3E50",fontWeight: "bold",backgroundColor: "white",padding: "10px 15px",borderRadius: "5px",transition: "background 0.3s, color 0.3s",}}
@@ -67,7 +66,7 @@ return (
     
 
 
-    { token && <li>
+    { isAuthenticated && <li>
   <Link
         to={"/dashboard"}
         style={{textDecoration: "none",color: "#2C3E50",fontWeight: "bold",backgroundColor: "white",padding: "10px 15px",borderRadius: "5px",transition: "background 0.3s, color 0.3s",}}
@@ -83,7 +82,7 @@ return (
         }
 
 
-  { token && <li>
+  { isAuthenticated && <li>
       <Link
         onClick={deleteToken}
         to={"/"}

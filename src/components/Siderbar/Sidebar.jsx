@@ -38,7 +38,7 @@ export default function Sidebar() {
         style={{ display: "flex",alignItems: "center",gap: "10px",padding: "10px",width: "100%",cursor: "pointer",transition: "background 0.2s",}}
         onMouseOver={(e) => (e.currentTarget.style.background = "#444")} onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}>
         <BiNotepad/>
-        <button style={{color:"#fff"}} onClick={()=>navigate("/")}>Pedidos</button>
+        <button style={{color:"#fff"}} onClick={()=>navigate("/orders")}>Pedidos</button>
         </div>
 
     </div>
