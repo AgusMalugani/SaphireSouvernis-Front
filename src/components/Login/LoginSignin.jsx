@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import {Signin} from "../../services/Signin.service"
+import { Signin } from '../../services/Auth/Signin.service' 
 
 function LoginSignin() {
 

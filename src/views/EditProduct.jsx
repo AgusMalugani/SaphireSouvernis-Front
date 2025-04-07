@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { OneProductById } from '../services/OneProductById';
-import { UpdateProduct } from '../services/UpdateProduct';
+import { OneProductById } from '../services/Products/OneProductById'; 
 import { ProductsContext } from '../contexts/ProductsContext';
-import { ImageProduct } from '../services/ImageProduct';
+import { ImageProduct } from '../services/Products/ImageProduct'; 
 import FormProduct from '../components/Products/FormProduct';
-import { FindAllCategories } from '../services/FindAllCategories';
-
+import { FindAllCategories } from '../services/Categories/FindAllCategories'; 
 function EditProduct() {
     const{id} = useParams()
    const[product,setProduct]=useState({

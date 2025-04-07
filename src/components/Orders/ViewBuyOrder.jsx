@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { OneOrder } from '../../services/OneOrder';
+import { OneOrder } from '../../services/Orders/OneOrder' 
 
 function ViewBuyOrder({ id }) {
   const [order, setOrder] = useState({})

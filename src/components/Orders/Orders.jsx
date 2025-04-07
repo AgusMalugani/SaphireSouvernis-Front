@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FindAllOrders } from '../../services/FindAllOrders'
+import { FindAllOrders } from '../../services/Orders/FindAllOrders' 
 import Order from './Order'
 
 function Orders() {

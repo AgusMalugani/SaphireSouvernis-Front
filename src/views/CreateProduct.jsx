@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import FormProduct from '../components/Products/FormProduct'
-import { CreateNewProduct } from '../services/CreateNewProduct'
-import { FindAllCategories } from '../services/FindAllCategories'
-import { ImageProduct } from '../services/ImageProduct'
+import { FindAllCategories } from '../services/Categories/FindAllCategories' 
 import { ProductsContext } from '../contexts/ProductsContext'
+import { CreateNewProduct } from '../services/Products/CreateNewProduct'
 
 function CreateProduct() {
     const[product,setProduct]=useState({

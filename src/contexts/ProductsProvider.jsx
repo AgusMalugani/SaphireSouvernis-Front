@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { fetchAllProducts } from "../services/Products.service";
+import { fetchAllProducts } from "../services/Products/FindAllProducts.service"; 
 import {productsJson} from "../../products"
 import { ProductsContext } from "./ProductsContext";
-import { UpdateProduct } from "../services/UpdateProduct";
+import { UpdateProduct } from "../services/Products/UpdateProduct"; 
 
 
 export const ProductsProvider = ({children})=>{

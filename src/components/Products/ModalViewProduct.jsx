@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import  Modal  from 'react-modal';
-import { OneProductById } from '../../services/OneProductById';
+import { OneProductById } from '../../services/Products/OneProductById';
 
 function ModalViewProduct({isOpen,onClose,idProduct}) {
    

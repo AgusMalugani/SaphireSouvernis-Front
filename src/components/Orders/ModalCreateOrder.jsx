@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
-import { fetchCreateOrder } from '../../services/Orders.service';
+import { fetchCreateOrder } from '../../services/Orders/CreateOrder.service'; 
 import { useNavigate } from 'react-router-dom';
 
 function ModalCreateOrder({isOpen,onClose,products}) {  

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { OneOrder } from '../../services/OneOrder';
-import { EditOrderService } from '../../services/EditOrderService';
+import { OneOrder } from '../../services/Orders/OneOrder'; 
+import { EditOrderService } from '../../services/Orders/EditOrderService'; 
 
 function EditOrder({ id, action }) {
   const [order, setOrder] = useState({})
