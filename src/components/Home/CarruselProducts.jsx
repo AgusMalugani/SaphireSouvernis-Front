@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ProductsContext } from '../../contexts/ProductsContext';
+import { ProductsContext } from '../../contexts/Products/ProductsContext'; 
 //import { fetchAllProducts } from '../services/Products.service';
 //import {productsJson} from "../../products"
 

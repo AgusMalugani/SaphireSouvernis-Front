@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { ProductsContext } from '../../contexts/ProductsContext';
+import { ProductsContext } from '../../contexts/Products/ProductsContext'; 
 import { useNavigate } from 'react-router-dom';
 
 function TableProducts({viewProduct}) {

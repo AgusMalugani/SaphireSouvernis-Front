@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from './AuthContext'; 
 import { jwtDecode } from 'jwt-decode';
 
 export const AuthProvider = ({children})=>{

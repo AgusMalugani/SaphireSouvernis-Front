@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { OneProductById } from '../services/Products/OneProductById'; 
-import { ProductsContext } from '../contexts/ProductsContext';
+import { ProductsContext } from '../contexts/Products/ProductsContext';
 import { ImageProduct } from '../services/Products/ImageProduct'; 
 import FormProduct from '../components/Products/FormProduct';
 import { FindAllCategories } from '../services/Categories/FindAllCategories'; 

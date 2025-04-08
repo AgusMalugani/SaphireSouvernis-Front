@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import FormProduct from '../components/Products/FormProduct'
 import { FindAllCategories } from '../services/Categories/FindAllCategories' 
-import { ProductsContext } from '../contexts/ProductsContext'
+import { ProductsContext } from '../contexts/Products/ProductsContext' 
 import { CreateNewProduct } from '../services/Products/CreateNewProduct'
 
 function CreateProduct() {

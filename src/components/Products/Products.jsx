@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Product from './Product';
 import OrderDetail from '../Orders/OrderDetail';
 import ModalCreateOrder from '../Orders/ModalCreateOrder';
-import { ProductsContext } from '../../contexts/ProductsContext';
+import { ProductsContext } from '../../contexts/Products/ProductsContext'; 
 //import { fetchAllProducts } from '../../services/Products.service';
 
 function Products() {
