@@ -1,30 +1,29 @@
 import React from 'react'
-import Navbar from './../components/Navbar';
-import HeaderQuienSomos from '../components/HeaderQuienSomos';
-import CarruselProducts from './../components/CarruselProducts';
-import InfoMetodoTrabajo from '../components/InfoMetodoTrabajo';
+import RedirectToWhatsapp from '../components/RedirectToWhatsapp';
+import HeaderQuienSomos from '../components/Home/HeaderQuienSomos';
+import CarruselProducts from '../components/Home/CarruselProducts';
+import ProductHomeView from '../components/Home/ProductHomeView';
+import InfoMetodoTrabajo from '../components/Home/InfoMetodoTrabajo';
+import Footer from '../components/Home/Footer';
 
 function Home() {
+
   return (
-    <>
-    <Navbar/>
+    <div style={{ 
+      background: "linear-gradient(to right,rgb(250, 232, 241),rgb(245, 195, 206))" }}>
       
       <HeaderQuienSomos/>
       <CarruselProducts/>
+    <ProductHomeView/>
       <InfoMetodoTrabajo/>
 
+<RedirectToWhatsapp num="3413857748" msj="Este es un msj de prueba"/>
 
-<div style={{border:"1px solid", height:"300px"}} > 
-      <button style={{height:"50px"}} > Ver Productos </button>
-</div> 
-
-<footer style={{border:"1px solid", background:"grey"}} >
-  <p>SaphireSouvenirs</p>
-</footer>
+<Footer/>
 
 
 
-    </>
+    </ div>
   )
 }
 

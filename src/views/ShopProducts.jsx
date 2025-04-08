@@ -6,7 +6,6 @@ import OrderDetail from '../components/Orders/OrderDetail'
 function ShopProducts() {
   return (
     <>
-      <Navbar/>
 
   <Products/>
 
