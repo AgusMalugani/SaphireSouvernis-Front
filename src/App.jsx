@@ -6,7 +6,7 @@ import DashboardAdmin from './views/DashboardAdmin';
 import EditProduct from './views/EditProduct';
 import Home from './views/Home'
 import Login from './views/Login';
-import ViewOrders from './views/Orders';
+import ViewOrders from './views/ViewOrders'; 
 import PostShop from './views/PostShop';
 import ShopProducts from './views/ShopProducts';
 import {Routes,Route} from "react-router-dom"
