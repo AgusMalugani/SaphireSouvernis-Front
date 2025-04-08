@@ -1,6 +1,6 @@
 
-//const API_URL="https://saphiresouvenirs-back.onrender.com"
-const API_URL="http://localhost:3000"
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 export async function fetchCreateOrder(newOrder){
 const response = await fetch(`${API_URL}/orders`,{

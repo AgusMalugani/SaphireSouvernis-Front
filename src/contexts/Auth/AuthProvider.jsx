@@ -6,8 +6,11 @@ export const AuthProvider = ({children})=>{
 
     const[token,setToken]=useState(localStorage.getItem("token")|| null)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    const saveToken= (newToken)=>{
+  
+  const saveToken= (newToken)=>{
+      console.log(jwtDecode(newToken));
+      console.log(Math.floor(Date.now() / 1000));
+       
         setToken(newToken)
         localStorage.setItem("token",newToken)
         setIsAuthenticated(true)

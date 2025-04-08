@@ -1,15 +1,7 @@
-/*export async function CreateNewProduct(product){
-    const response = await fetch("http://localhost:3000/products",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(product)
-    });
-    const data = await response.json();
-    return data
-}*/
+const API_URL = import.meta.env.VITE_API_URL;
 
 export async function CreateNewProduct(formdata){
-    const response = await fetch("http://localhost:3000/products",{
+    const response = await fetch(`${API_URL}/products`,{
         method:"POST",
         body:formdata
     });
