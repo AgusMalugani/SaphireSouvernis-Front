@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { OneOrder } from '../../services/Orders/OneOrder'; 
 import { EditOrderService } from '../../services/Orders/EditOrderService'; 
+import { OrdersContext } from '../../contexts/Orders/OrdersContext';
 
-function EditOrder({ id, action }) {
-  const [order, setOrder] = useState({})
-
-  useEffect(() => {
-    const response = async () => {
-      const resp = await OneOrder(id);
-      setOrder(resp);
-    }
-    response()
-  }, [id])
+function EditOrder({ id, action, onClose }) {
+  const{getOrderById,editOrderContext} = useContext(OrdersContext)
+  
+  const orderContext = getOrderById(id) // lo traigo del context
+  const [order, setOrder] = useState(orderContext || {})
 
   const handleOnChange = (e) => {
     const { name, value } = e.target
@@ -20,9 +16,10 @@ function EditOrder({ id, action }) {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    const response = await EditOrderService(id, order)
+    const response = await editOrderContext(id, order)
     console.log(response);
     alert("Orden modificada")
+  onClose();
   }
 
   const inputStyle = {

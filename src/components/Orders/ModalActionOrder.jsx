@@ -59,7 +59,7 @@ function ModalActionOrder({ isOpen, onClose, id, action }) {
 
       {action === "ver" && <ViewBuyOrder id={id} />}
       {(action === "estadoPago" || action === "envio/Retiro") && (
-        <EditOrder id={id} action={action} />
+        <EditOrder id={id} action={action} onClose={onClose} />
       )}
     </Modal>
   )
