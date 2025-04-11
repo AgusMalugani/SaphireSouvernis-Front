@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import { fetchCreateOrder } from '../../services/Orders/CreateOrder.service'; 
 import { useNavigate } from 'react-router-dom';
+import { OrdersContext } from '../../contexts/Orders/OrdersContext';
 
 function ModalCreateOrder({isOpen,onClose,products}) {  
   const navigate = useNavigate()
+  const{setOrders}= useContext(OrdersContext)
   const [orderForm,setOrderForm] = useState({
     endOrder:"",
     transactionType:"",
@@ -35,6 +37,7 @@ setOrderForm({...orderForm,[name]:value})
     e.preventDefault();
     console.log("orderform" +  JSON.stringify(orderForm));
    const newOrder= await fetchCreateOrder(orderForm);
+   setOrders((prevOrders)=>[...prevOrders,newOrder])
     alert("Orden creada")
     onClose()
     navigate(`/postShop/${newOrder.id}`)

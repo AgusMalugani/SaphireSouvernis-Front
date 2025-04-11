@@ -5,26 +5,21 @@ import { useNavigate } from 'react-router-dom';
 function TableProducts({viewProduct}) {
  const {products} = useContext(ProductsContext)
  const navigate = useNavigate();
- //creo un stado con los datos modificados y los mando al contexto. 
- // Ahi los tengo que modificar. una vez modificados, deberia
- //volver a traer todos los productos y actualizar el context
-const handleEditProduct=(id)=>{
-alert(`Sera redirigido para editar el producto.`)
-navigate(`/product/edit/${id}`)
-}
 
+const handleEditProduct=(id)=>{
+  alert(`Sera redirigido para editar el producto.`)
+  navigate(`/product/edit/${id}`)
+}
 
    return (
        <div
          style={{
-           border: "1px solid #ddd",
-           width: "100%",
-           display: "flex",
-           flexDirection: "column",
-           paddingTop: "80px", // Espacio para evitar solapamiento con el Navbar
+           flex: 1,
+           paddingTop: "80px",
            padding: "20px",
            overflowY: "auto",
-           flex: 1, // Ocupa todo el espacio restante
+           overflowX: "auto",
+           minWidth: 0,
          }}
        >
          <h2 style={{ textAlign: "center", marginBottom: "10px" }}>
@@ -52,8 +47,12 @@ navigate(`/product/edit/${id}`)
                <tr key={index}>
                  <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{prod.name}</td>
                  <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{prod.price}</td>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> <button onClick={()=>viewProduct(prod.id)} >Ver</button> </td>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> <button onClick={()=>handleEditProduct(prod.id)} >Editar</button></td>
+                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> 
+                   <button onClick={()=>viewProduct(prod.id)} >Ver</button> 
+                 </td>
+                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> 
+                   <button onClick={()=>handleEditProduct(prod.id)} >Editar</button>
+                 </td>
                </tr>
              ))}
            </tbody>

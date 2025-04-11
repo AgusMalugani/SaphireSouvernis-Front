@@ -1,0 +1,71 @@
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  gap: 15px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.name {
+  flex: 1;
+  margin: 0;
+  color: #333;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.inputCantidad {
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  outline: none;
+}
+
+.buttonAdd {
+  padding: 8px 12px;
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+}
+
+/* 🟡 Responsivo para celulares */
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .image {
+    align-self: center;
+  }
+
+  .name, .price {
+    width: 100%;
+    text-align: left;
+  }
+}

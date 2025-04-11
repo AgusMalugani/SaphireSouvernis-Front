@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { FindAllOrders } from '../../services/Orders/FindAllOrders' 
 import Order from './Order'
+import { OrdersContext } from '../../contexts/Orders/OrdersContext'
 
 function Orders() {
-  const [orders, setOrders] = useState([])
-
-  useEffect(() => {
-    const response = async () => {
-      const resp = await FindAllOrders()
-      setOrders(resp);
-    }
-    response()
-  }, [])
+  //const [orders, setOrders] = useState([])
+const{orders}= useContext(OrdersContext)
+ // useEffect(() => {
+  //  const response = async () => {
+   //   const resp = await FindAllOrders()
+    //  setOrders(resp);
+   // }
+    //response()
+  //d}, [])
 
   return (
     <div
