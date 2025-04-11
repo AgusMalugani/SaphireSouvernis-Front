@@ -1,0 +1,25 @@
+.whatsappButton {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background-color: #25D366;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 999; /* Por si hay elementos flotantes */
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+  

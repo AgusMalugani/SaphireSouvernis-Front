@@ -1,6 +1,6 @@
 
 import './App.css'
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar'; 
 import CreateProduct from './views/CreateProduct';
 import DashboardAdmin from './views/DashboardAdmin';
 import EditProduct from './views/EditProduct';
