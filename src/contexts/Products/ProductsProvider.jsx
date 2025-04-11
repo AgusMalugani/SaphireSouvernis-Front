@@ -3,12 +3,13 @@ import { fetchAllProducts } from "../../services/Products/FindAllProducts.servic
 import {productsJson} from "../../../products"
 import { ProductsContext } from "./ProductsContext";
 import { UpdateProduct } from "../../services/Products/UpdateProduct"; 
+import { FindAllCategories } from "../../services/Categories/FindAllCategories";
 
 
 export const ProductsProvider = ({children})=>{
 
 const[products,setProducts] = useState([])
-
+const[categories,setCategories] = useState([])
 
 useEffect(()=>{
     const response = async ()=>{
@@ -21,14 +22,18 @@ useEffect(()=>{
          setProducts(productsJson)
       }
     }
-    response();
-    console.log("context");
-    
+    response();    
   },[])
 
+useEffect(()=>{
+  const response = async ()=>{
+    const resp = await FindAllCategories();
+    setCategories(resp)
+  }
+  response()
+},[])
 
-const editProduct=(id,product)=>{
-    
+const editProduct=(id,product)=>{    
     const response = async ()=> {
         const resp = await UpdateProduct(id,product); //aca mod bd
 
@@ -48,7 +53,8 @@ const editProduct=(id,product)=>{
 const value = {
     products,
     setProducts,
-    editProduct
+    editProduct,
+    categories
 }
 
     return  <ProductsContext.Provider value={value}> {children} </ProductsContext.Provider> 

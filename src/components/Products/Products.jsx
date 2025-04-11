@@ -4,6 +4,7 @@ import OrderDetail from '../Orders/OrderDetail';
 import ModalCreateOrder from '../Orders/ModalCreateOrder';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import styles from './css/Products.module.css';
+import SearchProducts from './SearchProducts';
 
 function Products() {
   const [cart, setCart] = useState([]);
@@ -13,6 +14,10 @@ function Products() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { products } = useContext(ProductsContext);
+ // const[category,setCategory]=useState("")
+  const[productsFilter,setProductsFilter]=useState(products);
+
+
 
   useEffect(() => {
     setIsLoading(false);
@@ -28,16 +33,26 @@ function Products() {
   const handleOrderModal = () => {
     if (!isOpen) setIsOpen(true);
   };
-
+  
+  const handleOnChangeCategories=(e)=>{
+    const{value}=e.target
+    if(value !== "TODOS"){
+      const prodFil = products.filter(prod => prod.categories.some(cat=>cat.name === value))
+      setProductsFilter(prodFil)
+    }else{
+      setProductsFilter(products)
+    }
+  }
   return (
     <div className={styles.container}>
+      <SearchProducts handleOnChangeCategories={handleOnChangeCategories} />
       <div className={styles.productsSection}>
         {isLoading ? (
           <h1>Cargando...</h1>
-        ) : products.length === 0 ? (
+        ) : productsFilter?.length === 0 ? (
           <h1>No hay productos</h1>
-        ) : (
-          products.map((prod) => (
+        ) : ( 
+          productsFilter?.map((prod) => (
             <Product
               key={prod.id}
               id={prod.id}
