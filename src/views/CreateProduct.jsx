@@ -3,6 +3,7 @@ import FormProduct from '../components/Products/FormProduct'
 import { FindAllCategories } from '../services/Categories/FindAllCategories' 
 import { ProductsContext } from '../contexts/Products/ProductsContext' 
 import { CreateNewProduct } from '../services/Products/CreateNewProduct'
+import { toast } from 'react-toastify'
 
 function CreateProduct() {
     const[product,setProduct]=useState({
@@ -52,7 +53,8 @@ function CreateProduct() {
    const handleOnChangeImage=(e)=>{
        const file = e.target.files[0]
        setFile(file)
-       alert("Imagen cargada")
+       //alert("Imagen cargada")
+       toast.success("Imagen Cargada")
     }
 
     const handleSubmit= async (e)=>{
@@ -66,10 +68,17 @@ function CreateProduct() {
         }
 } //guardo el producto 
       formdata.append("file",file) //guardo la foto     
-       const resp = await CreateNewProduct(formdata) 
-       console.log(resp);
+       const resp = await toast.promise(
+        CreateNewProduct(formdata),
+        {
+          pending: 'Cargando...',
+          success: 'Producto creado y cargado ✅',
+          error: 'Falló 😓'
+        }
+      );     
+
        setProducts((prevProducts)=>[...prevProducts,resp])
-       alert("Producto creado y cargado")
+       //alert("Producto creado y cargado")
     }
 
   return (

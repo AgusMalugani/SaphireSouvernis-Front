@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './contexts/Auth/AuthProvider';
 import { ProductsProvider } from './contexts/Products/ProductsProvider';
 import OrdersProvider from './contexts/Orders/OrdersProvider.jsx';
+import 'react-toastify/dist/ReactToastify.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

@@ -19,10 +19,6 @@ function Home() {
 
 <RedirectToWhatsapp num="3413857748" msj="Este es un msj de prueba"/>
 
-<Footer/>
-
-
-
     </ div>
   )
 }

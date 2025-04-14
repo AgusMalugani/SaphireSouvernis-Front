@@ -21,7 +21,7 @@ export default function Sidebar() {
 
       <div className={styles.item}>
         <AiFillProduct />
-        <button className={styles.button} onClick={() => navigate("/")}>Editar Productos</button>
+        <button className={styles.button} onClick={() => navigate("#")}>Editar Productos</button>
       </div>
 
       <div className={styles.item}>

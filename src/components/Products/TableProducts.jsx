@@ -1,13 +1,18 @@
 import React, { useContext } from 'react'
 import { ProductsContext } from '../../contexts/Products/ProductsContext'; 
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function TableProducts({viewProduct}) {
  const {products} = useContext(ProductsContext)
  const navigate = useNavigate();
 
 const handleEditProduct=(id)=>{
-  alert(`Sera redirigido para editar el producto.`)
+  //alert(`Sera redirigido para editar el producto.`)
+  toast.success(`Fuiste redirigido para editar el producto.`, {
+    hideProgressBar: true,
+    autoClose: 3000,
+  })
   navigate(`/product/edit/${id}`)
 }
 

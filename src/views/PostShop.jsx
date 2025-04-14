@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import Product from '../components/Products/Product'
 import RedirectToWhatsapp from '../components/RedirectToWhatsapp'
 import ViewBuyOrder from '../components/Orders/ViewBuyOrder'
@@ -27,7 +27,8 @@ function PostShop() {
       <ViewBuyOrder id={id}/>
       
       <RedirectToWhatsapp num="3413857748" msj={`Hola acabo de realizar una compra,
-       te brindo la url con el detalle para que la atencion sea mas rapida  http://localhost:5173${location.pathname}`}/>
+       te brindo la url con el detalle para que la atencion sea mas rapida  https://saphire-souvenirs.vercel.app/${location.pathname}`}/>
+    <Link to={"/"}> <button style={{width:"100%" , backgroundColor:"#7C3AED", height:"50px", borderRadius:"20px", color:"#fff" }}> REGRESAR A LA PAGINA PRINCIPAL </button>  </Link>
     </div>
   )
 }
