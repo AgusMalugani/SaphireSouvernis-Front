@@ -21,6 +21,18 @@ function HeaderQuienSomos() {
 >
   <p
     style={{
+      fontSize: "25px",
+      fontWeight: "bold",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      padding: "5px 10px",
+      borderRadius: "5px",
+    }}
+  >
+   Bienvenidos a SaphireSouvenirs. Donde cada recuerdo se convierte en magia 
+
+  </p>
+  <p
+    style={{
       fontSize: "16px",
       fontWeight: "bold",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -28,8 +40,12 @@ function HeaderQuienSomos() {
       borderRadius: "5px",
     }}
   >
-    Lorem ipsum aaa lorem ipsum asdohsd lorem ipsum asd lorem ipsum asd
+En Saphire, creamos souvenirs personalizados para cumpleaños infantiles, bautismos, baby showers y
+ todo tipo de celebraciones especiales. Cada pieza está hecha con amor, cuidando cada detalle para que tu evento 
+ sea inolvidable.
+ 
   </p>
+ 
 
   <div
     style={{
@@ -38,7 +54,7 @@ function HeaderQuienSomos() {
       marginTop: "10px",
     }}
   >
-    <a href="#">
+    <a href="https://www.instagram.com/saphire_souvenirs/" target="_blank" rel="noopener noreferrer">
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"
         alt="instagram ❤"
@@ -50,7 +66,7 @@ function HeaderQuienSomos() {
         }}
       />
     </a>
-    <a href="#">
+    <a href="https://wa.me/3413857748" target="_blank" rel="noopener noreferrer">
       <img
        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
         alt="whatsapp ❎"

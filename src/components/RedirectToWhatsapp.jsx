@@ -7,10 +7,6 @@ function RedirectToWhatsapp({ num, msj }) {
     const phoneNumber = `549${num}`;
     const message = encodeURIComponent(msj);
 
-    console.log(num);
-    console.log(msj);
-    console.log(phoneNumber);
-    console.log(message);
 
     const url = `https://wa.me/${phoneNumber}?text=${message}`;
     window.open(url, '_blank');

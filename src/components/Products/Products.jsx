@@ -83,6 +83,7 @@ function Products() {
         <br />
         <button
           onClick={handleOrderModal}
+          disabled={productsCart.length === 0}
           style={{
             padding: '8px 12px',
             cursor: 'pointer',
@@ -91,8 +92,7 @@ function Products() {
             color: 'white',
             borderRadius: '5px',
             marginTop: '10px',
-          }}
-        >
+          }}>
           Crear orden
         </button>
       </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext'; 
 import { jwtDecode } from 'jwt-decode';
+import { toast } from 'react-toastify';
 
 export const AuthProvider = ({children})=>{
 
@@ -8,9 +9,6 @@ export const AuthProvider = ({children})=>{
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const saveToken= (newToken)=>{
-      console.log(jwtDecode(newToken));
-      console.log(Math.floor(Date.now() / 1000));
-       
         setToken(newToken)
         localStorage.setItem("token",newToken)
         setIsAuthenticated(true)
@@ -20,7 +18,10 @@ export const AuthProvider = ({children})=>{
         setToken(null)
         localStorage.removeItem("token")
         setIsAuthenticated(false)
-        alert("Se ha desconectado.")
+        toast.success("Se desconecto con exito!", {
+          hideProgressBar: true,
+          autoClose: 3000,
+        })
     }
 
     
@@ -48,7 +49,6 @@ export const AuthProvider = ({children})=>{
 
   useEffect(() => {
       const checkTokenExpiration = () => {
-          console.log("auth log");
           if (token) {
           try {
             const decoded = jwtDecode(token);

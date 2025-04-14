@@ -11,7 +11,7 @@ function Navbar() {
     <nav className={styles.navbar}>
       <Link to="/">
         <img
-          src="https://res.cloudinary.com/dxt4qdckz/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1742683464/logo-saphire_hj5yra.png"
+          src="https://res.cloudinary.com/dxt4qdckz/image/upload/v1744589272/logo-saphire_it2k6r.png"
           alt="imagen empresa"
           className={styles.logo}
         />
@@ -25,9 +25,7 @@ function Navbar() {
         <li>
           <Link to="/shopProducts" className={styles.link}>Comprar</Link>
         </li>
-        <li>
-          <a href="#" className={styles.link}>Preguntas frecuentes</a>
-        </li>
+        
         {!isAuthenticated && (
           <li>
             <Link to="/login" className={styles.authLink}>Iniciar sesión</Link>

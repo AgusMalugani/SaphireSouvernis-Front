@@ -53,7 +53,7 @@ useEffect(()=>{
   }}
 >
   <img
-    src={product.img_url}
+    src={product.img_url || null }
     alt={product.name}
     style={{
       width: "100%",

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { OneOrder } from '../../services/Orders/OneOrder'; 
 import { EditOrderService } from '../../services/Orders/EditOrderService'; 
 import { OrdersContext } from '../../contexts/Orders/OrdersContext';
+import { toast } from 'react-toastify';
 
 function EditOrder({ id, action, onClose }) {
   const{getOrderById,editOrderContext} = useContext(OrdersContext)
@@ -16,9 +17,16 @@ function EditOrder({ id, action, onClose }) {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    const response = await editOrderContext(id, order)
+    const response = await toast.promise(
+    editOrderContext(id, order),
+      {
+        pending: 'Modificando orden...',
+        success: 'Orden modificada ✅',
+        error: 'Falló 😓'
+      }
+    );
     console.log(response);
-    alert("Orden modificada")
+   // alert("Orden modificada")
   onClose();
   }
 

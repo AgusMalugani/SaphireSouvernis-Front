@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../contexts/Auth/AuthContext' 
 import { useNavigate } from 'react-router-dom'
 import { Signin } from '../../services/Auth/Signin.service' 
+import { toast } from 'react-toastify'
 
 function LoginSignin() {
 
@@ -21,11 +22,22 @@ setLogin({...login,[name]:value})
 const handleSubmit= async (e)=>{
 e.preventDefault();
 
-const response = await Signin(login) 
+//const response = await Signin(login) 
+
+const response = await toast.promise(
+  Signin(login),
+  {
+    pending: 'Iniciando sesión...',
+    success: 'Sesión iniciada con éxito 🎉',
+    error: 'Error al iniciar sesión ❌',
+  }
+)
+
+
+
    if(response.data) {
-    saveToken(response.data.token)  //guardo token
-    alert("Inicio de sesion correcto.")
-    navigate("/dashboard")
+    saveToken(response.data.token)   
+   navigate("/dashboard")
  } else{
     console.log(response);
     
