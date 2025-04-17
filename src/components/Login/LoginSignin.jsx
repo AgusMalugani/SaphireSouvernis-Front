@@ -21,9 +21,7 @@ setLogin({...login,[name]:value})
 
 const handleSubmit= async (e)=>{
 e.preventDefault();
-
-//const response = await Signin(login) 
-
+try{
 const response = await toast.promise(
   Signin(login),
   {
@@ -32,16 +30,17 @@ const response = await toast.promise(
     error: 'Error al iniciar sesión ❌',
   }
 )
-
-
-
    if(response.data) {
     saveToken(response.data.token)   
    navigate("/dashboard")
- } else{
+  } else{
     console.log(response);
-    
  }
+ 
+}catch(error){
+  console.log("Error al iniciar sesion");
+  throw error 
+}
 
 }
 

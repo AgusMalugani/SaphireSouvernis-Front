@@ -4,16 +4,7 @@ import Order from './Order'
 import { OrdersContext } from '../../contexts/Orders/OrdersContext'
 
 function Orders() {
-  //const [orders, setOrders] = useState([])
 const{orders}= useContext(OrdersContext)
- // useEffect(() => {
-  //  const response = async () => {
-   //   const resp = await FindAllOrders()
-    //  setOrders(resp);
-   // }
-    //response()
-  //d}, [])
-
   return (
     <div
       style={{

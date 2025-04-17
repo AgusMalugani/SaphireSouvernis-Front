@@ -5,11 +5,16 @@ function ViewBuyOrder({ id }) {
   const [order, setOrder] = useState({})
 
   useEffect(() => {
+    try{
     const response = async () => {
       const resp = await OneOrder(id);
       setOrder(resp);
     }
     response()
+    }catch(error){
+      console.log("Error al traer la orden");
+      throw error;
+    }
   }, [id])
 
   return (

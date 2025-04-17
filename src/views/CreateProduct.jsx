@@ -4,9 +4,11 @@ import { FindAllCategories } from '../services/Categories/FindAllCategories'
 import { ProductsContext } from '../contexts/Products/ProductsContext' 
 import { CreateNewProduct } from '../services/Products/CreateNewProduct'
 import { toast } from 'react-toastify'
+import { AuthContext } from './../contexts/Auth/AuthContext';
 
 function CreateProduct() {
-    const[product,setProduct]=useState({
+  const{token}=useContext(AuthContext)  
+  const[product,setProduct]=useState({
         name:"",
         details:"",
         price:0,
@@ -69,7 +71,7 @@ function CreateProduct() {
 } //guardo el producto 
       formdata.append("file",file) //guardo la foto     
        const resp = await toast.promise(
-        CreateNewProduct(formdata),
+        CreateNewProduct(formdata,token),
         {
           pending: 'Cargando...',
           success: 'Producto creado y cargado ✅',

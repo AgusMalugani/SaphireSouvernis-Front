@@ -1,10 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL;
-export async function UpdateProduct(id,updateProduct){
+export async function UpdateProduct(id,updateProduct,token){
 
 try {
     const response = await fetch(`${API_URL}/products/${id}`,{
         method:"PUT",
-        headers:{"Content-Type":"application/json"},
+        headers:{
+            "Content-Type":"application/json",
+            "authorization":`Bearer ${token}`},
         body:JSON.stringify(updateProduct)
     })
     if (!response.ok) {

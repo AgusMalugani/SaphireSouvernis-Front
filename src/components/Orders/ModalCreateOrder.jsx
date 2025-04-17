@@ -43,8 +43,8 @@ setOrderForm({...orderForm,[name]:value})
     const errores = onValidateOrder(orderForm)
    
     if(!errores){
-   // const newOrder= await fetchCreateOrder(orderForm); 
-    const newOrder= await toast.promise(
+   try{ 
+   const newOrder= await toast.promise(
       fetchCreateOrder(orderForm),
       {
         pending: 'Creando orden...',
@@ -57,7 +57,12 @@ setOrderForm({...orderForm,[name]:value})
      setErrors(null)
      onClose()
      navigate(`/postShop/${newOrder.id}`)
-   } else{
+    }catch(error){
+      console.log("Error al crear la orden");
+      throw error;
+    }
+
+    } else{
    // alert("Hubo errores en el formulario.")
    toast.error("Hubo errores en el formulario.") 
    setErrors(errores)
