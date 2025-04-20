@@ -31,7 +31,7 @@ if(form.num2Cel===""){
 errors.num2Cel = "el campo 'TELEFONO SECUNDARIO' no debe ser vacio"
 isError = true;
 } 
-if(form.products.length > 1){
+if(form.products.length < 1){
   errors.products = "el campo de productos no debe ser vacio"
   isError = true;
   }       

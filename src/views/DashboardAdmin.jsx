@@ -1,8 +1,8 @@
+// DashboardAdmin.js
 import React, { useState } from "react";
 import Sidebar from "../components/Siderbar/Sidebar";
 import TableProducts from "../components/Products/TableProducts";
 import ModalViewProduct from "../components/Products/ModalViewProduct";
-import styles from "./css/DashboardAdmin.module.css";
 
 function DashboardAdmin() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,9 +14,11 @@ function DashboardAdmin() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="flex flex-col lg:flex-row min-h-screen w-full">
       <Sidebar />
-      <TableProducts viewProduct={viewProduct} />
+      <main className="flex-1 overflow-auto p-4">
+        <TableProducts viewProduct={viewProduct} />
+      </main>
       {isOpen && (
         <ModalViewProduct
           isOpen={isOpen}

@@ -1,34 +1,35 @@
 import React from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import Product from '../components/Products/Product'
 import RedirectToWhatsapp from '../components/RedirectToWhatsapp'
 import ViewBuyOrder from '../components/Orders/ViewBuyOrder'
 
 function PostShop() {
-    const{id}=useParams()
-    const location = useLocation()
+  const { id } = useParams()
+  const location = useLocation()
 
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        padding: "20px",
-        backgroundColor: "#f8f9fa",
-        borderRadius: "10px",
-        width: "80%",
-        margin: "auto",
-        boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h1 style={{ color: "#28a745", textAlign: "center" }}>
-        GRACIAS POR TU COMPRA 
-      </h1>
-      
-      <ViewBuyOrder id={id}/>
-      
-      <RedirectToWhatsapp num="3413857748" msj={`Hola acabo de realizar una compra,
-       te brindo la url con el detalle para que la atencion sea mas rapida  https://saphire-souvenirs.vercel.app/${location.pathname}`}/>
-    <Link to={"/"}> <button style={{width:"100%" , backgroundColor:"#7C3AED", height:"50px", borderRadius:"20px", color:"#fff" }}> REGRESAR A LA PAGINA PRINCIPAL </button>  </Link>
+    <div className="w-full min-h-screen bg-gray-100 font-sans flex items-center justify-center">
+      <div className="max-w-6xl mx-auto p-6">
+        <h1 className="text-green-600 text-3xl text-center font-bold mb-6">
+          GRACIAS POR TU COMPRA
+        </h1>
+
+        <ViewBuyOrder id={id} />
+
+        <RedirectToWhatsapp
+          num="3413857748"
+          msj={`Hola acabo de realizar una compra, te brindo la url con el detalle para que la atención sea más rápida: https://saphire-souvenirs.vercel.app${location.pathname}`}
+        />
+
+        <Link to="/" className="block mt-6">
+          <button
+            className="w-full text-white rounded-[20px] h-[50px] font-semibold"
+            style={{ backgroundColor: '#7C3AED' }}
+          >
+            REGRESAR A LA PÁGINA PRINCIPAL
+          </button>
+        </Link>
+      </div>
     </div>
   )
 }

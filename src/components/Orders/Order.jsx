@@ -11,50 +11,32 @@ function Order({ order }) {
   }
 
   return (
-    <div style={{ padding: "10px", margin: "10px", display: "flex", justifyContent: "center" }}>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "10px",
-          width: "100%",
-          maxWidth: "350px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "16px",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-          backgroundColor: "#fff"
-        }}
-      >
-        <h2 style={{ color: "#343a40", fontSize: "1.5rem" }}>{order.nameClient}</h2>
-        <h3 style={{ color: "#6c757d", fontSize: "1rem" }}>{order.endOrder}</h3>
-        <h3 style={{ color: "#6c757d", fontSize: "1rem" }}>{order.numCel}</h3>
-        <h3 style={{ color: "#6c757d", fontSize: "1rem" }}>{order.transactionType}</h3>
-        <h3 style={{ color: "#6c757d", fontSize: "1rem" }}>{order.state}</h3>
+    <div className="p-4 m-4 flex justify-center">
+      <div className="border border-gray-300 rounded-lg w-full max-w-sm flex flex-col items-center p-4 shadow-md bg-white">
+        <h2 className="text-gray-800 text-2xl">{order.nameClient}</h2>
+        <h3 className="text-gray-600 text-base">{order.endOrder}</h3>
+        <h3 className="text-gray-600 text-base">{order.numCel}</h3>
+        <h3 className="text-gray-600 text-base">{order.transactionType}</h3>
+        <h3 className="text-gray-600 text-base">{order.state}</h3>
 
-        <details style={{ width: "100%", marginTop: "10px" }}>
-          <summary style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "8px" }}>Interactuar</summary>
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "10px"
-          }}>
+        <details className="w-full mt-4">
+          <summary className="cursor-pointer font-bold mb-2">Interactuar</summary>
+          <div className="flex flex-col items-center gap-3">
             <button
-              onClick={() => { handleInteractuar("ver") }}
-              style={{ padding: "8px 12px", width: "100%", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              onClick={() => handleInteractuar("ver")}
+              className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg cursor-pointer"
             >
               Ver
             </button>
             <button
-              onClick={() => { handleInteractuar("estadoPago") }}
-              style={{ padding: "8px 12px", width: "100%", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              onClick={() => handleInteractuar("estadoPago")}
+              className="w-full py-2 px-4 bg-green-500 text-white rounded-lg cursor-pointer"
             >
               Cambiar estado de pago
             </button>
             <button
-              onClick={() => { handleInteractuar("envio/Retiro") }}
-              style={{ padding: "8px 12px", width: "100%", backgroundColor: "#ffc107", color: "black", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              onClick={() => handleInteractuar("envio/Retiro")}
+              className="w-full py-2 px-4 bg-yellow-500 text-black rounded-lg cursor-pointer"
             >
               Cambiar método Envío/Retiro
             </button>
@@ -62,14 +44,14 @@ function Order({ order }) {
         </details>
       </div>
 
-      {isOpen &&
+      {isOpen && (
         <ModalActionOrder
           isOpen={isOpen}
-          onClose={() => { setIsOpen(false) }}
+          onClose={() => setIsOpen(false)}
           id={order.id}
           action={action}
         />
-      }
+      )}
     </div>
   )
 }

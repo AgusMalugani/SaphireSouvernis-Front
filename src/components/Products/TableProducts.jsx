@@ -1,69 +1,51 @@
-import React, { useContext } from 'react'
+// TableProducts.js
+import React, { useContext } from 'react';
 import { ProductsContext } from '../../contexts/Products/ProductsContext'; 
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-function TableProducts({viewProduct}) {
- const {products} = useContext(ProductsContext)
- const navigate = useNavigate();
+function TableProducts({ viewProduct }) {
+  const { products } = useContext(ProductsContext);
+  const navigate = useNavigate();
 
-const handleEditProduct=(id)=>{
-  //alert(`Sera redirigido para editar el producto.`)
-  toast.success(`Fuiste redirigido para editar el producto.`, {
-    hideProgressBar: true,
-    autoClose: 3000,
-  })
-  navigate(`/product/edit/${id}`)
+  const handleEditProduct = (id) => {
+    toast.success(`Fuiste redirigido para editar el producto.`, {
+      hideProgressBar: true,
+      autoClose: 3000,
+    });
+    navigate(`/product/edit/${id}`);
+  };
+
+  return (
+    <div className="flex-1 p-4 overflow-auto">
+      <h2 className="text-center mb-4">Inventario de Productos</h2>
+
+      <table className="w-full border-collapse bg-white shadow-md">
+        <thead>
+          <tr className="bg-blue-600 text-white">
+            <th className="px-4 py-2 text-left border-b border-gray-300">Nombre</th>
+            <th className="px-4 py-2 text-left border-b border-gray-300">Precio</th>
+            <th className="px-4 py-2 text-left border-b border-gray-300"></th>
+            <th className="px-4 py-2 text-left border-b border-gray-300"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {products?.map((prod, index) => (
+            <tr key={index}>
+              <td className="px-4 py-2 border-b border-gray-300">{prod.name}</td>
+              <td className="px-4 py-2 border-b border-gray-300">{prod.price}</td>
+              <td className="px-4 py-2 border-b border-gray-300">
+                <button onClick={() => viewProduct(prod.id)} className="text-blue-500 hover:text-blue-700">Ver</button>
+              </td>
+              <td className="px-4 py-2 border-b border-gray-300">
+                <button onClick={() => handleEditProduct(prod.id)} className="text-green-500 hover:text-green-700">Editar</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
-   return (
-       <div
-         style={{
-           flex: 1,
-           paddingTop: "80px",
-           padding: "20px",
-           overflowY: "auto",
-           overflowX: "auto",
-           minWidth: 0,
-         }}
-       >
-         <h2 style={{ textAlign: "center", marginBottom: "10px" }}>
-           Inventario de Productos
-         </h2>
-   
-         <table
-           style={{
-             width: "100%",
-             borderCollapse: "collapse",
-             background: "white",
-             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-           }}
-         >
-           <thead>
-             <tr style={{ background: "#007bff", color: "white" }}>
-               <th style={{ padding: "10px", textAlign: "left", borderBottom: "2px solid #ddd" }}>Nombre</th>
-               <th style={{ padding: "10px", textAlign: "left", borderBottom: "2px solid #ddd" }}>Precio</th>
-               <th style={{ padding: "10px", textAlign: "left", borderBottom: "2px solid #ddd" }}></th>
-               <th style={{ padding: "10px", textAlign: "left", borderBottom: "2px solid #ddd" }}></th>
-             </tr>
-           </thead>
-           <tbody>
-             {products?.map((prod, index) => (
-               <tr key={index}>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{prod.name}</td>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{prod.price}</td>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> 
-                   <button onClick={()=>viewProduct(prod.id)} >Ver</button> 
-                 </td>
-                 <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}> 
-                   <button onClick={()=>handleEditProduct(prod.id)} >Editar</button>
-                 </td>
-               </tr>
-             ))}
-           </tbody>
-         </table>
-       </div>
-   );
-}
-
-export default TableProducts
+export default TableProducts;
