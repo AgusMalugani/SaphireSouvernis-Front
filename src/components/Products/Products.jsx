@@ -3,7 +3,6 @@ import Product from './Product';
 import OrderDetail from '../Orders/OrderDetail';
 import ModalCreateOrder from '../Orders/ModalCreateOrder';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
-import styles from './css/Products.module.css';
 import SearchProducts from './SearchProducts';
 
 function Products() {
@@ -14,10 +13,7 @@ function Products() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { products } = useContext(ProductsContext);
- // const[category,setCategory]=useState("")
-  const[productsFilter,setProductsFilter]=useState(products);
-
-
+  const [productsFilter, setProductsFilter] = useState(products);
 
   useEffect(() => {
     setIsLoading(false);
@@ -33,25 +29,29 @@ function Products() {
   const handleOrderModal = () => {
     if (!isOpen) setIsOpen(true);
   };
-  
-  const handleOnChangeCategories=(e)=>{
-    const{value}=e.target
-    if(value !== "TODOS"){
-      const prodFil = products.filter(prod => prod.categories.some(cat=>cat.name === value))
-      setProductsFilter(prodFil)
-    }else{
-      setProductsFilter(products)
+
+  const handleOnChangeCategories = (e) => {
+    const { value } = e.target;
+    if (value !== "TODOS") {
+      const prodFil = products.filter(prod =>
+        prod.categories.some(cat => cat.name === value)
+      );
+      setProductsFilter(prodFil);
+    } else {
+      setProductsFilter(products);
     }
-  }
+  };
+
   return (
-    <div className={styles.container}>
+    <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start md:justify-between">
       <SearchProducts handleOnChangeCategories={handleOnChangeCategories} />
-      <div className={styles.productsSection}>
+
+      <div className="w-full border border-gray-300 p-5 rounded-lg bg-white shadow-md md:w-[60%] md:max-h-[500px] md:overflow-y-auto">
         {isLoading ? (
           <h1>Cargando...</h1>
         ) : productsFilter?.length === 0 ? (
           <h1>No hay productos</h1>
-        ) : ( 
+        ) : (
           productsFilter?.map((prod) => (
             <Product
               key={prod.id}
@@ -65,8 +65,8 @@ function Products() {
         )}
       </div>
 
-      <div className={styles.detailSection}>
-        <ul style={{ listStyle: 'none', padding: 0, margin: '10px 0' }}>
+      <div className="w-full border border-gray-300 p-5 rounded-lg bg-white shadow-md md:w-[35%] mt-2 md:mt-0">
+        <ul className="list-none p-0 my-2">
           {cart.map((prod, index) => (
             <OrderDetail
               key={index}
@@ -77,22 +77,16 @@ function Products() {
             />
           ))}
         </ul>
-        <span style={{ fontWeight: 'bold', color: '#333' }}>
+
+        <span className="font-bold text-gray-800">
           <p>Total: ${total}</p>
         </span>
-        <br />
+
         <button
           onClick={handleOrderModal}
           disabled={productsCart.length === 0}
-          style={{
-            padding: '8px 12px',
-            cursor: 'pointer',
-            border: 'none',
-            background: '#007bff',
-            color: 'white',
-            borderRadius: '5px',
-            marginTop: '10px',
-          }}>
+          className="px-4 py-2 mt-3 rounded-md bg-blue-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+        >
           Crear orden
         </button>
       </div>

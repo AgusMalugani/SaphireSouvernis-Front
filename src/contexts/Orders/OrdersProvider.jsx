@@ -14,6 +14,9 @@ function OrdersProvider({children}) {
     }
 
     const editOrderContext= async (id,order)=>{
+        try{
+
+        
          const response = await EditOrderService(id, order);
          const ordersMod = orders.map(ord=>{ 
             if(ord.id === id){
@@ -24,9 +27,17 @@ function OrdersProvider({children}) {
             })
          setOrders(ordersMod)
          return response;
-    }
+        }catch(error){
+            console.log("Error al modificar la orden");
+            throw error
+            
+        }
+        }
 
     useEffect(() => {
+        try{
+
+        
         if(token){
             const response = async () => {
                 const resp = await FindAllOrders()
@@ -36,7 +47,10 @@ function OrdersProvider({children}) {
         }else{
             setOrders([])
         }
-        
+    }catch(error){
+        console.log("Error al traer todas las ordenes");
+        throw error;
+    }
       }, [token])
     
     const value = {

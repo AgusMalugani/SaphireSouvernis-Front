@@ -3,58 +3,50 @@ import React, { useState } from 'react';
 function ProductStep2({ handleOnChangeImage, volverStep, avanzarStep, imgProduct }) {
   const[image, setImage]=useState(imgProduct ? true : false)
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "15px", alignItems: "center", width: "100%" }}>
-      {image && (<div>
-        <img
-          src={imgProduct}
-          alt="Preview"
-          style={{ width: "100%", maxWidth: "300px", height: "auto", borderRadius: "10px" }}
+    <div className="flex flex-col gap-4 items-center w-full">
+      {image && (
+        <div>
+          <img
+            src={imgProduct}
+            alt="Preview"
+            className="w-full max-w-[300px] h-auto rounded-lg"
           />
-      <button onClick={()=>{setImage(false)}} style={{
-            padding: "10px",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            width: "100%"
-          }} > Cambiar imagen </button>
-          </div>
+          <button
+            onClick={() => setImage(false)}
+            className="p-2 bg-green-600 text-white border-none rounded w-full mt-2"
+          >
+            Cambiar imagen
+          </button>
+        </div>
       )}
-
-{!image &&
-      <input type="file" name="file" onChange={handleOnChangeImage} style={{ width: "100%" }} />
-}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+  
+      {!image && (
+        <input
+        type="file"
+        name="file"
+        onChange={handleOnChangeImage}
+        className="w-full py-2 px-4 bg-blue-900 text-white border-none rounded-md shadow-md cursor-pointer hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        accept="image/*"
+      />
+      
+      )}
+  
+      <div className="flex flex-col gap-2 w-full">
         <button
           onClick={volverStep}
-          style={{
-            padding: "10px",
-            backgroundColor: "#6c757d",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            width: "100%"
-          }}
+          className="p-2 bg-gray-600 text-white border-none rounded w-full"
         >
           Volver
         </button>
         <button
           onClick={avanzarStep}
-          style={{
-            padding: "10px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            width: "100%"
-          }}
+          className="p-2 bg-blue-600 text-white border-none rounded w-full"
         >
           Siguiente
         </button>
       </div>
     </div>
   );
-}
+  }
 
 export default ProductStep2;

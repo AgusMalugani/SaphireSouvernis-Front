@@ -10,12 +10,18 @@ function FormProduct({ handleOnChangeImage, handleSubmit, product, handleOnChang
   const volverStep = () => setStep((prevStep) => prevStep - 1);
 
   return (
-    <div style={{ maxWidth: "100%", padding: "20px", fontFamily: "Arial, sans-serif", boxSizing: "border-box" }}>
-      <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
-        <span style={{ color: step === 1 ? "blue" : "gray", fontWeight: "bold" }}> {step > 1 ? "✅" : "⚪"}  Paso 1</span>
-        <span style={{ color: step === 2 ? "blue" : "gray", fontWeight: "bold" }}>{step > 2 ? "✅" : "⚪"} Paso 2</span>
-        <span style={{ color: step === 3 ? "blue" : "gray", fontWeight: "bold" }}> {step > 3 ? "✅" : "⚪"} Paso 3</span>
-      </div>
+<div className="max-w-full p-5 font-sans box-border">
+  <div className="mb-5 flex justify-around flex-wrap">
+    <span className={`font-bold ${step === 1 ? 'text-blue-500' : 'text-gray-500'}`}>
+      {step > 1 ? "✅" : "⚪"} Paso 1
+    </span>
+    <span className={`font-bold ${step === 2 ? 'text-blue-500' : 'text-gray-500'}`}>
+      {step > 2 ? "✅" : "⚪"} Paso 2
+    </span>
+    <span className={`font-bold ${step === 3 ? 'text-blue-500' : 'text-gray-500'}`}>
+      {step > 3 ? "✅" : "⚪"} Paso 3
+    </span>
+  </div>
 
       {step === 1 && (
         <ProductStep1

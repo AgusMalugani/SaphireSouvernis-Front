@@ -17,6 +17,8 @@ function EditOrder({ id, action, onClose }) {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
+    try{
+      
     const response = await toast.promise(
     editOrderContext(id, order),
       {
@@ -26,9 +28,12 @@ function EditOrder({ id, action, onClose }) {
       }
     );
     console.log(response);
-   // alert("Orden modificada")
-  onClose();
-  }
+     onClose();
+    }catch(error){
+     console.log("Error al editar la orden");
+     throw error;
+    }
+    }
 
   const inputStyle = {
     width: "100%",

@@ -31,34 +31,52 @@ useEffect(()=>{
         //alert("Hubo un error en la base de datos. Brindaremos productos de prueba")
         toast.error("Hubo un error en la base de datos. Brindaremos productos de prueba")
          setProducts(productsJson)
-      }
+        }
     }
     response();    
   },[])
 
 useEffect(()=>{
+  try{
   const response = async ()=>{
     const resp = await FindAllCategories();
     setCategories(resp)
     localStorage.setItem("categories",JSON.stringify(resp))
   }
   response()
+}catch(error){
+console.log("Error al traer todas las categorias");
+throw error;
+}
 },[])
 
-const editProduct=(id,product)=>{    
+const editProduct=(id,product,token)=>{  
+  try{
     const response = async ()=> {
-        const resp = await UpdateProduct(id,product); //aca mod bd
-        const productsMod = products.map(prod =>{ 
-          if(prod.id === id){
-            
-          return  resp
-          }else{ 
-            return prod
-          }
-          })
-          setProducts(productsMod) //ak evito rerenderizado, y actualizo estado
+          const resp = await toast.promise(
+            UpdateProduct(id,product,token),
+                  {
+                    pending: 'Cargando...',
+                    success: 'Producto modificado ✅',
+                    error: 'Falló 😓'
+                  }
+                );
+
+      const productsMod = products.map(prod =>{ 
+            if(prod.id === id){
+            return  resp
+            }else{ 
+              return prod
+            }
+            })
+            setProducts(productsMod) //ak evito rerenderizado, y actualizo estado
+        
     }
     response()
+  }catch(error){
+    console.log("Error al editar producto");
+    throw error;
+  }
   }
 
 

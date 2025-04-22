@@ -6,9 +6,11 @@ import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FindAllCategories } from '../../services/Categories/FindAllCategories';
 import { OneProductById } from '../../services/Products/OneProductById';
+import { AuthContext } from './../../contexts/Auth/AuthContext';
 
 function EditProduct() {
     const{id} = useParams()
+const {token}= useContext(AuthContext)
     const[product,setProduct]=useState({
            name:"",
            details:"",
@@ -31,12 +33,20 @@ function EditProduct() {
          }
  
  useEffect(()=>{
-     const response = async ()=> {
+   try{
+    
+    const response = async ()=> {
          const resp= await OneProductById(id)
          setProduct(resp);
        setCategoriasSeleccionadas(resp.categories?.map(cat=>cat.name))
-       }
-     response()
+      } 
+    
+    response()
+  }catch(error){
+    console.log("error al traer el producto")
+    throw error;
+  };
+    
  },[id])
  
  const handleOnChange=(e)=>{
@@ -60,28 +70,35 @@ function EditProduct() {
    setProduct({...product,[name]:value})
   }
  
- 
- const handleSubmit= async (e)=>{
-     e.preventDefault();     
-     if(file){
-       const resp = await ImageProduct(id,file) //mod img
-         const updatedProduct = {
-           ...product,
-           img_url: resp.img,
-         };
-          setProduct(updatedProduct) //mod estado para context
-          await editProduct(id,updatedProduct) //mod context con img
-     } 
-     else {
-       await editProduct(id,product)  //mod context
-     }
-     
-     toast.success("Producto modificado. Seras redirigido al Dashboard", {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      if (file) {      
+        const resp = await ImageProduct(id, file, token); // subir imagen
+        const updatedProduct = {
+          ...product,
+          img_url: resp.img,
+        };
+        setProduct(updatedProduct);
+        await editProduct(id, updatedProduct, token); // editar producto
+      } else {
+        await editProduct(id, product, token);
+      }
+  
+      toast.success("Producto modificado. Serás redirigido al Dashboard", {
         hideProgressBar: true,
         autoClose: 2000,
-      })
-    navigate("/dashboard")
- }
+      });
+  
+      navigate("/dashboard"); // ✅ Solo si todo fue bien
+  
+    } catch (error) {
+      toast.error("Ocurrió un error al modificar el producto.");
+      console.error(error);
+    }
+  };
+  
  
  
  
