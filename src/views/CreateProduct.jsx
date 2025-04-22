@@ -53,6 +53,7 @@ const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formdata = new FormData();
+    
     for (let key in product) {
       if (key === "categories") {
         product.categories.forEach((cat) => {
@@ -63,6 +64,8 @@ const navigate = useNavigate()
       }
     } // guardo el producto 
     formdata.append("file", file); // guardo la foto
+
+    
     const resp = await toast.promise(
       CreateNewProduct(formdata, token),
       {
