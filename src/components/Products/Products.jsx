@@ -4,6 +4,7 @@ import OrderDetail from '../Orders/OrderDetail';
 import ModalCreateOrder from '../Orders/ModalCreateOrder';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import SearchProducts from './SearchProducts';
+import { toast } from 'react-toastify';
 
 function Products() {
   const [cart, setCart] = useState([]);
@@ -11,6 +12,7 @@ function Products() {
   const [productsCart, setProductsCart] = useState([]);
   const [total, setTotal] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [showCart, setShowCart] = useState(false); // para mostrar/ocultar carrito en mobile
 
   const { products } = useContext(ProductsContext);
   const [productsFilter, setProductsFilter] = useState(products);
@@ -23,6 +25,7 @@ function Products() {
     setCart([...cart, product]);
     setProductsCart([...productsCart, { productId: product.id, cuantity: product.cuantity }]);
     const suma = total + product.price * product.cuantity;
+    toast.success(`${product.name} agregado al carrito`);
     setTotal(suma);
   };
 
@@ -43,10 +46,13 @@ function Products() {
   };
 
   return (
-    <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start md:justify-between">
+    <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start md:justify-between relative">
+
+      {/* Buscador */}
       <SearchProducts handleOnChangeCategories={handleOnChangeCategories} />
 
-      <div className="w-full border border-gray-300 p-5 rounded-lg bg-white shadow-md md:w-[60%] md:max-h-[500px] md:overflow-y-auto">
+      {/* Lista de productos */}
+      <div className="w-full border border-gray-300 p-5 rounded-lg bg-white shadow-md md:w-[60%] md:max-h-[500px] md:overflow-y-auto order-2 md:order-none">
         {isLoading ? (
           <h1>Cargando...</h1>
         ) : productsFilter?.length === 0 ? (
@@ -65,29 +71,47 @@ function Products() {
         )}
       </div>
 
-      <div className="w-full border border-gray-300 p-5 rounded-lg bg-white shadow-md md:w-[35%] mt-2 md:mt-0">
-        <ul className="list-none p-0 my-2">
-          {cart.map((prod, index) => (
-            <OrderDetail
-              key={index}
-              name={prod.name}
-              img_url={prod.img_url}
-              price={prod.price}
-              cuantity={prod.cuantity}
-            />
-          ))}
-        </ul>
+      {/* Carrito en desktop o si showCart en mobile */}
+      {(showCart || window.innerWidth >= 768) && (
+        <div className="w-full border border-gray-300 p-5 rounded-lg bg-white shadow-md md:w-[35%] mt-2 md:mt-0 order-1 md:order-none">
+          <ul className="list-none p-0 my-2">
+            {cart.map((prod, index) => (
+              <OrderDetail
+                key={index}
+                name={prod.name}
+                img_url={prod.img_url}
+                price={prod.price}
+                cuantity={prod.cuantity}
+              />
+            ))}
+          </ul>
 
-        <span className="font-bold text-gray-800">
-          <p>Total: ${total}</p>
-        </span>
+          <span className="font-bold text-gray-800">
+            <p>Total: ${total}</p>
+          </span>
 
+          <button
+            onClick={handleOrderModal}
+            disabled={productsCart.length === 0}
+            className="px-4 py-2 mt-3 rounded-md bg-blue-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          >
+            Crear orden
+          </button>
+        </div>
+      )}
+
+      {/* Botón flotante para carrito en mobile */}
+      <div className="fixed bottom-4 right-4 md:hidden z-50">
         <button
-          onClick={handleOrderModal}
-          disabled={productsCart.length === 0}
-          className="px-4 py-2 mt-3 rounded-md bg-blue-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          onClick={() => setShowCart(!showCart)}
+          className="bg-blue-600 text-white p-4 rounded-full shadow-lg relative"
         >
-          Crear orden
+          🛒
+          {cart.length > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center text-white">
+              {cart.length}
+            </span>
+          )}
         </button>
       </div>
 
