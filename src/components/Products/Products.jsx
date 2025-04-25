@@ -29,6 +29,26 @@ function Products() {
     setTotal(suma);
   };
 
+  const deleteToCart = (index) => {
+    // Crear una copia del carrito actual
+    const newCart = [...cart];
+    // Remover el producto en el índice especificado
+    const [removedProduct] = newCart.splice(index, 1); //actualiza el carrito, eliminando el producto
+    setCart(newCart);
+  
+    // Actualizar el estado de productsCart
+    const newProductsCart = [...productsCart];
+    newProductsCart.splice(index, 1);
+    setProductsCart(newProductsCart);
+  
+    // Actualizar el total restando el precio del producto eliminado
+    const suma = total - removedProduct.price * removedProduct.cuantity;
+    setTotal(suma);
+  
+    // Mostrar un mensaje de éxito
+    toast.success(`${removedProduct.name} eliminado del carrito`);
+  };
+
   const handleOrderModal = () => {
     if (!isOpen) setIsOpen(true);
   };
@@ -77,11 +97,10 @@ function Products() {
           <ul className="list-none p-0 my-2">
             {cart.map((prod, index) => (
               <OrderDetail
-                key={index}
-                name={prod.name}
-                img_url={prod.img_url}
-                price={prod.price}
-                cuantity={prod.cuantity}
+              key={index}
+              prod={prod}
+              deleteToCart={() => deleteToCart(index)} // Pasar el índice
+            
               />
             ))}
           </ul>

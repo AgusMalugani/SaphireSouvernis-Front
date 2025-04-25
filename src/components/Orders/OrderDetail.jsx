@@ -1,6 +1,7 @@
 import React from 'react';
 
-function OrderDetail({ cuantity, img_url, name, price }) {
+function OrderDetail({ prod, deleteToCart }) {
+  const { name, img_url, price, cuantity } = prod;
   const subtotal = price * cuantity;
 
   return (
@@ -12,7 +13,7 @@ function OrderDetail({ cuantity, img_url, name, price }) {
       <span className="text-[0.95rem] text-gray-600 mr-2">${subtotal}</span>
       <span className="text-[0.95rem] text-gray-600 mr-2">{cuantity}</span>
 
-      <button className="text-red-600 text-lg hover:scale-125 transition-transform duration-200">
+      <button onClick={deleteToCart} className="text-red-600 text-lg hover:scale-125 transition-transform duration-200">
         ❌
       </button>
     </div>
