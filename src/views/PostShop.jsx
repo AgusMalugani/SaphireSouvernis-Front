@@ -18,7 +18,7 @@ function PostShop() {
 
         <RedirectToWhatsapp
           num="3417120039"
-          msj={`Hola acabo de realizar una compra, te brindo la url con el detalle para que la atención sea más rápida: https://saphire-souvenirs.vercel.app${location.pathname}`}
+          msj={`Hola acabo de realizar una compra, te brindo la url con el detalle para que la atención sea más rápida: https://saphire-souvenirs-shop.vercel.app${location.pathname}`}
         />
 
         <Link to="/" className="block mt-6">
