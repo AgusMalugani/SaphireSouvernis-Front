@@ -12,6 +12,8 @@ import {Routes,Route} from "react-router-dom"
 import { ToastContainer } from 'react-toastify';
 import ViewEditProduct from './views/ViewEditProduct';
 import Footer from './components/Home/Footer';
+import ProtectedRoute from './utils/ProtectedRoute'; 
+import NotFound from './views/NotFound';
 
 function App() {
 
@@ -36,10 +38,30 @@ function App() {
       <Route path='/shopProducts' element={<ShopProducts/>}/>
       <Route path='/postShop/:id' element={<PostShop/>}/>
       <Route path="/login" element={<Login/>}/>
-      <Route path='/dashboard' element={<DashboardAdmin/>}/>
-      <Route path='/product/edit/:id' element={<ViewEditProduct/>} />
-      <Route path='/product/create' element={<CreateProduct/>} />
-      <Route path='/orders' element={<ViewOrders/>} />
+
+      <Route path='/dashboard' element={
+        <ProtectedRoute requiredRole="admin">
+        <DashboardAdmin />
+      </ProtectedRoute> }/>
+
+      <Route path='/product/edit/:id' element={
+        <ProtectedRoute requiredRole="admin">
+        <ViewEditProduct/>
+        </ProtectedRoute> } />
+
+      <Route path='/product/create' element={
+        <ProtectedRoute requiredRole="admin">
+        <CreateProduct/>
+        </ProtectedRoute>} />
+
+      <Route path='/orders' element={
+        <ProtectedRoute requiredRole="admin">
+        <ViewOrders/>
+        </ProtectedRoute>} />
+
+         {/* Ruta para manejar páginas no encontradas */}
+      <Route path="*" element={<NotFound />} />
+
     </Routes>
     <Footer/>
     </>

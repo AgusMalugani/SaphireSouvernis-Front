@@ -23,7 +23,7 @@ function Footer() {
           />
         </a>
         <a
-          href="https://wa.me/3413857748"
+          href="https://wa.me/3417120039"
           target="_blank"
           rel="noopener noreferrer"
         >
