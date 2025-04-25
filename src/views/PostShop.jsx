@@ -17,7 +17,7 @@ function PostShop() {
         <ViewBuyOrder id={id} />
 
         <RedirectToWhatsapp
-          num="3413857748"
+          num="3417120039"
           msj={`Hola acabo de realizar una compra, te brindo la url con el detalle para que la atención sea más rápida: https://saphire-souvenirs.vercel.app${location.pathname}`}
         />
 

@@ -12,7 +12,7 @@ function Home() {
       <CarruselProducts />
       <ProductHomeView />
       <InfoMetodoTrabajo />
-      <RedirectToWhatsapp num="3413857748" msj="Este es un msj de prueba" />
+      <RedirectToWhatsapp num="3417120039" msj="Hola, me gustaria saber acerca de: " />
     </div>
   )
 }

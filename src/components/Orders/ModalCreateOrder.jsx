@@ -34,6 +34,18 @@ function ModalCreateOrder({ isOpen, onClose, products }) {
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
+  
+    if (name === "endOrder") {
+      const selectedDate = new Date(value);
+      const today = new Date();
+      today.setDate(today.getDate() + 7); // Agrega 7 días al día actual
+  
+      if (selectedDate < today) {
+        toast.error("La fecha debe ser al menos 7 días después del día actual.");
+        return;
+      }
+    }
+  
     setOrderForm({ ...orderForm, [name]: value });
   };
 
