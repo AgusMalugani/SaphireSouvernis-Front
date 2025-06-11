@@ -15,9 +15,7 @@ function OrdersProvider({children}) {
 
     const editOrderContext= async (id,order)=>{
         try{
-
-        
-         const response = await EditOrderService(id, order);
+         const response = await EditOrderService(id, order, token);
          const ordersMod = orders.map(ord=>{ 
             if(ord.id === id){
              return response
@@ -30,28 +28,25 @@ function OrdersProvider({children}) {
         }catch(error){
             console.log("Error al modificar la orden");
             throw error
-            
         }
-        }
+    }
 
     useEffect(() => {
         try{
-
-        
-        if(token){
-            const response = async () => {
-                const resp = await FindAllOrders()
-                setOrders(resp);
-              }
-              response()
-        }else{
-            setOrders([])
+            if(token){
+                const response = async () => {
+                    const resp = await FindAllOrders(token)
+                    setOrders(resp);
+                }
+                response()
+            }else{
+                setOrders([])
+            }
+        }catch(error){
+            console.log("Error al traer todas las ordenes");
+            throw error;
         }
-    }catch(error){
-        console.log("Error al traer todas las ordenes");
-        throw error;
-    }
-      }, [token])
+    }, [token])
     
     const value = {
         orders,
@@ -59,9 +54,10 @@ function OrdersProvider({children}) {
         getOrderById,
         editOrderContext
     }
-  return (
-<OrdersContext.Provider value={value}>{children}</OrdersContext.Provider>  
-)
+    
+    return (
+        <OrdersContext.Provider value={value}>{children}</OrdersContext.Provider>  
+    )
 }
 
 export default OrdersProvider

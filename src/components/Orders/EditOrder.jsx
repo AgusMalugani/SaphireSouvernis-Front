@@ -2,10 +2,12 @@ import React, { useContext, useState } from 'react'
 import { OneOrder } from '../../services/Orders/OneOrder'; 
 import { EditOrderService } from '../../services/Orders/EditOrderService'; 
 import { OrdersContext } from '../../contexts/Orders/OrdersContext';
+import { AuthContext } from '../../contexts/Auth/AuthContext';
 import { toast } from 'react-toastify';
 
 function EditOrder({ id, action, onClose }) {
   const{getOrderById,editOrderContext} = useContext(OrdersContext)
+  const {token} = useContext(AuthContext)
   
   const orderContext = getOrderById(id) // lo traigo del context
   const [order, setOrder] = useState(orderContext || {})
@@ -18,22 +20,21 @@ function EditOrder({ id, action, onClose }) {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     try{
-      
-    const response = await toast.promise(
-    editOrderContext(id, order),
-      {
-        pending: 'Modificando orden...',
-        success: 'Orden modificada ✅',
-        error: 'Falló 😓'
-      }
-    );
-    console.log(response);
-     onClose();
+      const response = await toast.promise(
+        editOrderContext(id, order),
+        {
+          pending: 'Modificando orden...',
+          success: 'Orden modificada ✅',
+          error: 'Falló 😓'
+        }
+      );
+      console.log(response);
+      onClose();
     }catch(error){
-     console.log("Error al editar la orden");
-     throw error;
+      console.log("Error al editar la orden");
+      throw error;
     }
-    }
+  }
 
   const inputStyle = {
     width: "100%",
