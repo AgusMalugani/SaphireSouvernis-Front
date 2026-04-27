@@ -1,18 +1,10 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiClient } from '../apiClient';
 
 export async function OneOrder(id) {
-    try {
-        const response = await fetch(`${API_URL}/orders/${id}`);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Error al obtener orden');
-        }
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error en order id:', error);
-        throw error;
-    }
+  try {
+    return await apiClient.get(`/orders/${id}`);
+  } catch (error) {
+    console.error('Error en order id:', error);
+    throw error;
+  }
 }

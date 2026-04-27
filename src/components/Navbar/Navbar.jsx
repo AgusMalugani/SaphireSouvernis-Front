@@ -10,7 +10,7 @@ function Navbar() {
     <nav className="flex justify-between items-center h-20 px-5 bg-[#c08585] text-white shadow-md relative z-50">
       <Link to="/">
         <img
-          src="https://res.cloudinary.com/dxt4qdckz/image/upload/v1744589272/logo-saphire_it2k6r.png"
+          src={import.meta.env.VITE_LOGO_URL}
           alt="imagen empresa"
           className="h-[100px] cursor-pointer"
         />

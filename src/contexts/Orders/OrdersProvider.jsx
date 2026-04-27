@@ -15,7 +15,7 @@ function OrdersProvider({children}) {
 
     const editOrderContext= async (id,order)=>{
         try{
-         const response = await EditOrderService(id, order, token);
+         const response = await EditOrderService(id, order);
          const ordersMod = orders.map(ord=>{ 
             if(ord.id === id){
              return response
@@ -35,7 +35,7 @@ function OrdersProvider({children}) {
         try{
             if(token){
                 const response = async () => {
-                    const resp = await FindAllOrders(token)
+                    const resp = await FindAllOrders()
                     setOrders(resp);
                 }
                 response()

@@ -1,22 +1,10 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiClient } from '../apiClient';
 
-export async function FindAllOrders(token) {
-    try {
-        const response = await fetch(`${API_URL}/orders`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Error al obtener órdenes');
-        }
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error en findAllOrders:', error);
-        throw error;
-    }
+export async function FindAllOrders() {
+  try {
+    return await apiClient.get('/orders');
+  } catch (error) {
+    console.error('Error en findAllOrders:', error);
+    throw error;
+  }
 }

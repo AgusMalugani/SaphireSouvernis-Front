@@ -5,7 +5,7 @@ function Footer() {
     <footer className="bg-[#c08585] py-8 px-5 text-[#4b2c2c] text-base font-poppins flex justify-center items-center flex-wrap">
       <div className="flex items-center gap-2.5">
         <img
-          src="https://res.cloudinary.com/dxt4qdckz/image/upload/v1744589272/logo-saphire_it2k6r.png" // Cambia esto por tu logo real
+          src={import.meta.env.VITE_LOGO_URL}
           alt="Saphire Logo"
           className="w-10 h-10 rounded-full"
         />

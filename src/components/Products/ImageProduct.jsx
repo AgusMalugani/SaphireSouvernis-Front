@@ -1,37 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { ImageProduct as uploadProductImage } from '../../services/Products/ImageProduct';
+import { toast } from 'react-toastify';
 
-function ImageProduct() {
-    const[file,setFile]=useState(null);
+function ImageProduct({ productId }) {
+  const [file, setFile] = useState(null);
 
-    const handleOnChangeImage=(e)=>{
-        const file = e.target.files[0]
-        setFile(file)
-    }
+  const handleOnChangeImage = (e) => {
+    setFile(e.target.files[0]);
+  };
 
-const handleOnSubmit=async (e)=>{
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-const id = "123"
-const formData = new FormData();
-  formData.append("file", file); // Solo enviamos la imagen
-
-        const resp =  await fetch(`http://localhost:3000/files/uploadImage/${id}`,{
-            method:"POST",
-              body:formData
-        })
-        const data = await resp.json()
-
-        console.log(data);
-}
+    if (!file) {
+      toast.error('Seleccioná una imagen primero.');
+      return;
+    }
+    try {
+      const data = await uploadProductImage(productId, file);
+      toast.success('Imagen subida correctamente.');
+      console.log(data);
+    } catch (error) {
+      toast.error('Error al subir la imagen.');
+      console.error(error);
+    }
+  };
 
   return (
     <div>
-        <form onSubmit={handleOnSubmit}>
-
-      <input type="file" name="file" onChange={handleOnChangeImage} />
-       <button>enviar</button>
-        </form>
+      <form onSubmit={handleOnSubmit}>
+        <input type="file" name="file" onChange={handleOnChangeImage} />
+        <button type="submit">Enviar</button>
+      </form>
     </div>
-  )
+  );
 }
 
-export default ImageProduct
+export default ImageProduct;

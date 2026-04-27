@@ -50,11 +50,11 @@ throw error;
 }
 },[])
 
-const editProduct=(id,product,token)=>{  
+const editProduct=(id,product)=>{  
   try{
     const response = async ()=> {
           const resp = await toast.promise(
-            UpdateProduct(id,product,token),
+            UpdateProduct(id,product),
                   {
                     pending: 'Cargando...',
                     success: 'Producto modificado ✅',

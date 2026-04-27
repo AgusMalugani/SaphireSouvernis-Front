@@ -1,14 +1,11 @@
 import React, { useContext, useState } from 'react';
 import FormProduct from '../components/Products/FormProduct';
-import { FindAllCategories } from '../services/Categories/FindAllCategories';
 import { ProductsContext } from '../contexts/Products/ProductsContext';
 import { CreateNewProduct } from '../services/Products/CreateNewProduct';
 import { toast } from 'react-toastify';
-import { AuthContext } from './../contexts/Auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function CreateProduct() {
-  const { token } = useContext(AuthContext);
   const [product, setProduct] = useState({
     name: "",
     details: "",
@@ -67,7 +64,7 @@ const navigate = useNavigate()
 
     
     const resp = await toast.promise(
-      CreateNewProduct(formdata, token),
+      CreateNewProduct(formdata),
       {
         pending: 'Cargando...',
         success: 'Producto creado y cargado ✅',

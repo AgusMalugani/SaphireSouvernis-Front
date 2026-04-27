@@ -4,13 +4,9 @@ import { toast } from 'react-toastify';
 import { ImageProduct } from '../../services/Products/ImageProduct';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FindAllCategories } from '../../services/Categories/FindAllCategories';
 import { OneProductById } from '../../services/Products/OneProductById';
-import { AuthContext } from './../../contexts/Auth/AuthContext';
-
 function EditProduct() {
     const{id} = useParams()
-const {token}= useContext(AuthContext)
     const[product,setProduct]=useState({
            name:"",
            details:"",
@@ -75,15 +71,15 @@ const {token}= useContext(AuthContext)
   
     try {
       if (file) {      
-        const resp = await ImageProduct(id, file, token); // subir imagen
+        const resp = await ImageProduct(id, file);
         const updatedProduct = {
           ...product,
           img_url: resp.img,
         };
         setProduct(updatedProduct);
-        await editProduct(id, updatedProduct, token); // editar producto
+        await editProduct(id, updatedProduct);
       } else {
-        await editProduct(id, product, token);
+        await editProduct(id, product);
       }
   
       toast.success("Producto modificado. Serás redirigido al Dashboard", {
