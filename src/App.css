@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+/* ── Design Token: fuente serif premium ── */
+@theme {
+  --font-display: "Playfair Display", Georgia, serif;
+}
+
+/* ── Animación flotante suave para blobs decorativos ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-18px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50%       { transform: translateY(-28px) scale(1.04); }
+}
+
+/* ── Scrollbar fino rose-gold para el panel del carrito ── */
+@layer utilities {
+  .scrollbar-thin-rose::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin-rose::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin-rose::-webkit-scrollbar-thumb {
+    background: rgba(251, 113, 133, 0.4);
+    border-radius: 100px;
+  }
+  .scrollbar-thin-rose::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 113, 133, 0.7);
+  }
+}

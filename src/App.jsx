@@ -8,7 +8,7 @@ import Login from './views/Login';
 import ViewOrders from './views/ViewOrders'; 
 import PostShop from './views/PostShop';
 import ShopProducts from './views/ShopProducts';
-import {Routes,Route} from "react-router-dom"
+import { Routes, Route, useLocation } from "react-router-dom"
 import { ToastContainer } from 'react-toastify';
 import ViewEditProduct from './views/ViewEditProduct';
 import Footer from './components/Home/Footer';
@@ -16,6 +16,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import NotFound from './views/NotFound';
 
 function App() {
+  const { pathname } = useLocation();
 
   return (
     <>
@@ -33,6 +34,7 @@ function App() {
 />
 
     <Navbar/>
+    <main className={pathname !== '/' ? 'pt-20' : ''}>
     <Routes>
       <Route path='/' element= {<Home/>} />
       <Route path='/shopProducts' element={<ShopProducts/>}/>
@@ -63,6 +65,7 @@ function App() {
       <Route path="*" element={<NotFound />} />
 
     </Routes>
+    </main>
     <Footer/>
     </>
   )

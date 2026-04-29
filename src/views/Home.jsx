@@ -7,7 +7,7 @@ import InfoMetodoTrabajo from '../components/Home/InfoMetodoTrabajo'
 
 function Home() {
   return (
-    <div className="bg-gradient-to-r from-pink-100 to-pink-200 min-h-screen">
+    <div className="bg-stone-50 min-h-screen scroll-smooth">
       <HeaderQuienSomos />
       <CarruselProducts />
       <ProductHomeView />

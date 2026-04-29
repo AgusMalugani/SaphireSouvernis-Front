@@ -14,9 +14,9 @@ function DashboardAdmin() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen w-full">
+    <div className="flex flex-col lg:flex-row min-h-screen w-full bg-stone-50">
       <Sidebar />
-      <main className="flex-1 overflow-auto p-4">
+      <main className="flex-1 overflow-auto p-6 lg:p-10">
         <TableProducts viewProduct={viewProduct} />
       </main>
       {isOpen && (
