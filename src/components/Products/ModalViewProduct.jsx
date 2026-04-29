@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { OneProductById } from '../../services/Products/OneProductById';
 import { HiX } from 'react-icons/hi';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 
 function ModalViewProduct({ isOpen, onClose, idProduct }) {
   const [product, setProduct] = useState({
@@ -11,6 +12,8 @@ function ModalViewProduct({ isOpen, onClose, idProduct }) {
     price: 0,
     stock: true,
   });
+
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     const fetchProduct = async () => {

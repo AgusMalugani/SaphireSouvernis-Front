@@ -1,88 +1,103 @@
-import React, { useContext, useState } from 'react'
-import { AuthContext } from '../../contexts/Auth/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { Signin } from '../../services/Auth/Signin.service'
-import { toast } from 'react-toastify'
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../contexts/Auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Signin } from '../../services/Auth/Signin.service';
+import { toast } from 'react-toastify';
+import { FiArrowRight, FiLock } from 'react-icons/fi';
 
 function LoginSignin() {
-  const [login, setLogin] = useState({
-    email: "",
-    password: ""
-  })
+  const [login, setLogin] = useState({ email: '', password: '' });
 
-  const navigate = useNavigate()
-  const { saveToken } = useContext(AuthContext)
+  const navigate = useNavigate();
+  const { saveToken } = useContext(AuthContext);
 
   const handleOnChange = (e) => {
-    e.preventDefault()
-    const { name, value } = e.target
-    setLogin({ ...login, [name]: value })
-  }
+    e.preventDefault();
+    const { name, value } = e.target;
+    setLogin({ ...login, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const response = await toast.promise(
-        
         Signin(login),
         {
           pending: 'Iniciando sesión...',
           success: 'Sesión iniciada con éxito 🎉',
-          error: 'Error al iniciar sesión ❌',
+          error: 'Credenciales incorrectas. Intentá de nuevo.',
         }
-      )
+      );
 
       if (response.data) {
-        saveToken(response.data.token)
-        navigate("/dashboard")
-      } else {
-        console.log(response)
+        saveToken(response.data.token);
+        navigate('/dashboard');
       }
     } catch (error) {
-      console.log("Error al iniciar sesion")
-      throw error
+      console.log('Error al iniciar sesión');
+      throw error;
     }
-  }
+  };
+
+  const inputClass =
+    'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-2xl bg-white/70 placeholder-stone-400 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200';
+  const labelClass = 'block text-sm font-semibold text-stone-700 mb-1.5';
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6">Login</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-rose-50/60 via-stone-50 to-pink-50/40 px-4">
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white shadow-md rounded-lg px-6 py-8"
-      >
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Email
-          <input
-            name="email"
-            value={login.email}
-            onChange={handleOnChange}
-            type="email"
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          />
-        </label>
+      {/* Card glassmorphism */}
+      <div className="w-full max-w-sm bg-white/90 backdrop-blur-md border border-white/60 rounded-3xl shadow-xl shadow-rose-100/40 px-8 py-10">
 
-        <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">
-          Password
-          <input
-            name="password"
-            value={login.password}
-            onChange={handleOnChange}
-            type="password"
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          />
-        </label>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center w-12 h-12 mx-auto rounded-full bg-rose-100 mb-4">
+            <FiLock size={20} className="text-rose-500" />
+          </div>
+          <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
+            Panel de administración
+          </span>
+          <h1 className="font-display text-2xl text-stone-800 font-bold mt-1">
+            Iniciar sesión
+          </h1>
+        </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 mt-6"
-        >
-          Iniciar sesión
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div>
+            <label className={labelClass}>Email</label>
+            <input
+              name="email"
+              value={login.email}
+              onChange={handleOnChange}
+              type="email"
+              placeholder="admin@saphire.com"
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Contraseña</label>
+            <input
+              name="password"
+              value={login.password}
+              onChange={handleOnChange}
+              type="password"
+              placeholder="••••••••"
+              className={inputClass}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-sm shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300 mt-2"
+          >
+            Ingresar
+            <FiArrowRight size={16} />
+          </button>
+        </form>
+      </div>
     </div>
-  )
+  );
 }
 
-export default LoginSignin
+export default LoginSignin;

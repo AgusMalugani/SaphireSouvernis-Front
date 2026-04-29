@@ -1,38 +1,52 @@
 import React from 'react';
+import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
 function Footer() {
+  const whatsappNum = import.meta.env.VITE_WHATSAPP_NUM;
+
   return (
-    <footer className="bg-[#c08585] py-8 px-5 text-[#4b2c2c] text-base font-poppins flex justify-center items-center flex-wrap">
-      <div className="flex items-center gap-2.5">
-        <img
-          src={import.meta.env.VITE_LOGO_URL}
-          alt="Saphire Logo"
-          className="w-10 h-10 rounded-full"
-        />
-        <span className="font-bold text-lg">SaphireSouvenirs</span>
-        
-        <a
-          href="https://www.instagram.com/saphire_souvenirs/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+    <footer className="bg-stone-100 border-t border-stone-200 py-8 px-6">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+
+        {/* Brand */}
+        <div className="flex items-center gap-3">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg"
-            alt="instagram ❤"
-            className="w-6 h-6 rounded-full border-2 border-white"
+            src={import.meta.env.VITE_LOGO_URL}
+            alt="Saphire Souvenirs logo"
+            className="w-9 h-9 rounded-full object-cover"
           />
-        </a>
-        <a
-          href="https://wa.me/3417120039"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-            alt="whatsapp ❎"
-            className="w-6 h-6 rounded-full border-2 border-white"
-          />
-        </a>
+          <span className="font-display text-lg font-semibold text-stone-700">
+            Saphire Souvenirs
+          </span>
+        </div>
+
+        {/* Social links */}
+        <div className="flex items-center gap-4">
+          <a
+            href="https://www.instagram.com/saphire_souvenirs/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram de Saphire Souvenirs"
+            className="text-stone-400 hover:text-rose-400 transition-colors duration-200"
+          >
+            <FaInstagram size={22} />
+          </a>
+          <a
+            href={`https://wa.me/549${whatsappNum}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp de Saphire Souvenirs"
+            className="text-stone-400 hover:text-rose-400 transition-colors duration-200"
+          >
+            <FaWhatsapp size={22} />
+          </a>
+        </div>
+
+        {/* Copyright */}
+        <p className="text-xs text-stone-400 font-light">
+          © {new Date().getFullYear()} Saphire Souvenirs. Todos los derechos reservados.
+        </p>
+
       </div>
     </footer>
   );

@@ -1,129 +1,131 @@
-import React, { useContext, useState } from 'react'
-import { OneOrder } from '../../services/Orders/OneOrder'; 
-import { EditOrderService } from '../../services/Orders/EditOrderService'; 
+import React, { useContext, useState } from 'react';
 import { OrdersContext } from '../../contexts/Orders/OrdersContext';
-import { AuthContext } from '../../contexts/Auth/AuthContext';
 import { toast } from 'react-toastify';
+import { FiCheck } from 'react-icons/fi';
+
+// token eliminado — era importado de AuthContext pero nunca usado en este componente
 
 function EditOrder({ id, action, onClose }) {
-  const{getOrderById,editOrderContext} = useContext(OrdersContext)
-  const {token} = useContext(AuthContext)
-  
-  const orderContext = getOrderById(id) // lo traigo del context
-  const [order, setOrder] = useState(orderContext || {})
+  const { getOrderById, editOrderContext } = useContext(OrdersContext);
+
+  const orderContext = getOrderById(id);
+  const [order, setOrder] = useState(orderContext || {});
 
   const handleOnChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setOrder({ ...order, [name]: value });
-  }
+  };
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const response = await toast.promise(
+    try {
+      await toast.promise(
         editOrderContext(id, order),
         {
           pending: 'Modificando orden...',
           success: 'Orden modificada ✅',
-          error: 'Falló 😓'
+          error: 'Falló 😓',
         }
       );
-      console.log(response);
       onClose();
-    }catch(error){
-      console.log("Error al editar la orden");
+    } catch (error) {
+      console.log('Error al editar la orden');
       throw error;
     }
-  }
+  };
 
-  const inputStyle = {
-    width: "100%",
-    padding: "8px",
-    marginTop: "4px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    boxSizing: "border-box"
-  }
-
-  const buttonStyle = {
-    padding: "10px 15px",
-    marginTop: "15px",
-    cursor: "pointer",
-    border: "none",
-    backgroundColor: "#007bff",
-    color: "white",
-    borderRadius: "5px",
-    width: "100%",
-    fontWeight: "bold"
-  }
-
-  const formContainerStyle = {
-    maxWidth: "500px",
-    margin: "auto",
-    padding: "1rem",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "10px",
-    boxShadow: "0px 0px 8px rgba(0,0,0,0.1)"
-  }
+  const inputClass = 'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-2xl bg-white/70 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all';
+  const labelClass = 'text-sm font-semibold text-stone-700';
 
   return (
-    <div style={formContainerStyle}>
+    <div>
 
-      {/* Forma de entrega */}
-      {action === "envio/Retiro" && (
-        <form onSubmit={handleOnSubmit}>
-          <label style={{ fontWeight: "bold", display: "block", marginBottom: "10px" }}>
-            Forma de entrega
+      {/* Formulario — Forma de entrega */}
+      {action === 'envio/Retiro' && (
+        <form onSubmit={handleOnSubmit} className="flex flex-col gap-5">
+          <div>
+            <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
+              Actualizar
+            </span>
+            <h2 className="font-display text-2xl text-stone-800 font-bold mt-1">
+              Método de Entrega
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Forma de entrega</label>
             <select
-              name='transactionType'
-              value={order.transactionType}
+              name="transactionType"
+              value={order.transactionType || ''}
               onChange={handleOnChange}
-              style={inputStyle}
+              className={inputClass}
             >
-              <option value={""}>Seleccione Envío - Retiro</option>
-              <option value={"withdraw"}>Retiro en local</option>
-              <option value={"send"}>Envío</option>
+              <option value="">Seleccione Envío - Retiro</option>
+              <option value="withdraw">Retiro en local</option>
+              <option value="send">Envío</option>
             </select>
-          </label>
+          </div>
 
-          <label style={{ fontWeight: "bold", display: "block", marginTop: "15px" }}>
-            Dirección de envío
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Dirección de envío</label>
             <input
               type="text"
-              name='address'
-              value={order.address || ""}
+              name="address"
+              value={order.address || ''}
               onChange={handleOnChange}
-              style={inputStyle}
+              placeholder="Ingrese la dirección"
+              className={inputClass}
             />
-          </label>
+          </div>
 
-          <button style={buttonStyle}>ENVIAR</button>
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-sm shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300 mt-2"
+          >
+            <FiCheck size={16} />
+            Guardar cambios
+          </button>
         </form>
       )}
 
-      {/* Estado del pago */}
-      {action === "estadoPago" && (
-        <form onSubmit={handleOnSubmit}>
-          <label style={{ fontWeight: "bold", display: "block", marginBottom: "10px" }}>
-            Estado del pago
-            <select
-              name='state'
-              value={order.state}
-              onChange={handleOnChange}
-              style={inputStyle}
-            >
-              <option value={""}>Seleccione el Estado del pago</option>
-              <option value={"inProcces"}>Aún sin pagar</option>
-              <option value={"paid"}>Pagado completo</option>
-              <option value={"partialPayment"}>Señado</option>
-            </select>
-          </label>
+      {/* Formulario — Estado del pago */}
+      {action === 'estadoPago' && (
+        <form onSubmit={handleOnSubmit} className="flex flex-col gap-5">
+          <div>
+            <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
+              Actualizar
+            </span>
+            <h2 className="font-display text-2xl text-stone-800 font-bold mt-1">
+              Estado de Pago
+            </h2>
+          </div>
 
-          <button style={buttonStyle}>ENVIAR</button>
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Estado del pago</label>
+            <select
+              name="state"
+              value={order.state || ''}
+              onChange={handleOnChange}
+              className={inputClass}
+            >
+              <option value="">Seleccione el estado</option>
+              <option value="inProcces">Sin pagar</option>
+              <option value="paid">Pagado completo</option>
+              <option value="partialPayment">Señado</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-sm shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300 mt-2"
+          >
+            <FiCheck size={16} />
+            Guardar cambios
+          </button>
         </form>
       )}
     </div>
-  )
+  );
 }
 
-export default EditOrder
+export default EditOrder;

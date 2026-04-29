@@ -6,6 +6,7 @@ import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import SearchProducts from './SearchProducts';
 import { toast } from 'react-toastify';
 import { HiShoppingBag } from 'react-icons/hi';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -198,9 +199,10 @@ function Products() {
                   <button
                     onClick={() => goToPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 rounded-full text-sm font-medium border border-rose-200 text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                    className="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium border border-rose-200 text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
                   >
-                    ← Anterior
+                    <FiChevronLeft size={15} />
+                    Anterior
                   </button>
 
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -221,9 +223,10 @@ function Products() {
                   <button
                     onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className="px-4 py-2 rounded-full text-sm font-medium border border-rose-200 text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                    className="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium border border-rose-200 text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
                   >
-                    Siguiente →
+                    Siguiente
+                    <FiChevronRight size={15} />
                   </button>
                 </div>
               )}
@@ -253,6 +256,8 @@ function Products() {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           products={productsCart}
+          cartItems={cart}
+          total={total}
         />
       )}
     </div>

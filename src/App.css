@@ -16,7 +16,18 @@
   50%       { transform: translateY(-28px) scale(1.04); }
 }
 
-/* ── Scrollbar fino rose-gold para el panel del carrito ── */
+/* ── Scrollbar global rose-gold (html/body) ── */
+html::-webkit-scrollbar        { width: 6px; }
+html::-webkit-scrollbar-track  { background: transparent; }
+html::-webkit-scrollbar-thumb  {
+  background: rgba(251, 113, 133, 0.30);
+  border-radius: 100px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(251, 113, 133, 0.55);
+}
+
+/* ── Scrollbar fino rose-gold para el panel del carrito y modales ── */
 @layer utilities {
   .scrollbar-thin-rose::-webkit-scrollbar {
     width: 4px;

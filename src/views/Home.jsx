@@ -1,9 +1,8 @@
-import React from 'react'
-import RedirectToWhatsapp from '../components/RedirectToWhatsapp'
-import HeaderQuienSomos from '../components/Home/HeaderQuienSomos'
-import CarruselProducts from '../components/Home/CarruselProducts'
-import ProductHomeView from '../components/Home/ProductHomeView'
-import InfoMetodoTrabajo from '../components/Home/InfoMetodoTrabajo'
+import React from 'react';
+import HeaderQuienSomos from '../components/Home/HeaderQuienSomos';
+import CarruselProducts from '../components/Home/CarruselProducts';
+import ProductHomeView from '../components/Home/ProductHomeView';
+import InfoMetodoTrabajo from '../components/Home/InfoMetodoTrabajo';
 
 function Home() {
   return (
@@ -12,9 +11,8 @@ function Home() {
       <CarruselProducts />
       <ProductHomeView />
       <InfoMetodoTrabajo />
-      <RedirectToWhatsapp num="3417120039" msj="Hola, me gustaria saber acerca de: " />
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
