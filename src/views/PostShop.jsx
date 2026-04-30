@@ -1,58 +1,10 @@
 import React from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import RedirectToWhatsapp from '../components/RedirectToWhatsapp';
+import { Link, useParams } from 'react-router-dom';
 import ViewBuyOrder from '../components/Orders/ViewBuyOrder';
 import { FiCheckCircle, FiHome } from 'react-icons/fi';
 
-const TRANSACTION_LABELS = {
-  send:     'Envío a domicilio',
-  withdraw: 'Retiro en local',
-};
-
-/**
- * Construye el mensaje formateado para WhatsApp.
- * Solo se usa cuando location.state está disponible (flujo normal post-checkout).
- */
-function buildWhatsAppMessage(orderForm, cartItems, total, orderUrl) {
-  const formatDate = (isoDate) => {
-    if (!isoDate) return '—';
-    const [year, month, day] = isoDate.split('-');
-    return `${day}/${month}/${year}`;
-  };
-
-  const productsLines = cartItems
-    .map((item) => `  • ${item.name} x${item.cuantity} — $${item.price * item.cuantity}`)
-    .join('\n');
-
-  return [
-    '💎 *NUEVO PEDIDO - Saphire Souvenirs*',
-    '─────────────────────────',
-    `👤 *Cliente:* ${orderForm.nameClient}`,
-    `📧 *Email:* ${orderForm.email}`,
-    `📱 *Tel:* ${orderForm.numCel}`,
-    `📅 *Evento:* ${formatDate(orderForm.endOrder)}`,
-    `🚚 *Entrega:* ${TRANSACTION_LABELS[orderForm.transactionType] ?? orderForm.transactionType} — ${orderForm.address}`,
-    `🎨 *Tema:* ${orderForm.theme}`,
-    '─────────────────────────',
-    '📦 *PRODUCTOS:*',
-    productsLines,
-    '─────────────────────────',
-    `💰 *TOTAL: $${total}*`,
-    '─────────────────────────',
-    `🔗 *Ver detalle:* ${orderUrl}`,
-  ].join('\n');
-}
-
 function PostShop() {
   const { id } = useParams();
-  const location = useLocation();
-  const state = location.state;
-
-  const orderUrl = `${import.meta.env.VITE_SHOP_URL}${location.pathname}`;
-
-  const whatsappMessage = state
-    ? buildWhatsAppMessage(state.orderForm, state.cartItems ?? [], state.total ?? 0, orderUrl)
-    : `Hola, acabo de realizar una compra. Podés ver el detalle acá: ${orderUrl}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50/60 via-stone-50 to-pink-50/40 flex items-start justify-center py-12 px-4">
@@ -77,17 +29,6 @@ function PostShop() {
         {/* Detalle del pedido */}
         <div className="bg-white/60 backdrop-blur-sm border border-white/60 rounded-3xl shadow-sm overflow-hidden mb-6">
           <ViewBuyOrder id={id} />
-        </div>
-
-        {/* CTA: WhatsApp */}
-        <div className="bg-white/60 backdrop-blur-sm border border-white/60 rounded-3xl shadow-sm p-6 mb-4 text-center">
-          <p className="text-stone-500 text-sm mb-4 font-light">
-            Tocá el botón para enviarnos el detalle de tu pedido por WhatsApp y coordinar el pago.
-          </p>
-          <RedirectToWhatsapp
-            num={import.meta.env.VITE_WHATSAPP_NUM}
-            msj={whatsappMessage}
-          />
         </div>
 
         {/* Volver al inicio */}

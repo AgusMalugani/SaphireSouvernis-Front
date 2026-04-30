@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 
 function Footer() {
@@ -42,8 +43,23 @@ function Footer() {
           </a>
         </div>
 
+        {/* Legal */}
+        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-stone-400">
+          <Link to="/about-us" className="hover:text-rose-400 transition-colors duration-200">
+            Quiénes somos
+          </Link>
+          <span className="text-stone-300 hidden sm:inline">·</span>
+          <Link to="/privacy-policy" className="hover:text-rose-400 transition-colors duration-200">
+            Privacidad
+          </Link>
+          <span className="text-stone-300 hidden sm:inline">·</span>
+          <Link to="/terms-of-service" className="hover:text-rose-400 transition-colors duration-200">
+            Términos
+          </Link>
+        </nav>
+
         {/* Copyright */}
-        <p className="text-xs text-stone-400 font-light">
+        <p className="text-xs text-stone-400 font-light text-center sm:text-right">
           © {new Date().getFullYear()} Saphire Souvenirs. Todos los derechos reservados.
         </p>
 

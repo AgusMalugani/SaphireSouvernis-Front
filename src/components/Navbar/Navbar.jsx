@@ -23,7 +23,7 @@ function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 h-20 flex items-center justify-between px-6
+      className={`fixed top-0 left-0 right-0 w-full z-50 h-20 flex items-center justify-between px-6
         transition-all duration-500
         ${showGlass
           ? 'bg-white/70 backdrop-blur-md shadow-sm border-b border-white/30'
@@ -58,7 +58,7 @@ function Navbar() {
         className={`
           ${isMenuOpen ? 'flex' : 'hidden'} md:flex
           flex-col md:flex-row gap-4 md:gap-2
-          absolute md:static top-20 left-0 w-full md:w-auto
+          absolute md:static top-20 left-0 right-0 md:right-auto md:w-auto
           px-5 py-4 md:p-0
           ${isMenuOpen
             ? 'bg-white/80 backdrop-blur-md border-b border-white/20 shadow-md'

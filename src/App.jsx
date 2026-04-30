@@ -7,22 +7,23 @@ import Login from './views/Login';
 import ViewOrders from './views/ViewOrders';
 import PostShop from './views/PostShop';
 import ShopProducts from './views/ShopProducts';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useMatch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import ViewEditProduct from './views/ViewEditProduct';
 import Footer from './components/Home/Footer';
 import ProtectedRoute from './utils/ProtectedRoute';
 import NotFound from './views/NotFound';
+import PrivacyPolicy from './views/PrivacyPolicy';
+import TermsOfService from './views/TermsOfService';
+import AboutUs from './views/AboutUs';
 import RedirectToWhatsapp from './components/RedirectToWhatsapp';
-
-// El FAB de WhatsApp aparece en todas las rutas excepto /postShop
-// (en PostShop ya hay un botón inline prominente)
-const FAB_EXCLUDED_ROUTES = ['/postShop'];
 
 function App() {
   const { pathname } = useLocation();
+  const postShopRouteMatch = useMatch('/postShop/:id');
+  const shopProductsRouteMatch = useMatch('/shopProducts');
 
-  const showFAB = !FAB_EXCLUDED_ROUTES.some((route) => pathname.startsWith(route));
+  const showFAB = postShopRouteMatch == null && shopProductsRouteMatch == null;
 
   return (
     <>
@@ -41,12 +42,16 @@ function App() {
 
       <Navbar />
 
-      <main className={pathname !== '/' ? 'pt-20' : ''}>
+      <main className={`w-full flex-1 overflow-x-clip${pathname !== '/' ? ' pt-20' : ''}`}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shopProducts" element={<ShopProducts />} />
           <Route path="/postShop/:id" element={<PostShop />} />
           <Route path="/login" element={<Login />} />
+
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/about-us" element={<AboutUs />} />
 
           <Route
             path="/dashboard"
@@ -90,12 +95,12 @@ function App() {
 
       <Footer />
 
-      {/* FAB global de WhatsApp — visible en todas las rutas excepto /postShop */}
+      {/* FAB global de WhatsApp — oculto en /postShop/:id y /shopProducts */}
       {showFAB && (
         <RedirectToWhatsapp
           variant="fab"
           num={import.meta.env.VITE_WHATSAPP_NUM}
-          msj="Hola! Quisiera consultar sobre los souvenirs de Saphire 🌸"
+          msj="Hola, quisiera consultar sobre souvenirs personalizados de Saphire Souvenirs. ¿Podrían informarme disponibilidad y tiempos de entrega?"
         />
       )}
     </>

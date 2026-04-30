@@ -49,7 +49,7 @@ function ViewBuyOrder({ id }) {
     { label: 'Fecha de creación', value: order.createAt },
     { label: 'Fecha de entrega',  value: order.endOrder },
     { label: 'Email',             value: order.email },
-    { label: 'Nombre en tarjeta', value: order.nameForCard },
+    { label: 'Nombre para el diseño', value: order.personalizationName },
     { label: 'Teléfono',          value: order.numCel },
     { label: 'Teléfono secundario', value: order.num2Cel },
     { label: 'Estado del pedido', value: STATE_LABELS[order.state] ?? order.state },

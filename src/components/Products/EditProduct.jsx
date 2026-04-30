@@ -20,13 +20,20 @@ function EditProduct() {
   const navigate = useNavigate();
   const { editProduct, categories } = useContext(ProductsContext);
   const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // categoriasSeleccionadas eliminado — product.categories es la única fuente de verdad,
   // alineado con el patrón de CreateProduct.jsx
 
-  const handleOnChangeImage = (e) => {
-    const selectedFile = e.target.files[0];
+  // Acepta un File directamente (input y drag-and-drop) o null para limpiar
+  const handleOnChangeImage = (selectedFile) => {
+    if (!selectedFile) {
+      setFile(null);
+      setPreviewUrl(null);
+      return;
+    }
     setFile(selectedFile);
+    setPreviewUrl(URL.createObjectURL(selectedFile));
     toast.success('Imagen cargada');
   };
 
@@ -40,6 +47,7 @@ function EditProduct() {
           // funcionen igual que en CreateProduct
           categories: resp.categories?.map((cat) => cat.name) ?? [],
         });
+        setPreviewUrl(resp.img_url || null);
       } catch (error) {
         console.log('Error al traer el producto');
         throw error;
@@ -108,6 +116,8 @@ function EditProduct() {
           handleOnChangeImage={handleOnChangeImage}
           handleSubmit={handleSubmit}
           product={product}
+          file={file}
+          previewUrl={previewUrl}
           handleOnChange={handleOnChange}
         />
       </div>

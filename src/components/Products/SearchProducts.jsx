@@ -1,15 +1,50 @@
 import React, { useContext, useState } from 'react';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 
-function SearchProducts({ handleOnChangeCategories }) {
+function SearchProducts({ handleOnChangeCategories, layout = 'vertical' }) {
   const { categories } = useContext(ProductsContext);
   const [categorias] = useState([...categories, { name: 'TODOS', id: 'TODOS' }]);
   const [selected, setSelected] = useState('TODOS');
+
+  const isHorizontal = layout === 'horizontal';
 
   const handleChange = (e) => {
     setSelected(e.target.value);
     handleOnChangeCategories(e);
   };
+
+  if (isHorizontal) {
+    return (
+      <div className="w-full max-w-full overflow-hidden">
+        <div className="w-full max-w-full overflow-x-auto touch-pan-x">
+          <div className="flex flex-row gap-2 min-w-max">
+            {categorias.map((categoria) => (
+              <label
+                key={categoria.id}
+                className={`flex items-center cursor-pointer px-4 py-2 rounded-full text-sm font-medium
+              whitespace-nowrap transition-all duration-200
+              ${selected === categoria.name
+                ? 'bg-rose-400 text-white shadow-sm shadow-rose-300/40'
+                : 'bg-white/70 border border-stone-100 text-stone-600 hover:bg-rose-50 hover:text-rose-500'
+              }
+            `}
+              >
+                <input
+                  type="radio"
+                  name="categories-mobile"
+                  value={categoria.name}
+                  onChange={handleChange}
+                  className="sr-only"
+                  defaultChecked={categoria.name === 'TODOS'}
+                />
+                {categoria.name}
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white/60 backdrop-blur-md border border-white/60 rounded-3xl shadow-sm p-5">

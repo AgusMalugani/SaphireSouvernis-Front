@@ -15,12 +15,12 @@ export function onValidateOrder(form) {
     isError = true;
   }
 
-  // ── Nombre para tarjeta ─────────────────────────────────────────
-  if (form.nameForCard === '') {
-    errors.nameForCard = "El campo 'NOMBRE PARA TARJETA' no puede estar vacío.";
+  // ── Nombre para el diseño ─────────────────────────────────────
+  if (form.personalizationName === '') {
+    errors.personalizationName = 'Indicá el nombre tal como debe figurar en el diseño del souvenir.';
     isError = true;
-  } else if (!nameRegex.test(form.nameForCard)) {
-    errors.nameForCard = 'El nombre para la tarjeta no debe contener números ni símbolos.';
+  } else if (!nameRegex.test(form.personalizationName)) {
+    errors.personalizationName = 'El nombre para el diseño solo debe incluir letras y espacios.';
     isError = true;
   }
 

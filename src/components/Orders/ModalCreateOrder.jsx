@@ -19,7 +19,7 @@ function ModalCreateOrder({ isOpen, onClose, products, cartItems = [], total = 0
     address: '',
     theme: '',
     nameClient: '',
-    nameForCard: '',
+    personalizationName: '',
     numCel: '',
     num2Cel: '',
     products: [],
@@ -129,7 +129,7 @@ function ModalCreateOrder({ isOpen, onClose, products, cartItems = [], total = 0
                 <FiShoppingBag size={15} className="text-rose-500" />
               </div>
               <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
-                Checkout
+                Tu pedido
               </span>
             </div>
             <h2 className="font-display text-2xl sm:text-3xl text-stone-800 font-bold leading-tight">
@@ -163,16 +163,16 @@ function ModalCreateOrder({ isOpen, onClose, products, cartItems = [], total = 0
                 </div>
 
                 <div>
-                  <label className={labelClass}>Nombre para tarjeta</label>
+                  <label className={labelClass}>Nombre para el diseño</label>
                   <input
                     type="text"
-                    name="nameForCard"
-                    value={orderForm.nameForCard}
+                    name="personalizationName"
+                    value={orderForm.personalizationName}
                     onChange={handleOnChange}
                     placeholder="ANA GARCIA"
                     className={inputClass}
                   />
-                  {errors?.nameForCard && <p className={errorClass}>{errors.nameForCard}</p>}
+                  {errors?.personalizationName && <p className={errorClass}>{errors.personalizationName}</p>}
                 </div>
 
                 <div>

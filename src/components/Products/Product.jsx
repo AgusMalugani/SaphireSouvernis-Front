@@ -57,15 +57,15 @@ function Product({ id, img_url, name, price, addToCart }) {
       </div>
 
       {/* Info y controles */}
-      <div className="flex flex-col gap-3 p-4">
+      <div className="flex flex-col gap-2 p-3 sm:p-4 sm:gap-3">
         <div>
-          <h3 className="font-semibold text-stone-800 text-sm leading-snug line-clamp-2">
+          <h3 className="font-semibold text-stone-800 text-xs sm:text-sm leading-snug line-clamp-2">
             {name}
           </h3>
-          <p className="text-rose-500 font-bold text-base mt-1">${price}</p>
+          <p className="text-rose-500 font-bold text-sm sm:text-base mt-1">${price}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex items-end gap-2 mt-auto">
+        <form onSubmit={handleSubmit} className="flex items-end gap-1.5 sm:gap-2 mt-auto">
           <label className="flex flex-col text-xs text-stone-400 shrink-0">
             Cant.
             <input
@@ -73,7 +73,7 @@ function Product({ id, img_url, name, price, addToCart }) {
               value={cantidad}
               onChange={handleChange}
               min={1}
-              className="w-14 h-8 text-center text-sm border border-stone-200 rounded-xl mt-0.5 focus:outline-none focus:border-rose-300 transition-colors"
+              className="w-12 sm:w-14 h-8 text-center text-xs sm:text-sm border border-stone-200 rounded-xl mt-0.5 focus:outline-none focus:border-rose-300 transition-colors"
             />
           </label>
 
