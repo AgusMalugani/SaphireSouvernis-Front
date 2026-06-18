@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
+import { envs } from '../../config/env.js';
 
 function Footer() {
-  const whatsappNum = import.meta.env.VITE_WHATSAPP_NUM;
 
   return (
     <footer className="bg-stone-100 border-t border-stone-200 py-8 px-6">
@@ -12,7 +12,7 @@ function Footer() {
         {/* Brand */}
         <div className="flex items-center gap-3">
           <img
-            src={import.meta.env.VITE_LOGO_URL}
+            src={envs.logoUrl}
             alt="Saphire Souvenirs logo"
             className="w-9 h-9 rounded-full object-cover"
           />
@@ -33,7 +33,7 @@ function Footer() {
             <FaInstagram size={22} />
           </a>
           <a
-            href={`https://wa.me/549${whatsappNum}`}
+            href={`https://wa.me/549${envs.whatsappNum}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp de Saphire Souvenirs"

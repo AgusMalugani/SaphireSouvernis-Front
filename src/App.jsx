@@ -17,6 +17,7 @@ import PrivacyPolicy from './views/PrivacyPolicy';
 import TermsOfService from './views/TermsOfService';
 import AboutUs from './views/AboutUs';
 import RedirectToWhatsapp from './components/RedirectToWhatsapp';
+import { envs } from './config/env.js';
 
 function App() {
   const { pathname } = useLocation();
@@ -99,7 +100,7 @@ function App() {
       {showFAB && (
         <RedirectToWhatsapp
           variant="fab"
-          num={import.meta.env.VITE_WHATSAPP_NUM}
+          num={envs.whatsappNum}
           msj="Hola, quisiera consultar sobre souvenirs personalizados de Saphire Souvenirs. ¿Podrían informarme disponibilidad y tiempos de entrega?"
         />
       )}

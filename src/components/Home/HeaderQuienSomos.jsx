@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
+import { envs } from '../../config/env.js';
 
 function HeaderQuienSomos() {
   return (
@@ -66,7 +67,7 @@ function HeaderQuienSomos() {
             <FaInstagram size={22} />
           </a>
           <a
-            href="https://wa.me/3413857748"
+            href={`https://wa.me/549${envs.whatsappNum}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Enviar mensaje por WhatsApp"

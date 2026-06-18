@@ -1,0 +1,39 @@
+---
+description: Reglas operativas del frontend SaphireSouvenirs — complementa .specify/memory/constitution.md
+alwaysApply: true
+---
+
+## ⚠️ API & Data Fetching
+- **STRICT RULE:** NEVER use `fetch` directly. ALWAYS use the `apiClient` from `src/services/apiClient.js`.
+- **Auth:** The `apiClient` automatically injects the Bearer Token. Do not pass `token` as a function argument in services.
+- **Environment:** NEVER use `import.meta.env` directly in `src/`. Import the `env` object from `src/config/env.js`. When adding a variable, update `src/config/env.js` and `.env.example`.
+
+## 🏗️ Architecture
+- **State:** Use Context API (Auth, Products, Orders).
+- **Structure:** Domain-based organization (Components grouped by domain, Screens in `src/views/`).
+- **Routing:** Protect admin routes using `ProtectedRoute.jsx` with `requiredRole="admin"`.
+- **Services:** One file per API operation under `src/services/`; all paths relative to `VITE_API_URL` (must include `/api/v1`).
+
+## 🎨 Styling (Tailwind v4)
+- **Methodology:** Use Tailwind CSS utility classes.
+- **Configuration:** Tailwind v4 is CSS-based; no `tailwind.config.js` is needed.
+- **Icons:** Use `react-icons` for all iconography.
+
+## 🧹 Maintenance
+- **Banned Libs:** Do NOT re-install `axios`, `bootstrap`, or `react-bootstrap`.
+- **Naming:** Use PascalCase for components and camelCase for hooks/services.
+- **Cleanliness:** Remove unused imports and variables before finalizing any task.
+
+## 🎨 UI & Styling (The Saphire Design System)
+- **Aesthetic:** Minimalist, Premium, Rose-Gold & Glassmorphism.
+- **Palette:**
+  - Primary: `rose-400` / `rose-500`.
+  - Backgrounds: `bg-stone-50` (Page), `bg-white/60 backdrop-blur-md` (Cards).
+  - Borders: `border-white/60` or `border-stone-100`.
+- **Typography:**
+  - Titles: Always use `font-display` class (Playfair Display).
+  - Body: Standard sans-serif, clean and light (`text-stone-500`).
+- **Interactive:**
+  - Buttons: `rounded-full`, gradients from `rose-400` to `pink-500`, hover elevation.
+  - Inputs: `rounded-2xl`, soft shadows, `focus:ring-rose-200`.
+- **Icons:** Use `react-icons` (Fi, Hi, Fa, Io) consistently with `text-rose-400`.

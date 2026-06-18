@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../contexts/Auth/AuthContext';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
+import { envs } from '../../config/env.js';
 
 function Navbar() {
   const { deleteToken, isAuthenticated } = useContext(AuthContext);
@@ -34,7 +35,7 @@ function Navbar() {
       {/* Logo — tamaño ajustado al nav, sin desbordamiento */}
       <Link to="/" className="shrink-0">
         <img
-          src={import.meta.env.VITE_LOGO_URL}
+          src={envs.logoUrl}
           alt="Saphire Souvenirs logo"
           className={`cursor-pointer object-contain transition-all duration-500
             ${showGlass ? 'h-10 sm:h-12' : 'h-12 sm:h-14'}

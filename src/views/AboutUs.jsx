@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
+import { envs } from '../config/env.js';
 
 function AboutUs() {
   return (
@@ -17,7 +18,7 @@ function AboutUs() {
         <article className="bg-white/60 backdrop-blur-md border border-white/60 rounded-3xl shadow-sm p-8 sm:p-10 space-y-6">
           <header className="flex flex-col sm:flex-row sm:items-center gap-4 border-b border-stone-100 pb-6">
             <img
-              src={import.meta.env.VITE_LOGO_URL}
+              src={envs.logoUrl}
               alt="Saphire Souvenirs"
               className="w-16 h-16 rounded-full object-cover border border-white/60 shrink-0"
             />

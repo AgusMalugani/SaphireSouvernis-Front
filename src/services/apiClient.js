@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { envs } from '../config/env.js';
 
 const buildHeaders = (isFormData = false) => {
   const token = localStorage.getItem('token');
@@ -19,32 +19,32 @@ const handleResponse = async (response) => {
 
 export const apiClient = {
   get: (path) =>
-    fetch(`${API_URL}${path}`, {
+    fetch(`${envs.apiUrl}${path}`, {
       headers: buildHeaders(),
     }).then(handleResponse),
 
   post: (path, body) =>
-    fetch(`${API_URL}${path}`, {
+    fetch(`${envs.apiUrl}${path}`, {
       method: 'POST',
       headers: buildHeaders(),
       body: JSON.stringify(body),
     }).then(handleResponse),
 
   put: (path, body) =>
-    fetch(`${API_URL}${path}`, {
+    fetch(`${envs.apiUrl}${path}`, {
       method: 'PUT',
       headers: buildHeaders(),
       body: JSON.stringify(body),
     }).then(handleResponse),
 
   delete: (path) =>
-    fetch(`${API_URL}${path}`, {
+    fetch(`${envs.apiUrl}${path}`, {
       method: 'DELETE',
       headers: buildHeaders(),
     }).then(handleResponse),
 
   postFormData: (path, formData) =>
-    fetch(`${API_URL}${path}`, {
+    fetch(`${envs.apiUrl}${path}`, {
       method: 'POST',
       headers: buildHeaders(true),
       body: formData,
