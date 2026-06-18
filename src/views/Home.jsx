@@ -14,17 +14,17 @@ function Home() {
     <div className="min-h-screen scroll-smooth bg-stone-50">
       <HeaderQuienSomos />
 
-      <main
+      <section
         id="main-content"
         aria-label="Contenido principal de la página de inicio"
         className="flex flex-col"
       >
-        {HOME_SECTIONS.map(({ id, Component }) => (
+        {HOME_SECTIONS.map(({ id, Component: SectionComponent }) => (
           <div key={id} id={id} className="scroll-mt-20">
-            <Component />
+            <SectionComponent />
           </div>
         ))}
-      </main>
+      </section>
     </div>
   );
 }

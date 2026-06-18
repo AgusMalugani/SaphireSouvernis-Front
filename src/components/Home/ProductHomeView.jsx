@@ -1,51 +1,59 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiArrowRight } from 'react-icons/hi';
+
+const PRIMARY_CTA_CLASS =
+  'group inline-flex min-h-11 items-center gap-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 px-8 py-4 text-base font-semibold text-white shadow-sm transition-all duration-200 ease-in-out hover:brightness-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]';
 
 function ProductHomeView() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative w-full py-24 flex flex-col items-center justify-center text-center px-6 overflow-hidden">
-
-      {/* Fondo degradado cálido rose-gold */}
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-stone-50 to-pink-100 -z-10" />
-
-      {/* Blob central difuso — refuerza la atmósfera premium */}
+    <section
+      aria-labelledby="catalog-cta-heading"
+      className="relative flex w-full flex-col items-center justify-center overflow-hidden px-6 py-24 text-center sm:px-8"
+    >
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-rose-200/30 blur-3xl -z-10 pointer-events-none"
+        className="absolute inset-0 -z-10 bg-gradient-to-br from-rose-50 via-stone-50 to-pink-100"
         aria-hidden="true"
       />
 
-      {/* Eyebrow */}
-      <span className="uppercase tracking-[0.3em] text-rose-400 text-xs font-medium mb-4">
-        Catálogo Completo
-      </span>
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-200/30 blur-3xl"
+        aria-hidden="true"
+      />
 
-      {/* Titular con Playfair Display */}
-      <h2 className="font-display text-4xl sm:text-5xl text-stone-800 font-bold mb-4 leading-tight">
-        Explorá todos
-        <br />
-        <em className="not-italic text-rose-400">nuestros productos</em>
-      </h2>
+      <div className="relative z-10 flex max-w-2xl flex-col items-center gap-6">
+        <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
+          Catálogo Completo
+        </span>
 
-      {/* Subtítulo */}
-      <p className="text-stone-500 text-base max-w-md mb-10 font-light leading-relaxed">
-        Descubrí nuestra colección completa de souvenirs y encontrá el detalle
-        perfecto para tu celebración.
-      </p>
+        <h2
+          id="catalog-cta-heading"
+          className="font-display text-4xl font-bold leading-tight text-stone-800 sm:text-5xl"
+        >
+          Explorá todos
+          <br />
+          <em className="not-italic text-rose-400">nuestros productos</em>
+        </h2>
 
-      {/* CTA Button con efecto glow rose-gold — sin inline styles */}
-      <button
-        onClick={() => navigate('/shopProducts')}
-        className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-base rounded-full shadow-lg shadow-rose-300/40 hover:shadow-xl hover:shadow-rose-400/60 hover:scale-105 transition-all duration-300 ease-out active:scale-95"
-      >
-        Ver Productos
-        <HiArrowRight
-          size={18}
-          className="transition-transform duration-300 group-hover:translate-x-1"
-        />
-      </button>
+        <p className="max-w-md text-base font-light leading-relaxed text-stone-500">
+          Descubrí nuestra colección completa de souvenirs y encontrá el detalle
+          perfecto para tu celebración.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => navigate('/shopProducts')}
+          className={PRIMARY_CTA_CLASS}
+        >
+          Ver Productos
+          <HiArrowRight
+            size={18}
+            aria-hidden="true"
+            className="transition-transform duration-200 ease-in-out group-hover:translate-x-1"
+          />
+        </button>
+      </div>
     </section>
   );
 }

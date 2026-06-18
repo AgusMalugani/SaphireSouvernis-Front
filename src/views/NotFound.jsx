@@ -1,24 +1,28 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiHome } from 'react-icons/fi';
+import { PRIMARY_CTA_CLASS } from '../components/layout/ConsumerPageLayout.jsx';
 
 function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-rose-50/60 via-stone-50 to-pink-50/40 text-center px-4">
-      <p className="font-display text-8xl font-bold text-rose-200 select-none">404</p>
-      <h1 className="font-display text-2xl text-stone-700 font-semibold mt-2 mb-2">
+    <section
+      aria-labelledby="not-found-heading"
+      className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center bg-gradient-to-br from-rose-50/60 via-stone-50 to-pink-50/40 px-6 text-center"
+    >
+      <p className="select-none font-display text-8xl font-bold text-rose-200">404</p>
+      <h1
+        id="not-found-heading"
+        className="mt-2 font-display text-2xl font-semibold text-stone-800"
+      >
         Página no encontrada
       </h1>
-      <p className="text-stone-400 text-sm font-light mb-8 max-w-xs">
+      <p className="mb-8 mt-2 max-w-xs text-sm font-light leading-relaxed text-stone-500">
         La dirección que buscás no existe o fue movida.
       </p>
-      <Link to="/">
-        <button className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-sm shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300">
-          <FiHome size={15} />
-          Volver al inicio
-        </button>
+      <Link to="/" className={PRIMARY_CTA_CLASS}>
+        <FiHome size={15} aria-hidden="true" />
+        Volver al inicio
       </Link>
-    </div>
+    </section>
   );
 }
 

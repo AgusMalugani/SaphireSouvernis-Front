@@ -102,21 +102,7 @@ function Products() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-stone-50 to-pink-50/30">
-
-      {/* Page Header */}
-      <div className="text-center py-12 px-4">
-        <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
-          Saphire Souvenirs
-        </span>
-        <h1 className="font-display text-4xl sm:text-5xl text-stone-800 font-bold mt-2">
-          Nuestro Catálogo
-        </h1>
-        <p className="text-stone-500 mt-3 max-w-sm mx-auto text-sm font-light">
-          Encontrá el souvenir perfecto para tu celebración especial
-        </p>
-      </div>
-
+    <>
       {/* Categorías horizontal scroll — solo mobile */}
       <div className="lg:hidden block relative w-full max-w-full overflow-x-auto touch-pan-x pb-3 px-4">
         <SearchProducts
@@ -171,7 +157,7 @@ function Products() {
         </aside>
 
         {/* Product Grid — 3/4 del ancho en desktop, full en mobile */}
-        <main className="w-full lg:w-3/4">
+        <section aria-label="Listado de productos" className="w-full lg:w-3/4">
           {isLoading ? (
             <div className="flex justify-center items-center py-24">
               <p className="font-display text-2xl text-stone-400 animate-pulse">
@@ -240,7 +226,7 @@ function Products() {
               )}
             </>
           )}
-        </main>
+        </section>
       </div>
 
       {/* FAB carrito — solo mobile */}
@@ -350,7 +336,7 @@ function Products() {
           total={total}
         />
       )}
-    </div>
+    </>
   );
 }
 

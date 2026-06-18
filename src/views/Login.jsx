@@ -1,12 +1,7 @@
-import React from 'react'
-import Signin from '../components/Login/LoginSignin';
+import LoginSignin from '../components/Login/LoginSignin';
 
 function Login() {
-
-return (
-<Signin/>
-);
-  
+  return <LoginSignin />;
 }
 
-export default Login
+export default Login;

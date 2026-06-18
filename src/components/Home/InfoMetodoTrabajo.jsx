@@ -1,5 +1,9 @@
-import React from 'react';
-import { FiMousePointer, FiCreditCard, FiClock, FiCheckCircle } from 'react-icons/fi';
+import {
+  FiCheckCircle,
+  FiClock,
+  FiCreditCard,
+  FiMousePointer,
+} from 'react-icons/fi';
 
 const WORK_STEPS = [
   {
@@ -28,61 +32,71 @@ const WORK_STEPS = [
   },
 ];
 
+const STEP_CARD_CLASS =
+  'rounded-2xl border border-white/60 bg-white/60 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur-md transition-all duration-200 ease-in-out hover:bg-white/75 hover:shadow-md';
+
+function SectionHeading({ eyebrow, title, headingId }) {
+  return (
+    <div className="mb-12 text-center">
+      <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
+        {eyebrow}
+      </span>
+      <h2
+        id={headingId}
+        className="mt-2 font-display text-3xl font-semibold text-stone-800 sm:text-4xl"
+      >
+        {title}
+      </h2>
+    </div>
+  );
+}
+
+function WorkStepCard({ step, stepNumber }) {
+  const StepIcon = step.icon;
+
+  return (
+    <article className={STEP_CARD_CLASS}>
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100">
+          <StepIcon size={20} className="text-rose-400" aria-hidden="true" />
+        </div>
+        <span className="text-xs font-medium uppercase tracking-widest text-rose-400">
+          Paso {stepNumber}
+        </span>
+      </div>
+
+      <h3 className="mb-1 text-sm font-semibold text-stone-800">{step.title}</h3>
+      <p className="text-sm leading-relaxed text-stone-500">{step.description}</p>
+    </article>
+  );
+}
+
 function InfoMetodoTrabajo() {
   return (
-    <section className="relative w-full py-20 px-4 sm:px-8 overflow-hidden">
+    <section
+      aria-labelledby="work-method-heading"
+      className="relative w-full overflow-hidden px-6 py-20 sm:px-8"
+    >
+      <div
+        className="absolute inset-0 -z-10 bg-gradient-to-br from-pink-100 via-rose-50 to-stone-100"
+        aria-hidden="true"
+      />
 
-      {/* Fondo degradado suave */}
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-100 via-rose-50 to-stone-100 -z-10" />
+      <div className="mx-auto max-w-7xl">
+        <SectionHeading
+          eyebrow="¿Cómo funciona?"
+          title="Modalidad de Trabajo"
+          headingId="work-method-heading"
+        />
 
-      <div className="max-w-6xl mx-auto">
-
-        {/* Encabezado de sección */}
-        <div className="text-center mb-12">
-          <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
-            ¿Cómo funciona?
-          </span>
-          <h2 className="font-display text-3xl sm:text-4xl text-stone-800 mt-2 font-semibold">
-            Modalidad de Trabajo
-          </h2>
-        </div>
-
-        {/* Layout: grid de cards + imagen lateral */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-          {/* Grid de 4 tarjetas glassmorphism */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {WORK_STEPS.map((step, index) => {
-              const StepIcon = step.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-white/40 backdrop-blur-md border border-white/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:bg-white/55 transition-all duration-300"
-                >
-                  {/* Ícono con fondo rose suave */}
-                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-rose-100 mb-4">
-                    <StepIcon size={20} className="text-rose-500" />
-                  </div>
-
-                  <h3 className="font-semibold text-stone-800 text-sm mb-1">
-                    {step.title}
-                  </h3>
-                  <p className="text-stone-500 text-sm leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Imagen lateral con ring decorativo */}
-          <div className="lg:w-72 w-full shrink-0">
-            <img
-              className="rounded-3xl w-full h-72 lg:h-full object-cover shadow-xl ring-4 ring-white/60"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE0-hHH-tYkE1_CqnxjiBpfZkU1vs32Hlsjg&s"
-              alt="Ejemplo del proceso de trabajo en Saphire Souvenirs"
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
+          {WORK_STEPS.map((step, index) => (
+            <WorkStepCard
+              key={step.title}
+              step={step}
+              stepNumber={index + 1}
             />
-          </div>
+          ))}
         </div>
       </div>
     </section>

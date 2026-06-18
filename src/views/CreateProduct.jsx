@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import FormProduct from '../components/Products/FormProduct';
 import { ProductsContext } from '../contexts/Products/ProductsContext';
 import { CreateNewProduct } from '../services/Products/CreateNewProduct';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { AdminGlassCard, AdminPageShell } from '../components/layout/AdminPageShell.jsx';
 
 function CreateProduct() {
   const [product, setProduct] = useState({
@@ -20,29 +21,26 @@ function CreateProduct() {
   const { setProducts, categories } = useContext(ProductsContext);
   const navigate = useNavigate();
 
-  // Libera la blob URL cuando previewUrl cambia o el componente se desmonta
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
   }, [previewUrl]);
 
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
+  const handleOnChange = (event) => {
+    const { name, value } = event.target;
     if (name === 'categories') {
-      setProduct((prev) => {
-        const updatedCategories = prev.categories.includes(value)
-          ? prev.categories.filter((cat) => cat !== value)
-          : [...prev.categories, value];
-        return { ...prev, categories: updatedCategories };
+      setProduct((previousProduct) => {
+        const updatedCategories = previousProduct.categories.includes(value)
+          ? previousProduct.categories.filter((category) => category !== value)
+          : [...previousProduct.categories, value];
+        return { ...previousProduct, categories: updatedCategories };
       });
       return;
     }
-    setProduct((prev) => ({ ...prev, [name]: value }));
+    setProduct((previousProduct) => ({ ...previousProduct, [name]: value }));
   };
 
-  // Acepta un File directamente (input change y drag-and-drop).
-  // Pasar null para limpiar la imagen seleccionada.
   const handleOnChangeImage = (selectedFile) => {
     if (!selectedFile) {
       setFile(null);
@@ -54,61 +52,51 @@ function CreateProduct() {
     toast.success('Imagen cargada');
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     if (!file) {
       toast.error('Debés seleccionar una imagen.');
       return;
     }
 
-    const formdata = new FormData();
-    for (let key in product) {
+    const formData = new FormData();
+    for (const key in product) {
       if (key === 'categories') {
-        product.categories.forEach((cat) => formdata.append(key, cat));
+        product.categories.forEach((category) => formData.append(key, category));
       } else {
-        formdata.append(key, product[key]);
+        formData.append(key, product[key]);
       }
     }
-    formdata.append('file', file);
+    formData.append('file', file);
 
-    const resp = await toast.promise(CreateNewProduct(formdata), {
+    const createdProduct = await toast.promise(CreateNewProduct(formData), {
       pending: 'Cargando...',
       success: 'Producto creado ✅',
       error: 'Falló 😓',
     });
 
-    setProducts((prev) => [...prev, resp]);
+    setProducts((previousProducts) => [...previousProducts, createdProduct]);
     navigate('/dashboard');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-stone-50 to-pink-50/30 py-12 px-4">
-      <div className="max-w-xl mx-auto">
-
-        {/* Page header */}
-        <div className="text-center mb-8">
-          <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
-            Panel de Administración
-          </span>
-          <h1 className="font-display text-3xl sm:text-4xl text-stone-800 font-bold mt-2">
-            Nuevo Producto
-          </h1>
-        </div>
-
-        {/* Glassmorphism card wrapper */}
-        <div className="bg-white/60 backdrop-blur-md border border-white/60 rounded-3xl shadow-md p-6 sm:p-8">
-          <FormProduct
-            categorias={categories}
-            product={product}
-            file={file}
-            previewUrl={previewUrl}
-            handleOnChange={handleOnChange}
-            handleSubmit={handleSubmit}
-            handleOnChangeImage={handleOnChangeImage}
-          />
-        </div>
-      </div>
-    </div>
+    <AdminPageShell
+      title="Nuevo Producto"
+      titleId="create-product-heading"
+      centered
+    >
+      <AdminGlassCard>
+        <FormProduct
+          categorias={categories}
+          product={product}
+          file={file}
+          previewUrl={previewUrl}
+          handleOnChange={handleOnChange}
+          handleSubmit={handleSubmit}
+          handleOnChangeImage={handleOnChangeImage}
+        />
+      </AdminGlassCard>
+    </AdminPageShell>
   );
 }
 
