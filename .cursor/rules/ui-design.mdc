@@ -1,0 +1,95 @@
+---
+description: UX/UI design rules for SaphireSouvenirs — v0/Linear polish on top of the rose-gold glassmorphism brand. Use when refactoring components, improving layouts, or polishing visual/interaction quality.
+alwaysApply: false
+---
+
+# Saphire UI Design Rules (v0 / Linear + Brand)
+
+## Brand vs. Neutral Chrome
+
+- **Consumer-facing pages** (Home, About, Shop, Footer): keep Saphire identity — rose-gold accents, glassmorphism, `font-display` headings.
+- **Admin / utility surfaces** (Dashboard, forms, tables): apply v0/Linear minimal chrome — clean `stone` neutrals, tight hierarchy, subtle borders.
+- Never replace brand rose accents with generic blue/indigo. Primary actions stay `rose-400` → `pink-500`.
+
+## Visual Philosophy
+
+- Modern, clean, minimal — inspired by Vercel/Linear/v0.
+- Prefer **stone** (brand) over zinc/slate for page backgrounds; use `bg-stone-50` (light) or `bg-stone-950` (dark sections).
+- Cards: `bg-white/60 backdrop-blur-md border border-white/60` (consumer) or `bg-white border border-stone-200/60` (admin).
+- Separation via subtle borders (`border-stone-100`, `border-white/60`) — not heavy dividers.
+
+## Layout & Spacing
+
+- Generous whitespace — never cram elements. Container padding: `p-6` or `p-8`; section gaps: `gap-6` / `gap-8`.
+- Max content width: `max-w-7xl mx-auto` for page shells; forms/cards: `max-w-2xl` or `max-w-3xl`.
+- Border radius: `rounded-xl` or `rounded-2xl` for cards/modals; `rounded-full` for primary CTAs (brand).
+- Shadows: prefer `shadow-sm` or `ring-1 ring-black/5` over heavy `shadow-lg`. Brand CTAs may use soft rose-tinted hover elevation.
+
+## Typography
+
+- **Headings**: always `font-display` (Playfair Display) — `text-stone-800` on light, `text-white` on dark hero.
+- **Body**: default sans, `text-stone-500`, `leading-relaxed`.
+- **Eyebrow labels**: `uppercase tracking-[0.25em] text-rose-400 text-xs font-medium`.
+- Type scale: one clear H1 per view; avoid competing heading sizes.
+
+## Color Tokens (Tailwind v4)
+
+| Role | Light mode |
+|------|------------|
+| Page bg | `bg-stone-50` |
+| Card | `bg-white/60 backdrop-blur-md` |
+| Primary | `rose-400`, `rose-500`, `pink-500` |
+| Body text | `text-stone-500` |
+| Headings | `text-stone-800` |
+| Borders | `border-stone-100`, `border-white/60` |
+| Focus ring | `focus-visible:ring-2 focus-visible:ring-rose-200` |
+| Icons | `react-icons` with `text-rose-400` |
+
+## Micro-interactions (Required)
+
+Every interactive element (buttons, links, cards, icon buttons) **must** define:
+
+```text
+hover:   visible state change (color, bg, scale, or shadow)
+focus-visible: ring-2 ring-rose-200 outline-none
+active:  subtle scale or opacity (e.g. active:scale-[0.98])
+transition-all duration-200 ease-in-out
+```
+
+- Touch targets: minimum `44×44px` (`min-h-11 min-w-11` or `p-3` on icon buttons).
+- Disabled: `opacity-50 pointer-events-none cursor-not-allowed` — never rely on color alone.
+
+## Loading & Layout Stability
+
+- Use **skeleton placeholders** (`animate-pulse`) that mirror final layout dimensions — prevent CLS.
+- Skeleton pattern: `bg-stone-200/60 rounded-xl` blocks matching text/image/button sizes.
+- Prefer skeleton → content swap over spinners for lists, cards, and product grids.
+- Show empty and error states explicitly — never a blank screen.
+
+## Component Refactor Checklist
+
+When improving a component:
+
+1. Extract repeated UI into smaller presentational pieces (single responsibility).
+2. Replace inline magic values with consistent spacing/radius tokens above.
+3. Add `aria-label` on icon-only controls; use semantic HTML (`nav`, `main`, `footer`, `button`).
+4. Ensure responsive behavior: mobile-first, test at `sm` / `md` breakpoints.
+5. Remove unused imports, dead classes, and duplicate markup.
+6. Keep data fetching in services/context — UI components stay presentational where possible.
+
+## Inputs & Forms
+
+- Inputs: `rounded-2xl`, soft shadow, `focus:ring-rose-200`, clear label + error message below field.
+- Group related fields; primary submit uses brand gradient button, secondary uses ghost/outline style.
+
+## Icons
+
+- Use `react-icons` only (Fi, Hi, Fa, Io). Consistent size within a row (`size={20}` or `size={22}`).
+- Decorative icons: `aria-hidden="true"`. Interactive: visible label or `aria-label`.
+
+## Prohibited
+
+- Do not introduce `axios`, `bootstrap`, or `react-bootstrap`.
+- Do not use raw `fetch` — use `apiClient`.
+- Do not read `import.meta.env` outside `src/config/env.js`.
+- Do not add heavy animations that distract from a premium, calm feel.

@@ -1,16 +1,30 @@
-import React from 'react';
 import HeaderQuienSomos from '../components/Home/HeaderQuienSomos';
 import CarruselProducts from '../components/Home/CarruselProducts';
 import ProductHomeView from '../components/Home/ProductHomeView';
 import InfoMetodoTrabajo from '../components/Home/InfoMetodoTrabajo';
 
+const HOME_SECTIONS = [
+  { id: 'featured-products', Component: CarruselProducts },
+  { id: 'catalog-cta', Component: ProductHomeView },
+  { id: 'work-method', Component: InfoMetodoTrabajo },
+];
+
 function Home() {
   return (
-    <div className="bg-stone-50 min-h-screen scroll-smooth">
+    <div className="min-h-screen scroll-smooth bg-stone-50">
       <HeaderQuienSomos />
-      <CarruselProducts />
-      <ProductHomeView />
-      <InfoMetodoTrabajo />
+
+      <main
+        id="main-content"
+        aria-label="Contenido principal de la página de inicio"
+        className="flex flex-col"
+      >
+        {HOME_SECTIONS.map(({ id, Component }) => (
+          <div key={id} id={id} className="scroll-mt-20">
+            <Component />
+          </div>
+        ))}
+      </main>
     </div>
   );
 }

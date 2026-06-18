@@ -1,14 +1,31 @@
-import React from 'react';
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import { envs } from '../../config/env.js';
 
+const HERO_SOCIAL_CLASS =
+  'flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm transition-all duration-200 ease-in-out hover:border-rose-300 hover:bg-rose-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-95';
+
+const SCROLL_HINT_CLASS =
+  'group mt-2 flex flex-col items-center gap-2 text-xs uppercase tracking-widest text-white/40 transition-all duration-200 ease-in-out hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:scale-[0.98]';
+
+function HeroSocialLink({ href, ariaLabel, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={ariaLabel}
+      className={HERO_SOCIAL_CLASS}
+    >
+      {children}
+    </a>
+  );
+}
+
 function HeaderQuienSomos() {
   return (
-    <header className="relative min-h-[90vh] w-full flex items-center justify-center text-white text-center px-6 overflow-hidden">
-
-      {/* Imagen de fondo con leve zoom estático */}
+    <header className="relative flex min-h-[90vh] w-full items-center justify-center overflow-hidden px-6 py-8 text-center text-white sm:px-8">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+        className="absolute inset-0 scale-105 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage:
             'url("https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTEwL2pvYjEzOTctYmctMTBlLmpwZw.jpg")',
@@ -16,72 +33,62 @@ function HeaderQuienSomos() {
         aria-hidden="true"
       />
 
-      {/* Overlay gradiente multicapa — toque rose-gold en la base */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-rose-950/50 z-[1]" />
-
-      {/* Blob decorativo — superior izquierda */}
       <div
-        className="absolute top-16 left-8 w-48 h-48 rounded-full bg-rose-300/20 blur-3xl z-[2] pointer-events-none"
+        className="absolute inset-0 z-[1] bg-gradient-to-b from-black/65 via-black/30 to-rose-950/50"
+        aria-hidden="true"
+      />
+
+      <div
+        className="pointer-events-none absolute left-8 top-16 z-[2] h-48 w-48 rounded-full bg-rose-300/20 blur-3xl"
         style={{ animation: 'float 7s ease-in-out infinite' }}
         aria-hidden="true"
       />
 
-      {/* Blob decorativo — inferior derecha */}
       <div
-        className="absolute bottom-20 right-10 w-64 h-64 rounded-full bg-pink-200/15 blur-3xl z-[2] pointer-events-none"
+        className="pointer-events-none absolute bottom-20 right-10 z-[2] h-64 w-64 rounded-full bg-pink-200/15 blur-3xl"
         style={{ animation: 'float-slow 9s ease-in-out infinite' }}
         aria-hidden="true"
       />
 
-      {/* Contenido principal */}
-      <div className="relative z-10 max-w-3xl flex flex-col items-center gap-5">
-
-        {/* Eyebrow label */}
-        <span className="uppercase tracking-[0.3em] text-rose-200 text-xs font-medium">
+      <div className="relative z-10 flex max-w-3xl flex-col items-center gap-6">
+        <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-200">
           Souvenirs Personalizados
         </span>
 
-        {/* Titular H1 con Playfair Display */}
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold leading-tight text-white drop-shadow-lg">
+        <h1 className="font-display text-5xl font-bold leading-tight text-white drop-shadow-lg sm:text-6xl md:text-7xl">
           Donde cada recuerdo
           <br />
           <em className="not-italic text-rose-300">se convierte en magia</em>
         </h1>
 
-        {/* Subtítulo */}
-        <p className="text-base sm:text-lg text-stone-200 max-w-xl font-light leading-relaxed">
+        <p className="max-w-xl text-base font-light leading-relaxed text-stone-200 sm:text-lg">
           En Saphire, creamos souvenirs personalizados para cumpleaños infantiles,
           bautismos, baby showers y toda celebración especial. Cada pieza hecha con
           amor, cuidando cada detalle.
         </p>
 
-        {/* Íconos sociales con react-icons */}
-        <div className="flex gap-4 mt-2">
-          <a
+        <div className="mt-2 flex items-center gap-3">
+          <HeroSocialLink
             href="https://www.instagram.com/saphire_souvenirs/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visitar Instagram de Saphire Souvenirs"
-            className="flex items-center justify-center w-12 h-12 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-rose-400/40 hover:border-rose-300 transition-all duration-300 hover:scale-110"
+            ariaLabel="Visitar Instagram de Saphire Souvenirs"
           >
-            <FaInstagram size={22} />
-          </a>
-          <a
+            <FaInstagram size={22} aria-hidden="true" />
+          </HeroSocialLink>
+          <HeroSocialLink
             href={`https://wa.me/549${envs.whatsappNum}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Enviar mensaje por WhatsApp"
-            className="flex items-center justify-center w-12 h-12 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-green-500/40 hover:border-green-300 transition-all duration-300 hover:scale-110"
+            ariaLabel="Enviar mensaje por WhatsApp"
           >
-            <FaWhatsapp size={22} />
-          </a>
+            <FaWhatsapp size={22} aria-hidden="true" />
+          </HeroSocialLink>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="mt-6 flex flex-col items-center gap-2 text-white/40 text-xs select-none">
-          <span className="tracking-widest uppercase">Desplazá para explorar</span>
-          <div className="w-px h-8 bg-white/25" />
-        </div>
+        <a href="#featured-products" className={SCROLL_HINT_CLASS}>
+          <span>Desplazá para explorar</span>
+          <span
+            className="h-8 w-px bg-white/25 transition-colors duration-200 group-hover:bg-white/50"
+            aria-hidden="true"
+          />
+        </a>
       </div>
     </header>
   );
