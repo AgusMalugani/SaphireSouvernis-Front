@@ -1,35 +1,81 @@
 import { useContext, useEffect, useState } from 'react';
 import FormProduct from './FormProduct';
+import ProductDetailSkeleton from './ProductDetailSkeleton';
 import { toast } from 'react-toastify';
 import { ImageProduct } from '../../services/Products/ImageProduct';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { OneProductById } from '../../services/Products/OneProductById';
+import { useProductDetail } from '../../hooks/useProductDetail';
+import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
+import { normalizeProductForEdit, resolveProductFromCatalog } from '../../utils/products/resolveProductFromCatalog';
+
+const emptyProduct = {
+  name: '',
+  details: '',
+  price: 0,
+  stock: true,
+  img_url: '',
+  categories: [],
+};
+
+function buildEditStateFromProduct(sourceProduct) {
+  const normalizedProduct = normalizeProductForEdit(sourceProduct);
+  return {
+    product: normalizedProduct,
+    previewUrl: normalizedProduct.img_url
+      ? toCloudinaryDisplayUrl(normalizedProduct.img_url)
+      : null,
+  };
+}
 
 function EditProduct() {
   const { id } = useParams();
-  const [product, setProduct] = useState({
-    name: '',
-    details: '',
-    price: 0,
-    stock: true,
-    img_url: '',
-    categories: [],
-  });
-
   const navigate = useNavigate();
-  const { editProduct, categories } = useContext(ProductsContext);
+  const { editProduct, categories, products } = useContext(ProductsContext);
+
+  const cachedProduct = resolveProductFromCatalog(products, id);
+  const initialEditState = cachedProduct
+    ? buildEditStateFromProduct(cachedProduct)
+    : { product: emptyProduct, previewUrl: null };
+
+  const [product, setProduct] = useState(initialEditState.product);
   const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(initialEditState.previewUrl);
 
-  // categoriasSeleccionadas eliminado — product.categories es la única fuente de verdad,
-  // alineado con el patrón de CreateProduct.jsx
+  const { product: loadedProduct, isLoading, isError, errorMessage } =
+    useProductDetail({ productId: id, enabled: Boolean(id) });
 
-  // Acepta un File directamente (input y drag-and-drop) o null para limpiar
+  useEffect(() => {
+    setFile(null);
+    const nextCachedProduct = resolveProductFromCatalog(products, id);
+    if (nextCachedProduct) {
+      const nextEditState = buildEditStateFromProduct(nextCachedProduct);
+      setProduct(nextEditState.product);
+      setPreviewUrl(nextEditState.previewUrl);
+      return;
+    }
+    setProduct(emptyProduct);
+    setPreviewUrl(null);
+  }, [id]);
+
+  useEffect(() => {
+    if (!loadedProduct) {
+      return;
+    }
+
+    const nextEditState = buildEditStateFromProduct(loadedProduct);
+    setProduct(nextEditState.product);
+    setPreviewUrl(nextEditState.previewUrl);
+  }, [loadedProduct]);
+
   const handleOnChangeImage = (selectedFile) => {
     if (!selectedFile) {
       setFile(null);
-      setPreviewUrl(null);
+      if (product.img_url?.trim()) {
+        setPreviewUrl(toCloudinaryDisplayUrl(product.img_url));
+      } else {
+        setPreviewUrl(null);
+      }
       return;
     }
     setFile(selectedFile);
@@ -37,37 +83,17 @@ function EditProduct() {
     toast.success('Imagen cargada');
   };
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const resp = await OneProductById(id);
-        setProduct({
-          ...resp,
-          // Normalizar categories a array de strings para que los checkboxes
-          // funcionen igual que en CreateProduct
-          categories: resp.categories?.map((cat) => cat.name) ?? [],
-        });
-        setPreviewUrl(resp.img_url || null);
-      } catch (error) {
-        console.log('Error al traer el producto');
-        throw error;
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
-
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
+  const handleOnChange = (event) => {
+    const { name, value } = event.target;
 
     if (name === 'categories') {
-      setProduct((prev) => {
-        const alreadySelected = prev.categories.includes(value);
+      setProduct((previousProduct) => {
+        const alreadySelected = previousProduct.categories.includes(value);
         return {
-          ...prev,
+          ...previousProduct,
           categories: alreadySelected
-            ? prev.categories.filter((cat) => cat !== value)
-            : [...prev.categories, value],
+            ? previousProduct.categories.filter((category) => category !== value)
+            : [...previousProduct.categories, value],
         };
       });
       return;
@@ -76,12 +102,12 @@ function EditProduct() {
     setProduct({ ...product, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
       if (file) {
-        const resp = await ImageProduct(id, file);
-        const updatedProduct = { ...product, img_url: resp.img };
+        const imageResponse = await ImageProduct(id, file);
+        const updatedProduct = { ...product, img_url: imageResponse.img };
         setProduct(updatedProduct);
         await editProduct(id, updatedProduct);
       } else {
@@ -99,8 +125,29 @@ function EditProduct() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div
+        className="overflow-hidden rounded-3xl border border-white/60 bg-white/60 backdrop-blur-md"
+        aria-busy="true"
+        aria-label="Cargando producto para editar"
+      >
+        <ProductDetailSkeleton />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-white/60 bg-white/60 backdrop-blur-md p-10 text-center">
+        <p className="text-stone-600 text-sm">{errorMessage}</p>
+      </div>
+    );
+  }
+
   return (
     <FormProduct
+      mode="edit"
       categorias={categories}
       handleOnChangeImage={handleOnChangeImage}
       handleSubmit={handleSubmit}

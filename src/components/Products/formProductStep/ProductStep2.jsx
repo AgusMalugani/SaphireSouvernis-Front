@@ -1,12 +1,33 @@
-import React, { useState } from 'react';
+import { useRef, useState } from 'react';
 import { FiUploadCloud, FiArrowLeft, FiArrowRight, FiRefreshCw } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import ProductImagePreview from '../ProductImagePreview';
+import {
+  canAdvanceFromImageStep,
+  getImageStepBlockMessage,
+  hasExistingProductImage,
+} from '../../../utils/products/canAdvanceFromImageStep';
 
-function ProductStep2({ handleOnChangeImage, volverStep, avanzarStep, file, previewUrl }) {
+function ProductStep2({
+  handleOnChangeImage,
+  volverStep,
+  avanzarStep,
+  file,
+  previewUrl,
+  mode = 'create',
+  existingImageUrl = '',
+}) {
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
+  const isEditMode = mode === 'edit';
+  const hasPersistedImage = hasExistingProductImage(existingImageUrl);
+  const showExistingImagePreview =
+    Boolean(previewUrl) || (isEditMode && hasPersistedImage);
 
   const handleFileSelect = (selectedFile) => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      return;
+    }
     if (!selectedFile.type.startsWith('image/')) {
       toast.error('Solo se aceptan archivos de imagen.');
       return;
@@ -14,78 +35,132 @@ function ProductStep2({ handleOnChangeImage, volverStep, avanzarStep, file, prev
     handleOnChangeImage(selectedFile);
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const handleDragOver = (event) => {
+    event.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
+  const handleDragLeave = (event) => {
+    event.preventDefault();
     setIsDragging(false);
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
+  const handleDrop = (event) => {
+    event.preventDefault();
     setIsDragging(false);
-    handleFileSelect(e.dataTransfer.files[0]);
+    handleFileSelect(event.dataTransfer.files[0]);
   };
 
-  // Valida que el usuario haya seleccionado una imagen antes de avanzar
   const handleAvanzar = () => {
-    if (!file) {
-      toast.error('Debés seleccionar una imagen para continuar.');
+    const canAdvance = canAdvanceFromImageStep({
+      mode,
+      hasNewFile: Boolean(file),
+      existingImageUrl,
+    });
+
+    if (!canAdvance) {
+      toast.error(getImageStepBlockMessage({ mode, existingImageUrl }));
       return;
     }
+
     avanzarStep();
+  };
+
+  const handleChangeImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const renderPreviewImage = () => {
+    if (file && previewUrl?.startsWith('blob:')) {
+      return (
+        <img
+          src={previewUrl}
+          alt="Vista previa"
+          className="h-full w-full object-cover"
+        />
+      );
+    }
+
+    if (hasPersistedImage) {
+      return (
+        <ProductImagePreview
+          originalUrl={existingImageUrl}
+          alt="Vista previa"
+          className="h-full w-full object-cover"
+        />
+      );
+    }
+
+    if (previewUrl) {
+      return (
+        <img
+          src={previewUrl}
+          alt="Vista previa"
+          className="h-full w-full object-cover"
+        />
+      );
+    }
+
+    return null;
   };
 
   return (
     <div className="flex flex-col gap-6">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(event) => handleFileSelect(event.target.files[0])}
+        className="sr-only"
+      />
 
-      {previewUrl ? (
-        /* Vista previa de la imagen seleccionada */
+      {showExistingImagePreview ? (
         <div className="flex flex-col items-center gap-4">
-          <div className="relative w-full aspect-square max-w-[280px] mx-auto overflow-hidden rounded-3xl shadow-md border border-white/60">
-            <img
-              src={previewUrl}
-              alt="Vista previa"
-              className="w-full h-full object-cover"
-            />
+          <div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-3xl border border-white/60 shadow-md">
+            {renderPreviewImage()}
           </div>
-          <p className="text-stone-400 text-xs text-center truncate max-w-[240px]">
-            {file?.name}
-          </p>
+
+          {isEditMode && hasPersistedImage && !file ? (
+            <p className="max-w-[280px] text-center text-xs text-stone-500">
+              Imagen actual — no es necesario cambiarla
+            </p>
+          ) : (
+            <p className="max-w-[240px] truncate text-center text-xs text-stone-400">
+              {file?.name}
+            </p>
+          )}
+
           <button
-            onClick={() => handleOnChangeImage(null)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border border-stone-200 text-stone-500 hover:border-rose-300 hover:text-rose-400 transition-all duration-200"
+            type="button"
+            onClick={handleChangeImageClick}
+            className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-xs font-semibold text-stone-500 transition-all duration-200 hover:border-rose-300 hover:text-rose-400"
           >
             <FiRefreshCw size={13} />
             Cambiar imagen
           </button>
         </div>
       ) : (
-        /* Drag & Drop zone — se convierte en input clickeable */
         <label
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`flex flex-col items-center justify-center gap-4 w-full py-14 px-6 rounded-3xl border-2 border-dashed cursor-pointer transition-all duration-300
-            ${isDragging
-              ? 'border-rose-400 bg-rose-50/60 scale-[1.01]'
-              : 'border-stone-200 bg-stone-50/50 hover:border-rose-300 hover:bg-rose-50/30'
+          className={`flex w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed px-6 py-14 transition-all duration-300
+            ${
+              isDragging
+                ? 'scale-[1.01] border-rose-400 bg-rose-50/60'
+                : 'border-stone-200 bg-stone-50/50 hover:border-rose-300 hover:bg-rose-50/30'
             }
           `}
         >
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => handleFileSelect(e.target.files[0])}
+            onChange={(event) => handleFileSelect(event.target.files[0])}
             className="sr-only"
           />
 
-          {/* Ícono de nube */}
           <div
-            className={`flex items-center justify-center w-16 h-16 rounded-full transition-colors duration-300
+            className={`flex h-16 w-16 items-center justify-center rounded-full transition-colors duration-300
               ${isDragging ? 'bg-rose-100' : 'bg-stone-100'}
             `}
           >
@@ -95,28 +170,30 @@ function ProductStep2({ handleOnChangeImage, volverStep, avanzarStep, file, prev
             />
           </div>
 
-          {/* Texto de la zona */}
           <div className="text-center">
-            <p className={`text-sm font-semibold transition-colors duration-300 ${isDragging ? 'text-rose-500' : 'text-stone-600'}`}>
+            <p
+              className={`text-sm font-semibold transition-colors duration-300 ${isDragging ? 'text-rose-500' : 'text-stone-600'}`}
+            >
               {isDragging ? 'Soltá la imagen aquí' : 'Arrastrá una imagen o hacé clic'}
             </p>
-            <p className="text-stone-400 text-xs mt-1">PNG, JPG, WEBP · hasta 10MB</p>
+            <p className="mt-1 text-xs text-stone-400">PNG, JPG, WEBP · hasta 10MB</p>
           </div>
         </label>
       )}
 
-      {/* Navegación */}
       <div className="flex gap-3">
         <button
+          type="button"
           onClick={volverStep}
-          className="inline-flex items-center justify-center gap-2 flex-1 py-2.5 rounded-full border border-stone-200 text-stone-500 text-sm font-medium hover:border-stone-300 hover:bg-stone-50 transition-all duration-200"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-stone-200 py-2.5 text-sm font-medium text-stone-500 transition-all duration-200 hover:border-stone-300 hover:bg-stone-50"
         >
           <FiArrowLeft size={15} />
           Volver
         </button>
         <button
+          type="button"
           onClick={handleAvanzar}
-          className="inline-flex items-center justify-center gap-2 flex-1 py-2.5 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white text-sm font-semibold shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-2.5 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition-all duration-300 hover:scale-105 hover:shadow-rose-400/60 active:scale-95"
         >
           Siguiente
           <FiArrowRight size={15} />

@@ -87,6 +87,7 @@ function CreateProduct() {
     >
       <AdminGlassCard>
         <FormProduct
+          mode="create"
           categorias={categories}
           product={product}
           file={file}

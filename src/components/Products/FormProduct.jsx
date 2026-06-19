@@ -10,7 +10,16 @@ const STEPS = [
   { number: 3, label: 'Resumen' },
 ];
 
-function FormProduct({ handleOnChangeImage, handleSubmit, product, handleOnChange, categorias, file, previewUrl }) {
+function FormProduct({
+  handleOnChangeImage,
+  handleSubmit,
+  product,
+  handleOnChange,
+  categorias,
+  file,
+  previewUrl,
+  mode = 'create',
+}) {
   const [step, setStep] = useState(1);
 
   const avanzarStep = () => setStep((prev) => prev + 1);
@@ -82,12 +91,16 @@ function FormProduct({ handleOnChangeImage, handleSubmit, product, handleOnChang
           avanzarStep={avanzarStep}
           file={file}
           previewUrl={previewUrl}
+          mode={mode}
+          existingImageUrl={product.img_url}
         />
       )}
       {step === 3 && (
         <ProductStep3
           product={product}
           previewUrl={previewUrl}
+          existingImageUrl={product.img_url}
+          file={file}
           volverStep={volverStep}
           handleSubmit={handleSubmit}
         />

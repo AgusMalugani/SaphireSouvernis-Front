@@ -8,14 +8,6 @@ export const productsJson =[
       "stock": true
     },
     {
-      "id": "d08e8c84-58fa-42fc-b1c1-82b7344f1058",
-      "name": "Estampitas",
-      "price": 500,
-      "img_url": "http://www.exampleImg.com/estampitas",
-      "details": "Estampitas personalizadas para eventos religiosos.",
-      "stock": true
-    },
-    {
       "id": "5b4d4caa-63f9-40a9-976a-34fd8947a986",
       "name": "Certificado Padrinos",
       "price": 800,
@@ -63,30 +55,7 @@ export const productsJson =[
       "details": "Número de mesa personalizado para eventos.",
       "stock": true
     },
-    {
-      "id": "2b312454-90a4-4610-8837-f887a324d8d8",
-      "name": "Etiquetas Escolares",
-      "price": 1200,
-      "img_url": "http://www.exampleImg.com/etiquetas-escolares",
-      "details": "Etiquetas personalizadas para útiles escolares.",
-      "stock": true
-    },
-    {
-      "id": "feffb8bc-d18a-4449-bf26-28ba3253d9fd",
-      "name": "Valijitas Medianas",
-      "price": 3500,
-      "img_url": "http://www.exampleImg.com/valijitas-medianas",
-      "details": "Valijitas medianas personalizadas, perfectas para souvenirs.",
-      "stock": true
-    },
-    {
-      "id": "f14444c2-f9f4-4638-88bd-17bee479fabb",
-      "name": "Valijitas Chicas",
-      "price": 3500,
-      "img_url": "http://www.exampleImg.com/valijitas-medianas",
-      "details": "Valijitas chicas personalizadas, perfectas para souvenirs.",
-      "stock": true
-    },
+   
     {
       "id": "20586be2-9a92-4b29-91d8-5e28faa9efcf",
       "name": "Llaveros Gamuza + 3 Dijes",
