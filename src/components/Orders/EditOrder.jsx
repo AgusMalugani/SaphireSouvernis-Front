@@ -2,52 +2,67 @@ import React, { useContext, useState } from 'react';
 import { OrdersContext } from '../../contexts/Orders/OrdersContext';
 import { toast } from 'react-toastify';
 import { FiCheck } from 'react-icons/fi';
-
-// token eliminado — era importado de AuthContext pero nunca usado en este componente
+import {
+  getOrderStateSelectOptions,
+  getOrderTransactionSelectOptions,
+} from '../../utils/orders/orderStatusConfig';
 
 function EditOrder({ id, action, onClose }) {
-  const { getOrderById, editOrderContext } = useContext(OrdersContext);
+  const { getOrderById, editOrderContext, clearOptimisticTimelineEvents } =
+    useContext(OrdersContext);
 
   const orderContext = getOrderById(id);
   const [order, setOrder] = useState(orderContext || {});
 
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
+  const handleOnChange = (changeEvent) => {
+    const { name, value } = changeEvent.target;
     setOrder({ ...order, [name]: value });
   };
 
-  const handleOnSubmit = async (e) => {
-    e.preventDefault();
+  const handleOnSubmit = async (submitEvent) => {
+    submitEvent.preventDefault();
+
+    const payload =
+      action === 'estadoPago'
+        ? { state: order.state }
+        : {
+            transactionType: order.transactionType,
+            address: order.address,
+          };
+
     try {
       await toast.promise(
-        editOrderContext(id, order),
+        editOrderContext(id, payload),
         {
           pending: 'Modificando orden...',
           success: 'Orden modificada ✅',
           error: 'Falló 😓',
-        }
+        },
       );
+
+      clearOptimisticTimelineEvents(id);
       onClose();
     } catch (error) {
-      console.log('Error al editar la orden');
+      console.error('Error al editar la orden', error);
       throw error;
     }
   };
 
-  const inputClass = 'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-2xl bg-white/70 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all';
+  const inputClass =
+    'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-2xl bg-white/70 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all';
   const labelClass = 'text-sm font-semibold text-stone-700';
+  const stateOptions = getOrderStateSelectOptions();
+  const transactionOptions = getOrderTransactionSelectOptions();
 
   return (
     <div>
-
-      {/* Formulario — Forma de entrega */}
       {action === 'envio/Retiro' && (
         <form onSubmit={handleOnSubmit} className="flex flex-col gap-5">
           <div>
-            <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
+            <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
               Actualizar
             </span>
-            <h2 className="font-display text-2xl text-stone-800 font-bold mt-1">
+            <h2 className="mt-1 font-display text-2xl font-bold text-stone-800">
               Método de Entrega
             </h2>
           </div>
@@ -61,8 +76,11 @@ function EditOrder({ id, action, onClose }) {
               className={inputClass}
             >
               <option value="">Seleccione Envío - Retiro</option>
-              <option value="withdraw">Retiro en local</option>
-              <option value="send">Envío</option>
+              {transactionOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -80,7 +98,7 @@ function EditOrder({ id, action, onClose }) {
 
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-sm shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300 mt-2"
+            className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-3 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition-all duration-300 hover:scale-105 hover:shadow-rose-400/60 active:scale-95"
           >
             <FiCheck size={16} />
             Guardar cambios
@@ -88,14 +106,13 @@ function EditOrder({ id, action, onClose }) {
         </form>
       )}
 
-      {/* Formulario — Estado del pago */}
       {action === 'estadoPago' && (
         <form onSubmit={handleOnSubmit} className="flex flex-col gap-5">
           <div>
-            <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
+            <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
               Actualizar
             </span>
-            <h2 className="font-display text-2xl text-stone-800 font-bold mt-1">
+            <h2 className="mt-1 font-display text-2xl font-bold text-stone-800">
               Estado de Pago
             </h2>
           </div>
@@ -109,15 +126,17 @@ function EditOrder({ id, action, onClose }) {
               className={inputClass}
             >
               <option value="">Seleccione el estado</option>
-              <option value="inProcces">Sin pagar</option>
-              <option value="paid">Pagado completo</option>
-              <option value="partialPayment">Señado</option>
+              {stateOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
 
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold text-sm shadow-md shadow-rose-300/40 hover:shadow-rose-400/60 hover:scale-105 active:scale-95 transition-all duration-300 mt-2"
+            className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-3 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition-all duration-300 hover:scale-105 hover:shadow-rose-400/60 active:scale-95"
           >
             <FiCheck size={16} />
             Guardar cambios

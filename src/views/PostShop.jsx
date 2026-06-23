@@ -1,10 +1,26 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { FiCheckCircle, FiHome } from 'react-icons/fi';
 import ViewBuyOrder from '../components/Orders/ViewBuyOrder';
+import RedirectToWhatsapp from '../components/RedirectToWhatsapp';
 import { GHOST_CTA_CLASS } from '../components/layout/ConsumerPageLayout.jsx';
+import { buildWhatsAppOrderMessage } from '../utils/orders/buildWhatsAppOrderMessage';
+import { envs } from '../config/env.js';
 
 function PostShop() {
   const { id } = useParams();
+  const [orderForWhatsApp, setOrderForWhatsApp] = useState(null);
+
+  const whatsAppMessage = useMemo(() => {
+    if (!orderForWhatsApp) {
+      return '';
+    }
+
+    return buildWhatsAppOrderMessage({
+      order: orderForWhatsApp,
+      shopUrl: envs.shopUrl,
+    });
+  }, [orderForWhatsApp]);
 
   return (
     <section
@@ -26,14 +42,29 @@ function PostShop() {
             ¡Gracias por tu compra!
           </h1>
           <p className="mx-auto mt-3 max-w-sm text-sm font-light leading-relaxed text-stone-500">
-            Ya recibimos tu pedido. El siguiente paso es contactarnos por WhatsApp para
-            coordinar los detalles.
+            Ya recibimos tu pedido. Contactanos por WhatsApp para coordinar pago y
+            personalización.
           </p>
         </header>
 
         <div className="mb-6 overflow-hidden rounded-2xl border border-white/60 bg-white/60 shadow-sm ring-1 ring-black/5 backdrop-blur-sm">
-          <ViewBuyOrder id={id} />
+          <ViewBuyOrder
+            id={id}
+            variant="public"
+            onOrderLoaded={setOrderForWhatsApp}
+          />
         </div>
+
+        {whatsAppMessage && (
+          <div className="mb-6">
+            <RedirectToWhatsapp
+              variant="block"
+              num={envs.whatsappNum}
+              msj={whatsAppMessage}
+              label="Contactar por WhatsApp"
+            />
+          </div>
+        )}
 
         <Link to="/" className={GHOST_CTA_CLASS}>
           <FiHome size={15} aria-hidden="true" />
@@ -42,6 +73,11 @@ function PostShop() {
       </div>
     </section>
   );
+}
+
+export function LegacyPostShopRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/post-shop/${id}`} replace />;
 }
 
 export default PostShop;

@@ -66,7 +66,7 @@ function ModalCreateOrder({ isOpen, onClose, products, cartItems = [], total = 0
         setErrors(null);
         onClose();
         // Pasar el formulario completo + carrito para el mensaje de WhatsApp en PostShop
-        navigate(`/postShop/${newOrder.id}`, {
+        navigate(`/post-shop/${newOrder.id}`, {
           state: { orderForm, cartItems, total },
         });
       } catch (error) {

@@ -176,7 +176,7 @@ Routes are declared in `src/App.jsx` and fall into two categories:
 
 | Type | Routes |
 |------|--------|
-| **Public** | `/`, `/shopProducts`, `/postShop/:id`, `/login` |
+| **Public** | `/`, `/shopProducts`, `/post-shop/:id`, `/login` (legacy: `/postShop/:id` → redirect) |
 | **Protected (Admin)** | `/dashboard`, `/product/create`, `/product/edit/:id`, `/orders` |
 
 ### `ProtectedRoute` — Role-Based Access Control

@@ -1,43 +1,142 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { OneOrder } from '../../services/Orders/OneOrder';
+import { FindOrderAdmin } from '../../services/Orders/FindOrderAdmin';
+import { OrdersContext } from '../../contexts/Orders/OrdersContext';
+import {
+  getOrderStateLabel,
+  getOrderTransactionLabel,
+} from '../../utils/orders/orderStatusConfig';
+import OrderTimeline from './OrderTimeline';
+import AdminOrderNotes from './AdminOrderNotes';
 
-// Mismos mapeos que en Order.jsx para mostrar valores legibles al admin
-const STATE_LABELS = {
-  paid:           'Pagado',
-  partialPayment: 'Señado',
-  inProcces:      'Sin pagar',
-};
+function mapAdminNotes(notes = []) {
+  return notes.map((noteItem, index) =>
+    typeof noteItem === 'string'
+      ? { id: `legacy-note-${index}`, text: noteItem }
+      : noteItem,
+  );
+}
 
-const TRANSACTION_LABELS = {
-  send:     'Envío',
-  withdraw: 'Retiro',
-};
+function sortTimelineEvents(events) {
+  return [...events].sort((leftEvent, rightEvent) => {
+    const leftTime = new Date(leftEvent.createdAt ?? 0).getTime();
+    const rightTime = new Date(rightEvent.createdAt ?? 0).getTime();
+    return rightTime - leftTime;
+  });
+}
 
-function ViewBuyOrder({ id }) {
+function ViewBuyOrder({
+  id,
+  variant = 'public',
+  onOrderLoaded,
+}) {
+  const isAdminVariant = variant === 'admin';
+  const {
+    optimisticTimelineByOrderId,
+    appendOptimisticTimelineEvent,
+    clearOptimisticTimelineEvents,
+  } = useContext(OrdersContext);
+
   const [order, setOrder] = useState({});
+  const [adminNotes, setAdminNotes] = useState([]);
+  const [serverTimelineEvents, setServerTimelineEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [adminDataUnavailable, setAdminDataUnavailable] = useState(false);
 
-  // Lazy loading: los detalles de la orden se traen solo al abrir el modal "Ver"
+  const fetchAdminData = useCallback(async (options = {}) => {
+    const isMounted = options.isMounted ?? (() => true);
+
+    try {
+      const adminOrder = await FindOrderAdmin(id);
+      if (!isMounted()) {
+        return;
+      }
+
+      setServerTimelineEvents(adminOrder.timeline ?? []);
+      setAdminNotes(mapAdminNotes(adminOrder.notes ?? adminOrder.adminNotes ?? []));
+      setAdminDataUnavailable(false);
+      clearOptimisticTimelineEvents(id);
+    } catch (adminError) {
+      if (!isMounted()) {
+        return;
+      }
+
+      setServerTimelineEvents([]);
+      setAdminDataUnavailable(true);
+    }
+  }, [clearOptimisticTimelineEvents, id]);
+
   useEffect(() => {
+    let isMounted = true;
+
     const fetchOrder = async () => {
+      setIsLoading(true);
+
       try {
-        const response = await OneOrder(id);
-        setOrder(response);
+        const publicOrder = await OneOrder(id);
+        if (!isMounted) {
+          return;
+        }
+
+        setOrder(publicOrder);
+        onOrderLoaded?.(publicOrder);
+
+        if (isAdminVariant) {
+          await fetchAdminData({ isMounted: () => isMounted });
+        }
       } catch (error) {
-        console.log('Error al traer la orden');
+        console.error('Error al traer la orden', error);
         throw error;
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchOrder();
-  }, [id]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchAdminData, id, isAdminVariant, onOrderLoaded]);
+
+  const mergedTimelineEvents = useMemo(() => {
+    if (!adminDataUnavailable) {
+      return sortTimelineEvents(serverTimelineEvents);
+    }
+
+    const optimisticEvents = optimisticTimelineByOrderId[id] ?? [];
+    return sortTimelineEvents(optimisticEvents);
+  }, [adminDataUnavailable, id, optimisticTimelineByOrderId, serverTimelineEvents]);
+
+  const handleNoteAdded = useCallback(async () => {
+    await fetchAdminData();
+  }, [fetchAdminData]);
+
+  const handleOptimisticNote = (noteText) => {
+    appendOptimisticTimelineEvent(id, {
+      id: `optimistic-note-${Date.now()}`,
+      type: 'admin_note_added',
+      payload: { note: noteText },
+      createdAt: new Date().toISOString(),
+      isOptimistic: true,
+    });
+
+    setAdminNotes((previousNotes) => [
+      {
+        id: `local-note-${Date.now()}`,
+        text: noteText,
+        createdAt: new Date().toISOString(),
+      },
+      ...previousNotes,
+    ]);
+  };
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 gap-3">
-        <div className="w-10 h-10 rounded-full border-2 border-rose-200 border-t-rose-400 animate-spin" />
+      <div className="flex flex-col items-center justify-center gap-3 py-16">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-rose-200 border-t-rose-400" />
         <p className="font-display text-lg text-stone-400">Cargando detalle...</p>
       </div>
     );
@@ -45,85 +144,112 @@ function ViewBuyOrder({ id }) {
 
   const orderDetails = order.orderDetails ?? [];
   const infoItems = [
-    { label: 'Dirección',         value: order.address },
+    { label: 'Dirección', value: order.address },
     { label: 'Fecha de creación', value: order.createAt },
-    { label: 'Fecha de entrega',  value: order.endOrder },
-    { label: 'Email',             value: order.email },
+    { label: 'Fecha de entrega', value: order.endOrder },
+    { label: 'Email', value: order.email },
     { label: 'Nombre para el diseño', value: order.personalizationName },
-    { label: 'Teléfono',          value: order.numCel },
+    { label: 'Teléfono', value: order.numCel },
     { label: 'Teléfono secundario', value: order.num2Cel },
-    { label: 'Estado del pedido', value: STATE_LABELS[order.state] ?? order.state },
-    { label: 'Tema',              value: order.theme },
-    { label: 'Tipo de entrega',   value: TRANSACTION_LABELS[order.transactionType] ?? order.transactionType },
+    { label: 'Estado del pedido', value: getOrderStateLabel(order.state) },
+    { label: 'Tema', value: order.theme },
+    {
+      label: 'Tipo de entrega',
+      value: getOrderTransactionLabel(order.transactionType),
+    },
   ];
 
   return (
     <div className="flex flex-col gap-6">
-
-      {/* Encabezado del modal */}
       <div>
-        <span className="uppercase tracking-[0.25em] text-rose-400 text-xs font-medium">
+        <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
           Detalle del pedido
         </span>
-        <h2 className="font-display text-2xl text-stone-800 font-bold mt-1">
+        <h2 className="mt-1 font-display text-2xl font-bold text-stone-800">
           {order.nameClient}
         </h2>
       </div>
 
-      {/* Grid de información general */}
       <div className="grid grid-cols-2 gap-x-6 gap-y-3">
         {infoItems.map(({ label, value }) =>
           value ? (
             <div key={label} className="flex flex-col gap-0.5">
-              <p className="text-[10px] text-stone-400 uppercase tracking-wider">{label}</p>
-              <p className="text-sm text-stone-700 font-medium">{value}</p>
+              <p className="text-[10px] uppercase tracking-wider text-stone-400">
+                {label}
+              </p>
+              <p className="text-sm font-medium text-stone-700">{value}</p>
             </div>
-          ) : null
+          ) : null,
         )}
       </div>
 
-      {/* Total destacado */}
-      <div className="flex items-center justify-between bg-rose-50 border border-rose-100 rounded-2xl px-4 py-3">
-        <span className="text-stone-600 font-medium text-sm">Total a pagar</span>
-        <span className="text-rose-500 font-bold text-xl">${order.totalPrice}</span>
+      <div className="flex items-center justify-between rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3">
+        <span className="text-sm font-medium text-stone-600">Total a pagar</span>
+        <span className="text-xl font-bold text-rose-500">${order.totalPrice}</span>
       </div>
 
-      {/* Lista de productos del pedido */}
       {orderDetails.length > 0 && (
         <div className="flex flex-col gap-3">
-          <p className="text-[10px] text-stone-400 uppercase tracking-wider font-medium">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-stone-400">
             Productos del pedido
           </p>
 
-          {orderDetails.map((orderDet, index) => (
+          {orderDetails.map((orderDetail, index) => (
             <div
-              key={orderDet.id ?? index}
-              className="flex gap-4 bg-stone-50/80 border border-stone-100 rounded-2xl p-3"
+              key={orderDetail.id ?? index}
+              className="flex gap-4 rounded-2xl border border-stone-100 bg-stone-50/80 p-3"
             >
-              <img
-                src={orderDet.product.img_url}
-                alt={orderDet.product.name}
-                className="w-20 h-20 rounded-xl object-cover shrink-0"
-              />
-              <div className="flex flex-col gap-1 min-w-0">
-                <h3 className="text-stone-800 font-semibold text-sm leading-snug">
-                  {orderDet.product.name}
+              {orderDetail.product?.img_url && (
+                <img
+                  src={orderDetail.product.img_url}
+                  alt={orderDetail.product.name ?? 'Producto'}
+                  className="h-20 w-20 shrink-0 rounded-xl object-cover"
+                />
+              )}
+              <div className="flex min-w-0 flex-col gap-1">
+                <h3 className="text-sm font-semibold leading-snug text-stone-800">
+                  {orderDetail.product?.name ?? 'Producto'}
                 </h3>
-                <p className="text-stone-500 text-xs leading-relaxed line-clamp-2">
-                  {orderDet.product.details}
+                <p className="line-clamp-2 text-xs leading-relaxed text-stone-500">
+                  {orderDetail.product?.details}
                 </p>
-                <div className="flex items-center gap-3 mt-auto pt-1">
-                  <span className="text-rose-500 font-bold text-sm">
-                    ${orderDet.product.price}
+                <div className="mt-auto flex items-center gap-3 pt-1">
+                  <span className="text-sm font-bold text-rose-500">
+                    ${orderDetail.product?.price}
                   </span>
-                  <span className="text-stone-400 text-xs">
-                    ×{orderDet.cuantity}
+                  <span className="text-xs text-stone-400">
+                    ×{orderDetail.cuantity}
                   </span>
                 </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {isAdminVariant && (
+        <>
+          <div>
+            <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-stone-400">
+              Historial
+            </p>
+            <OrderTimeline
+              events={mergedTimelineEvents}
+              emptyMessage={
+                adminDataUnavailable
+                  ? 'El historial completo estará disponible cuando el backend esté actualizado.'
+                  : 'Sin eventos registrados todavía.'
+              }
+            />
+          </div>
+
+          <AdminOrderNotes
+            orderId={id}
+            notes={adminNotes}
+            onNoteAdded={handleNoteAdded}
+            onOptimisticNote={handleOptimisticNote}
+          />
+        </>
       )}
     </div>
   );

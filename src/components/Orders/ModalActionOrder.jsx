@@ -43,7 +43,7 @@ function ModalActionOrder({ isOpen, onClose, id, action }) {
         </button>
 
         <div className="p-6">
-          {action === 'ver' && <ViewBuyOrder id={id} />}
+          {action === 'ver' && <ViewBuyOrder id={id} variant="admin" />}
           {(action === 'estadoPago' || action === 'envio/Retiro') && (
             <EditOrder id={id} action={action} onClose={onClose} />
           )}

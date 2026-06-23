@@ -5,7 +5,7 @@ import DashboardAdmin from './views/DashboardAdmin';
 import Home from './views/Home';
 import Login from './views/Login';
 import ViewOrders from './views/ViewOrders';
-import PostShop from './views/PostShop';
+import PostShop, { LegacyPostShopRedirect } from './views/PostShop';
 import ShopProducts from './views/ShopProducts';
 import { Routes, Route, useLocation, useMatch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -21,10 +21,14 @@ import { envs } from './config/env.js';
 
 function App() {
   const { pathname } = useLocation();
-  const postShopRouteMatch = useMatch('/postShop/:id');
+  const postShopRouteMatch = useMatch('/post-shop/:id');
+  const legacyPostShopRouteMatch = useMatch('/postShop/:id');
   const shopProductsRouteMatch = useMatch('/shopProducts');
 
-  const showFAB = postShopRouteMatch == null && shopProductsRouteMatch == null;
+  const showFAB =
+    postShopRouteMatch == null &&
+    legacyPostShopRouteMatch == null &&
+    shopProductsRouteMatch == null;
 
   return (
     <>
@@ -47,7 +51,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shopProducts" element={<ShopProducts />} />
-          <Route path="/postShop/:id" element={<PostShop />} />
+          <Route path="/post-shop/:id" element={<PostShop />} />
+          <Route path="/postShop/:id" element={<LegacyPostShopRedirect />} />
           <Route path="/login" element={<Login />} />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -96,7 +101,7 @@ function App() {
 
       <Footer />
 
-      {/* FAB global de WhatsApp — oculto en /postShop/:id y /shopProducts */}
+      {/* FAB global de WhatsApp — oculto en /post-shop/:id y /shopProducts */}
       {showFAB && (
         <RedirectToWhatsapp
           variant="fab"
