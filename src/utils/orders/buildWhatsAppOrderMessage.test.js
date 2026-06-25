@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildPostShopPublicUrl,
   buildWhatsAppOrderMessage,
   normalizeShopUrl,
 } from './buildWhatsAppOrderMessage';
@@ -61,5 +62,17 @@ describe('buildWhatsAppOrderMessage', () => {
     });
 
     expect(message).toContain('Ver pedido: /post-shop/z9');
+  });
+});
+
+describe('buildPostShopPublicUrl', () => {
+  it('builds absolute url from shopUrl', () => {
+    expect(buildPostShopPublicUrl('abc', 'https://shop.example.com/')).toBe(
+      'https://shop.example.com/post-shop/abc',
+    );
+  });
+
+  it('falls back to relative path without shopUrl or window', () => {
+    expect(buildPostShopPublicUrl('xyz', '')).toBe('/post-shop/xyz');
   });
 });

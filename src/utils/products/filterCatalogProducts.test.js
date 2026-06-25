@@ -11,16 +11,25 @@ const sampleProducts = [
     id: '1',
     name: 'Llaveros Gamuza + 2 Dijes',
     categories: [{ name: 'BAUTISMO' }],
+    stock: true,
   },
   {
     id: '2',
     name: 'Certificado Comunión',
     categories: [{ name: 'COMUNION' }],
+    stock: true,
   },
   {
     id: '3',
     name: 'Estampitas',
     categories: [],
+    stock: true,
+  },
+  {
+    id: '4',
+    name: 'Producto Inhabilitado',
+    categories: [{ name: 'COMUNION' }],
+    stock: false,
   },
 ];
 
@@ -70,6 +79,18 @@ describe('filterCatalogProducts', () => {
         searchQuery: 'estamp',
       }),
     ).toHaveLength(0);
+  });
+
+  it('excludes products with stock false from catalog', () => {
+    expect(filterCatalogProducts(sampleProducts)).toHaveLength(3);
+    expect(
+      filterCatalogProducts(sampleProducts, { searchQuery: 'inhabilitado' }),
+    ).toHaveLength(0);
+  });
+
+  it('treats missing stock as available for sale', () => {
+    const legacyProducts = [{ id: '4', name: 'Legacy', categories: [] }];
+    expect(filterCatalogProducts(legacyProducts)).toHaveLength(1);
   });
 });
 

@@ -6,6 +6,8 @@ import {
   getOrderStateLabel,
   getOrderTransactionLabel,
 } from '../../utils/orders/orderStatusConfig';
+import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
+import { formatProductPrice } from '../../utils/products/formatProductPrice';
 import OrderTimeline from './OrderTimeline';
 import AdminOrderNotes from './AdminOrderNotes';
 
@@ -41,6 +43,7 @@ function ViewBuyOrder({
   const [adminNotes, setAdminNotes] = useState([]);
   const [serverTimelineEvents, setServerTimelineEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [adminDataUnavailable, setAdminDataUnavailable] = useState(false);
 
   const fetchAdminData = useCallback(async (options = {}) => {
@@ -71,6 +74,7 @@ function ViewBuyOrder({
 
     const fetchOrder = async () => {
       setIsLoading(true);
+      setLoadError(false);
 
       try {
         const publicOrder = await OneOrder(id);
@@ -86,7 +90,10 @@ function ViewBuyOrder({
         }
       } catch (error) {
         console.error('Error al traer la orden', error);
-        throw error;
+        if (!isMounted) {
+          return;
+        }
+        setLoadError(true);
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -142,6 +149,17 @@ function ViewBuyOrder({
     );
   }
 
+  if (loadError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+        <p className="font-display text-xl text-stone-600">No encontramos este pedido</p>
+        <p className="text-sm text-stone-500">
+          El enlace puede estar incorrecto o el pedido ya no está disponible.
+        </p>
+      </div>
+    );
+  }
+
   const orderDetails = order.orderDetails ?? [];
   const infoItems = [
     { label: 'Dirección', value: order.address },
@@ -185,7 +203,9 @@ function ViewBuyOrder({
 
       <div className="flex items-center justify-between rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3">
         <span className="text-sm font-medium text-stone-600">Total a pagar</span>
-        <span className="text-xl font-bold text-rose-500">${order.totalPrice}</span>
+        <span className="text-xl font-bold text-rose-500">
+          {formatProductPrice(order.totalPrice)}
+        </span>
       </div>
 
       {orderDetails.length > 0 && (
@@ -194,28 +214,34 @@ function ViewBuyOrder({
             Productos del pedido
           </p>
 
-          {orderDetails.map((orderDetail, index) => (
+          {orderDetails.map((orderDetail, index) => {
+            const product = orderDetail.product ?? {};
+            const displayImageUrl = product.img_url
+              ? toCloudinaryDisplayUrl(product.img_url)
+              : null;
+
+            return (
             <div
               key={orderDetail.id ?? index}
               className="flex gap-4 rounded-2xl border border-stone-100 bg-stone-50/80 p-3"
             >
-              {orderDetail.product?.img_url && (
+              {displayImageUrl ? (
                 <img
-                  src={orderDetail.product.img_url}
-                  alt={orderDetail.product.name ?? 'Producto'}
-                  className="h-20 w-20 shrink-0 rounded-xl object-cover"
+                  src={displayImageUrl}
+                  alt={product.name ?? 'Producto'}
+                  className="h-20 w-20 shrink-0 rounded-xl object-cover ring-1 ring-stone-100"
                 />
-              )}
+              ) : null}
               <div className="flex min-w-0 flex-col gap-1">
                 <h3 className="text-sm font-semibold leading-snug text-stone-800">
-                  {orderDetail.product?.name ?? 'Producto'}
+                  {product.name ?? 'Producto'}
                 </h3>
                 <p className="line-clamp-2 text-xs leading-relaxed text-stone-500">
-                  {orderDetail.product?.details}
+                  {product.details}
                 </p>
                 <div className="mt-auto flex items-center gap-3 pt-1">
                   <span className="text-sm font-bold text-rose-500">
-                    ${orderDetail.product?.price}
+                    {formatProductPrice(product.price)}
                   </span>
                   <span className="text-xs text-stone-400">
                     ×{orderDetail.cuantity}
@@ -223,7 +249,8 @@ function ViewBuyOrder({
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -3,6 +3,7 @@ import { fetchAllProducts } from "../../services/Products/FindAllProducts.servic
 import {productsJson} from "../../../products"
 import { ProductsContext } from "./ProductsContext";
 import { UpdateProduct } from "../../services/Products/UpdateProduct"; 
+import { setProductAvailability as setProductAvailabilityService } from "../../services/Products/setProductAvailability";
 import { FindAllCategories } from "../../services/Categories/FindAllCategories";
 import { toast } from "react-toastify";
 
@@ -80,10 +81,24 @@ const editProduct=(id,product)=>{
   }
 
 
+const setProductAvailability = async (productId, isAvailable) => {
+  const updatedProduct = await setProductAvailabilityService(productId, isAvailable);
+  setProducts((previousProducts) => {
+    const nextProducts = previousProducts.map((productItem) =>
+      productItem.id === productId ? updatedProduct : productItem,
+    );
+    localStorage.setItem("products", JSON.stringify(nextProducts));
+    return nextProducts;
+  });
+  return updatedProduct;
+};
+
+
 const value = {
     products,
     setProducts,
     editProduct,
+    setProductAvailability,
     categories
 }
 

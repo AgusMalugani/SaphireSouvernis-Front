@@ -1,6 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
+import { isProductAvailableForSale } from '../../utils/products/isProductAvailableForSale';
 
 const FEATURED_COUNT = 6;
 
@@ -81,11 +82,14 @@ function FeaturedProductCard({ product, isWideOnMobile }) {
 function CarruselProducts() {
   const { products } = useContext(ProductsContext);
 
-  if (!products || products.length === 0) {
+  const featuredProducts = useMemo(
+    () => (products ?? []).filter(isProductAvailableForSale).slice(0, FEATURED_COUNT),
+    [products],
+  );
+
+  if (!products || products.length === 0 || featuredProducts.length === 0) {
     return <FeaturedProductsSkeleton />;
   }
-
-  const featuredProducts = products.slice(0, FEATURED_COUNT);
 
   return (
     <section

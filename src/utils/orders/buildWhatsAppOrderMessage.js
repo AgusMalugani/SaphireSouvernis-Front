@@ -11,6 +11,25 @@ export function normalizeShopUrl(shopUrl) {
 }
 
 /**
+ * @param {string} orderId
+ * @param {string} shopUrl
+ * @returns {string}
+ */
+export function buildPostShopPublicUrl(orderId, shopUrl) {
+  const normalizedShopUrl = normalizeShopUrl(shopUrl);
+
+  if (normalizedShopUrl) {
+    return `${normalizedShopUrl}/post-shop/${orderId}`;
+  }
+
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return `${window.location.origin}/post-shop/${orderId}`;
+  }
+
+  return `/post-shop/${orderId}`;
+}
+
+/**
  * @param {{ orderDetails?: Array<{ product?: { name?: string }, cuantity?: number }> }} order
  * @returns {string[]}
  */

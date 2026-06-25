@@ -50,6 +50,8 @@ export function productMatchesCategory(product, categoryName) {
   return product.categories.some((category) => category.name === categoryName);
 }
 
+import { isProductAvailableForSale } from './isProductAvailableForSale.js';
+
 /**
  * @param {Array<object>} products
  * @param {{ category?: string, searchQuery?: string }} filters
@@ -65,6 +67,7 @@ export function filterCatalogProducts(
 
   return products.filter(
     (product) =>
+      isProductAvailableForSale(product) &&
       productMatchesCategory(product, category) &&
       productMatchesName(product, searchQuery),
   );

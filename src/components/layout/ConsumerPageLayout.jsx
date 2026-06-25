@@ -42,11 +42,11 @@ export function PageHeader({ eyebrow, title, titleId, subtitle }) {
   );
 }
 
-export function GlassArticle({ children, ariaLabelledBy }) {
+export function GlassArticle({ children, ariaLabelledBy, className = '' }) {
   return (
     <article
       aria-labelledby={ariaLabelledBy}
-      className="space-y-6 rounded-2xl border border-white/60 bg-white/60 p-8 shadow-sm ring-1 ring-black/5 backdrop-blur-md sm:p-10"
+      className={`space-y-6 rounded-2xl border border-white/60 bg-white/60 p-8 shadow-sm ring-1 ring-black/5 backdrop-blur-md sm:p-10 ${className}`}
     >
       {children}
     </article>
