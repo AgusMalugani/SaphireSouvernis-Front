@@ -2,6 +2,7 @@ export const ORDER_STATE_VALUES = {
   IN_PROCESS: 'inProcess',
   PARTIAL_PAYMENT: 'partialPayment',
   PAID: 'paid',
+  CANCELLED: 'cancelled',
 };
 
 export const ORDER_TRANSACTION_VALUES = {
@@ -21,6 +22,10 @@ const ORDER_STATE_CONFIG = {
   [ORDER_STATE_VALUES.PAID]: {
     label: 'Pagado',
     className: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+  },
+  [ORDER_STATE_VALUES.CANCELLED]: {
+    label: 'Cancelado',
+    className: 'text-stone-600 bg-stone-100 border-stone-200',
   },
 };
 
@@ -81,9 +86,61 @@ export function getOrderTransactionConfig(transactionType) {
 }
 
 /**
+ * @param {object | null | undefined} order
+ * @returns {boolean}
+ */
+export function isOrderCancelled(order) {
+  return order?.state === ORDER_STATE_VALUES.CANCELLED;
+}
+
+/**
+ * @param {object | null | undefined} order
+ * @returns {boolean}
+ */
+export function canRegisterDeposit(order) {
+  if (!order || isOrderCancelled(order)) {
+    return false;
+  }
+
+  if (order.state !== ORDER_STATE_VALUES.IN_PROCESS) {
+    return false;
+  }
+
+  const depositAmount = Number(order.depositAmount ?? 0);
+  return depositAmount === 0;
+}
+
+/**
+ * @param {object | null | undefined} order
+ * @returns {boolean}
+ */
+export function canCancelOrder(order) {
+  if (!order || isOrderCancelled(order)) {
+    return false;
+  }
+
+  return (
+    order.state === ORDER_STATE_VALUES.IN_PROCESS ||
+    order.state === ORDER_STATE_VALUES.PARTIAL_PAYMENT
+  );
+}
+
+/**
  * @returns {Array<{ value: string, label: string }>}
  */
 export function getOrderStateSelectOptions() {
+  return Object.entries(ORDER_STATE_CONFIG)
+    .filter(([stateValue]) => stateValue !== ORDER_STATE_VALUES.CANCELLED)
+    .map(([value, config]) => ({
+      value,
+      label: config.label,
+    }));
+}
+
+/**
+ * @returns {Array<{ value: string, label: string }>}
+ */
+export function getOrderStateFilterOptions() {
   return Object.entries(ORDER_STATE_CONFIG).map(([value, config]) => ({
     value,
     label: config.label,

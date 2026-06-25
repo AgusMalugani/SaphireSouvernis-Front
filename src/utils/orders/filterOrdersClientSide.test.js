@@ -20,6 +20,15 @@ const sampleOrders = [
     numCel: '3417999999',
     createAt: '2026-06-10',
   },
+  {
+    id: '3',
+    state: 'cancelled',
+    transactionType: 'send',
+    nameClient: 'Ana',
+    email: 'ana@test.com',
+    numCel: '3417111111',
+    createAt: '2026-06-12',
+  },
 ];
 
 describe('filterOrdersClientSide', () => {
@@ -48,5 +57,16 @@ describe('filterOrdersClientSide', () => {
     });
     expect(result.data).toHaveLength(1);
     expect(result.data[0].id).toBe('2');
+  });
+
+  it('excludes cancelled orders by default', () => {
+    const result = filterOrdersClientSide(sampleOrders, {});
+    expect(result.data.map((orderItem) => orderItem.id)).toEqual(['2', '1']);
+  });
+
+  it('filters only cancelled orders when state is cancelled', () => {
+    const result = filterOrdersClientSide(sampleOrders, { state: 'cancelled' });
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].id).toBe('3');
   });
 });

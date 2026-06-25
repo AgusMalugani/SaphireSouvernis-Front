@@ -1,4 +1,4 @@
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import {
@@ -6,6 +6,7 @@ import {
   FiCopy,
   FiHome,
   FiLink,
+  FiRefreshCw,
   FiShoppingBag,
 } from 'react-icons/fi';
 import PostShopOrderSummary from '../components/Orders/PostShopOrderSummary';
@@ -17,11 +18,11 @@ import {
   PageHeader,
 } from '../components/layout/ConsumerPageLayout.jsx';
 import { OneOrder } from '../services/Orders/OneOrder';
-import { buildProvisionalOrderFromCheckout } from '../utils/orders/buildProvisionalOrderFromCheckout';
 import {
   buildPostShopPublicUrl,
   buildWhatsAppOrderMessage,
 } from '../utils/orders/buildWhatsAppOrderMessage';
+import { getApiErrorStatus } from '../utils/orders/getApiErrorStatus';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { envs } from '../config/env.js';
 
@@ -108,18 +109,32 @@ function PostShopNotFound({ orderId }) {
   );
 }
 
+function PostShopNetworkError({ onRetry }) {
+  return (
+    <ConsumerPageLayout>
+      <GlassArticle ariaLabelledBy="postshop-network-heading">
+        <PageHeader
+          eyebrow="Error de conexión"
+          title="No pudimos cargar tu pedido"
+          titleId="postshop-network-heading"
+          subtitle="Verificá tu conexión a internet e intentá de nuevo."
+        />
+        <button type="button" onClick={onRetry} className={GHOST_CTA_CLASS}>
+          <FiRefreshCw size={15} aria-hidden="true" />
+          Reintentar
+        </button>
+      </GlassArticle>
+    </ConsumerPageLayout>
+  );
+}
+
 function PostShop() {
   const { id: orderId } = useParams();
-  const location = useLocation();
 
-  const [order, setOrder] = useState(() =>
-    buildProvisionalOrderFromCheckout({
-      orderId,
-      checkoutState: location.state,
-    }),
-  );
+  const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
+  const [pageState, setPageState] = useState('loading');
+  const [retryCounter, setRetryCounter] = useState(0);
   const [orderLoadedAnnouncement, setOrderLoadedAnnouncement] = useState('');
 
   usePageTitle('Pedido confirmado · Saphire Souvenirs');
@@ -129,7 +144,8 @@ function PostShop() {
 
     const fetchOrder = async () => {
       setIsLoading(true);
-      setLoadError(false);
+      setPageState('loading');
+      setOrder(null);
 
       try {
         const fetchedOrder = await OneOrder(orderId);
@@ -138,6 +154,7 @@ function PostShop() {
         }
 
         setOrder(fetchedOrder);
+        setPageState('success');
         setOrderLoadedAnnouncement('Detalle del pedido cargado correctamente.');
       } catch (error) {
         console.error('Error al cargar pedido en PostShop', error);
@@ -145,12 +162,13 @@ function PostShop() {
           return;
         }
 
-        setOrder((previousOrder) => {
-          if (!previousOrder) {
-            setLoadError(true);
-          }
-          return previousOrder;
-        });
+        setOrder(null);
+
+        if (getApiErrorStatus(error) === 404) {
+          setPageState('notFound');
+        } else {
+          setPageState('networkError');
+        }
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -165,7 +183,7 @@ function PostShop() {
     return () => {
       isMounted = false;
     };
-  }, [orderId]);
+  }, [orderId, retryCounter]);
 
   const whatsAppMessage = useMemo(() => {
     if (!order) {
@@ -187,8 +205,14 @@ function PostShop() {
     ? 'Preparando mensaje...'
     : 'Contactar por WhatsApp';
 
-  if (loadError) {
+  if (pageState === 'notFound') {
     return <PostShopNotFound orderId={orderId} />;
+  }
+
+  if (pageState === 'networkError') {
+    return (
+      <PostShopNetworkError onRetry={() => setRetryCounter((value) => value + 1)} />
+    );
   }
 
   return (

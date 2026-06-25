@@ -9,6 +9,7 @@ import {
 import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
 import { formatProductPrice } from '../../utils/products/formatProductPrice';
 import OrderTimeline from './OrderTimeline';
+import OrderPaymentSummary from './OrderPaymentSummary';
 import AdminOrderNotes from './AdminOrderNotes';
 
 function mapAdminNotes(notes = []) {
@@ -37,6 +38,8 @@ function ViewBuyOrder({
     optimisticTimelineByOrderId,
     appendOptimisticTimelineEvent,
     clearOptimisticTimelineEvents,
+    adminRefetchSignal,
+    getOrderById,
   } = useContext(OrdersContext);
 
   const [order, setOrder] = useState({});
@@ -59,7 +62,7 @@ function ViewBuyOrder({
       setAdminNotes(mapAdminNotes(adminOrder.notes ?? adminOrder.adminNotes ?? []));
       setAdminDataUnavailable(false);
       clearOptimisticTimelineEvents(id);
-    } catch (adminError) {
+    } catch {
       if (!isMounted()) {
         return;
       }
@@ -68,6 +71,25 @@ function ViewBuyOrder({
       setAdminDataUnavailable(true);
     }
   }, [clearOptimisticTimelineEvents, id]);
+
+  useEffect(() => {
+    if (!isAdminVariant || adminRefetchSignal.orderId !== id) {
+      return;
+    }
+
+    fetchAdminData();
+  }, [adminRefetchSignal, fetchAdminData, id, isAdminVariant]);
+
+  useEffect(() => {
+    if (!isAdminVariant) {
+      return;
+    }
+
+    const contextOrder = getOrderById(id);
+    if (contextOrder?.id) {
+      setOrder((previousOrder) => ({ ...previousOrder, ...contextOrder }));
+    }
+  }, [getOrderById, id, isAdminVariant, adminRefetchSignal.at]);
 
   useEffect(() => {
     let isMounted = true;
@@ -207,6 +229,15 @@ function ViewBuyOrder({
           {formatProductPrice(order.totalPrice)}
         </span>
       </div>
+
+      {isAdminVariant && (
+        <div>
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-stone-400">
+            Resumen de pago
+          </p>
+          <OrderPaymentSummary order={order} />
+        </div>
+      )}
 
       {orderDetails.length > 0 && (
         <div className="flex flex-col gap-3">

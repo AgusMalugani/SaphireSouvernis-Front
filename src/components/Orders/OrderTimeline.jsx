@@ -1,67 +1,22 @@
-import { FiClock, FiCreditCard, FiMessageSquare, FiTruck } from 'react-icons/fi';
 import {
-  getOrderStateLabel,
-  getOrderTransactionLabel,
-} from '../../utils/orders/orderStatusConfig';
+  FiClock,
+  FiCreditCard,
+  FiEdit3,
+  FiMessageSquare,
+  FiTruck,
+  FiXCircle,
+} from 'react-icons/fi';
+import { getOrderTimelineDescription } from '../../utils/orders/orderTimelineLabels';
 
 const TIMELINE_ICON_BY_TYPE = {
   created: FiClock,
   state_changed: FiCreditCard,
+  payment_updated: FiCreditCard,
   transaction_changed: FiTruck,
   admin_note_added: FiMessageSquare,
+  order_cancelled: FiXCircle,
+  order_edited: FiEdit3,
 };
-
-function getTimelineDescription(timelineEvent) {
-  const eventPayload = timelineEvent?.payload ?? {};
-
-  if (timelineEvent.type === 'state_changed') {
-    const fromLabel =
-      eventPayload.fromLabel ?? getOrderStateLabel(eventPayload.from);
-    const toLabel =
-      eventPayload.toLabel ?? getOrderStateLabel(eventPayload.to);
-    return `Estado: ${fromLabel ?? '—'} → ${toLabel ?? '—'}`;
-  }
-
-  if (timelineEvent.type === 'transaction_changed') {
-    const hasAddressChange =
-      eventPayload.fromAddress != null || eventPayload.toAddress != null;
-    const hasTransactionChange =
-      eventPayload.fromTransactionType != null ||
-      eventPayload.toTransactionType != null ||
-      eventPayload.from != null ||
-      eventPayload.to != null;
-
-    if (hasTransactionChange) {
-      const fromLabel =
-        eventPayload.fromLabel ??
-        getOrderTransactionLabel(
-          eventPayload.fromTransactionType ?? eventPayload.from,
-        );
-      const toLabel =
-        eventPayload.toLabel ??
-        getOrderTransactionLabel(
-          eventPayload.toTransactionType ?? eventPayload.to,
-        );
-      return `Entrega: ${fromLabel ?? '—'} → ${toLabel ?? '—'}`;
-    }
-
-    if (hasAddressChange) {
-      return `Dirección: ${eventPayload.fromAddress ?? '—'} → ${eventPayload.toAddress ?? '—'}`;
-    }
-
-    return 'Entrega actualizada';
-  }
-
-  if (timelineEvent.type === 'admin_note_added') {
-    return eventPayload.note ?? 'Nota agregada';
-  }
-
-  if (timelineEvent.type === 'created') {
-    return 'Pedido creado';
-  }
-
-  return 'Evento registrado';
-}
 
 function OrderTimeline({ events = [], emptyMessage }) {
   if (events.length === 0) {
@@ -91,7 +46,7 @@ function OrderTimeline({ events = [], emptyMessage }) {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-stone-700">
-                {getTimelineDescription(timelineEvent)}
+                {getOrderTimelineDescription(timelineEvent)}
               </p>
               {formattedDate && (
                 <p className="mt-1 text-xs text-stone-400">{formattedDate}</p>

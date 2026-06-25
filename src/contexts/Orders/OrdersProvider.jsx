@@ -4,10 +4,7 @@ import { FindAllOrders } from '../../services/Orders/FindAllOrders';
 import { AuthContext } from '../Auth/AuthContext';
 import { EditOrderService } from '../../services/Orders/EditOrderService';
 import { normalizeOrdersListResponse } from '../../utils/orders/normalizeOrdersListResponse';
-import {
-  getOrderStateLabel,
-  getOrderTransactionLabel,
-} from '../../utils/orders/orderStatusConfig';
+import { getOrderTransactionLabel, ORDER_STATE_VALUES } from '../../utils/orders/orderStatusConfig';
 
 const DEFAULT_ORDERS_FILTERS = {
   state: '',
@@ -35,12 +32,20 @@ function OrdersProvider({ children }) {
   const [optimisticTimelineByOrderId, setOptimisticTimelineByOrderId] = useState(
     {},
   );
+  const [adminRefetchSignal, setAdminRefetchSignal] = useState({
+    orderId: null,
+    at: 0,
+  });
   const { token } = useContext(AuthContext);
 
   const getOrderById = useCallback(
     (orderId) => orders.find((orderItem) => orderItem.id === orderId),
     [orders],
   );
+
+  const signalAdminRefetch = useCallback((orderId) => {
+    setAdminRefetchSignal({ orderId, at: Date.now() });
+  }, []);
 
   const fetchOrders = useCallback(
     async (nextFilters = ordersFilters) => {
@@ -102,22 +107,32 @@ function OrdersProvider({ children }) {
     });
   }, []);
 
+  const cancelOrderContext = async (orderId, { cancelReason } = {}) => {
+    const previousOrder = getOrderById(orderId);
+    const wasAlreadyCancelled =
+      previousOrder?.state === ORDER_STATE_VALUES.CANCELLED;
+
+    const cancelPayload = { state: ORDER_STATE_VALUES.CANCELLED };
+    if (cancelReason) {
+      cancelPayload.cancelReason = cancelReason;
+    }
+
+    const response = await EditOrderService(orderId, cancelPayload);
+
+    setOrders((previousOrders) =>
+      previousOrders.map((orderItem) =>
+        orderItem.id === orderId ? { ...orderItem, ...response } : orderItem,
+      ),
+    );
+
+    clearOptimisticTimelineEvents(orderId);
+    signalAdminRefetch(orderId);
+
+    return { response, wasAlreadyCancelled };
+  };
+
   const appendOptimisticEditEvent = useCallback(
     (orderId, { action, previousOrder, updatedOrder }) => {
-      if (action === 'estadoPago' && previousOrder?.state !== updatedOrder?.state) {
-        appendOptimisticTimelineEvent(orderId, {
-          id: `optimistic-state-${Date.now()}`,
-          type: 'state_changed',
-          payload: {
-            fromLabel: getOrderStateLabel(previousOrder?.state),
-            toLabel: getOrderStateLabel(updatedOrder?.state),
-          },
-          createdAt: new Date().toISOString(),
-          isOptimistic: true,
-        });
-        return;
-      }
-
       if (
         action === 'envio/Retiro' &&
         (previousOrder?.transactionType !== updatedOrder?.transactionType ||
@@ -159,10 +174,13 @@ function OrdersProvider({ children }) {
     ordersError,
     getOrderById,
     editOrderContext,
+    cancelOrderContext,
     optimisticTimelineByOrderId,
     appendOptimisticTimelineEvent,
     clearOptimisticTimelineEvents,
     appendOptimisticEditEvent,
+    adminRefetchSignal,
+    signalAdminRefetch,
   };
 
   return (

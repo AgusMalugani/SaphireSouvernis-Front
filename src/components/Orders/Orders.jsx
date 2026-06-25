@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { FiFilter, FiSearch } from 'react-icons/fi';
 import { OrdersContext } from '../../contexts/Orders/OrdersContext';
 import {
-  getOrderStateSelectOptions,
+  getOrderStateFilterOptions,
   getOrderTransactionSelectOptions,
 } from '../../utils/orders/orderStatusConfig';
 import Order from './Order';
@@ -78,7 +78,7 @@ function Orders() {
       ? '1 orden encontrada'
       : `${ordersMeta.total} órdenes encontradas`;
 
-  const stateOptions = getOrderStateSelectOptions();
+  const stateOptions = getOrderStateFilterOptions();
   const transactionOptions = getOrderTransactionSelectOptions();
 
   return (

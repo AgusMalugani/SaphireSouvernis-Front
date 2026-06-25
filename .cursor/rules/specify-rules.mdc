@@ -5,5 +5,5 @@ alwaysApply: true
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan at
-`specs/006-admin-inventory-table/plan.md` (quickstart: `specs/006-admin-inventory-table/quickstart.md`; spec: `specs/006-admin-inventory-table/spec.md`).
+`specs/007-order-payments-lifecycle/plan.md` (quickstart: `specs/007-order-payments-lifecycle/quickstart.md`; spec: `specs/007-order-payments-lifecycle/spec.md`).
 <!-- SPECKIT END -->

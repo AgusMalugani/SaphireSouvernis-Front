@@ -11,7 +11,9 @@ const buildHeaders = (isFormData = false) => {
 const handleResponse = async (response) => {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Error ${response.status}`);
+    const error = new Error(errorData.message || `Error ${response.status}`);
+    error.status = response.status;
+    throw error;
   }
   if (response.status === 204) return null;
   return response.json();

@@ -64,8 +64,9 @@ export function filterOrdersClientSide(orders, filters = {}) {
   const safeOrders = Array.isArray(orders) ? orders : [];
 
   let filteredOrders = safeOrders.filter((orderItem) => {
-    const matchesState =
-      !mergedFilters.state || orderItem.state === mergedFilters.state;
+    const matchesState = mergedFilters.state
+      ? orderItem.state === mergedFilters.state
+      : orderItem.state !== 'cancelled';
     const matchesTransactionType =
       !mergedFilters.transactionType ||
       orderItem.transactionType === mergedFilters.transactionType;

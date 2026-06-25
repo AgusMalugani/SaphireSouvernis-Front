@@ -1,46 +1,92 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { OrdersContext } from '../../contexts/Orders/OrdersContext';
 import { toast } from 'react-toastify';
 import { FiCheck } from 'react-icons/fi';
 import {
-  getOrderStateSelectOptions,
+  getOrderStateConfig,
+  getOrderStateLabel,
   getOrderTransactionSelectOptions,
 } from '../../utils/orders/orderStatusConfig';
+import { validateDepositAmount } from '../../utils/orders/validateDepositAmount';
 
 function EditOrder({ id, action, onClose }) {
-  const { getOrderById, editOrderContext, clearOptimisticTimelineEvents } =
-    useContext(OrdersContext);
+  const {
+    getOrderById,
+    editOrderContext,
+    clearOptimisticTimelineEvents,
+    signalAdminRefetch,
+  } = useContext(OrdersContext);
 
   const orderContext = getOrderById(id);
   const [order, setOrder] = useState(orderContext || {});
+  const [depositInput, setDepositInput] = useState('');
+  const [validationMessage, setValidationMessage] = useState('');
+
+  useEffect(() => {
+    if (orderContext) {
+      setOrder(orderContext);
+    }
+  }, [orderContext]);
 
   const handleOnChange = (changeEvent) => {
     const { name, value } = changeEvent.target;
     setOrder({ ...order, [name]: value });
   };
 
+  const handleDepositInputChange = (changeEvent) => {
+    setDepositInput(changeEvent.target.value);
+    setValidationMessage('');
+  };
+
   const handleOnSubmit = async (submitEvent) => {
     submitEvent.preventDefault();
 
-    const payload =
-      action === 'estadoPago'
-        ? { state: order.state }
-        : {
-            transactionType: order.transactionType,
-            address: order.address,
-          };
-
-    try {
-      await toast.promise(
-        editOrderContext(id, payload),
-        {
-          pending: 'Modificando orden...',
-          success: 'Orden modificada ✅',
-          error: 'Falló 😓',
-        },
+    if (action === 'registrarSeña') {
+      const validationResult = validateDepositAmount(
+        depositInput,
+        order.totalPrice,
       );
 
+      if (!validationResult.valid) {
+        setValidationMessage(validationResult.message);
+        return;
+      }
+
+      try {
+        await toast.promise(
+          editOrderContext(id, { depositAmount: validationResult.value }),
+          {
+            pending: 'Registrando seña...',
+            success: 'Seña registrada ✅',
+            error: 'No se pudo registrar la seña 😓',
+          },
+        );
+
+        clearOptimisticTimelineEvents(id);
+        signalAdminRefetch(id);
+        onClose();
+      } catch (error) {
+        console.error('Error al registrar seña', error);
+        throw error;
+      }
+
+      return;
+    }
+
+    const payload = {
+      transactionType: order.transactionType,
+      address: order.address,
+    };
+
+    try {
+      await toast.promise(editOrderContext(id, payload), {
+        pending: 'Modificando orden...',
+        success: 'Orden modificada ✅',
+        error: 'Falló 😓',
+      });
+
       clearOptimisticTimelineEvents(id);
+      signalAdminRefetch(id);
       onClose();
     } catch (error) {
       console.error('Error al editar la orden', error);
@@ -51,8 +97,8 @@ function EditOrder({ id, action, onClose }) {
   const inputClass =
     'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-2xl bg-white/70 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all';
   const labelClass = 'text-sm font-semibold text-stone-700';
-  const stateOptions = getOrderStateSelectOptions();
   const transactionOptions = getOrderTransactionSelectOptions();
+  const paymentStateConfig = getOrderStateConfig(order.state);
 
   return (
     <div>
@@ -106,32 +152,44 @@ function EditOrder({ id, action, onClose }) {
         </form>
       )}
 
-      {action === 'estadoPago' && (
+      {action === 'registrarSeña' && (
         <form onSubmit={handleOnSubmit} className="flex flex-col gap-5">
           <div>
             <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
-              Actualizar
+              Registrar
             </span>
             <h2 className="mt-1 font-display text-2xl font-bold text-stone-800">
-              Estado de Pago
+              Monto de seña
             </h2>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className={labelClass}>Estado del pago</label>
-            <select
-              name="state"
-              value={order.state || ''}
-              onChange={handleOnChange}
-              className={inputClass}
+          <div className="flex flex-col gap-2">
+            <span className={labelClass}>Estado de pago actual</span>
+            <span
+              className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-xs font-semibold ${paymentStateConfig.className}`}
             >
-              <option value="">Seleccione el estado</option>
-              {stateOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              {getOrderStateLabel(order.state)}
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="deposit-amount" className={labelClass}>
+              Monto de seña (ARS)
+            </label>
+            <input
+              id="deposit-amount"
+              type="number"
+              min="0"
+              step="1"
+              inputMode="numeric"
+              value={depositInput}
+              onChange={handleDepositInputChange}
+              placeholder="Ej. 5000"
+              className={inputClass}
+            />
+            {validationMessage && (
+              <p className="text-sm text-rose-500">{validationMessage}</p>
+            )}
           </div>
 
           <button
@@ -139,7 +197,7 @@ function EditOrder({ id, action, onClose }) {
             className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-3 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition-all duration-300 hover:scale-105 hover:shadow-rose-400/60 active:scale-95"
           >
             <FiCheck size={16} />
-            Guardar cambios
+            Registrar seña
           </button>
         </form>
       )}
