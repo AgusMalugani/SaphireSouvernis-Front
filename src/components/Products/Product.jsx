@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import ModalViewProduct from './ModalViewProduct';
-import { FiHeart, FiEye } from 'react-icons/fi';
 
 function Product({ id, img_url, name, price, addToCart }) {
   const [cantidad, setCantidad] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
-  const [idProduct, setIdProduct] = useState('');
-
-  const viewProduct = (productId) => {
-    setIdProduct(productId);
-    setIsOpen(true);
-  };
 
   const handleChange = (event) => {
     setCantidad(Number(event.target.value));
@@ -23,40 +16,20 @@ function Product({ id, img_url, name, price, addToCart }) {
 
   return (
     <div className="group relative flex flex-col bg-white/60 backdrop-blur-sm border border-white/60 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-rose-200/50 transition-all duration-300">
-
-      {/* Imagen con efecto scale al hover */}
-      <div className="relative aspect-square overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        aria-label={`Ver detalle de ${name}`}
+        className="relative aspect-square w-full overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 focus-visible:ring-inset"
+      >
         <img
           src={img_url}
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
+        <div className="pointer-events-none absolute inset-0 bg-black/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      </button>
 
-        {/* Velo oscuro sutil al hover */}
-        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-        {/* Íconos de acción — aparecen al hover con deslizamiento vertical */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-          <button
-            type="button"
-            aria-label="Guardar en favoritos"
-            className="flex items-center justify-center w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm text-rose-400 hover:bg-rose-50 hover:text-rose-500 shadow-sm transition-colors duration-200"
-          >
-            <FiHeart size={16} />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => viewProduct(id)}
-            aria-label="Ver detalle del producto"
-            className="flex items-center justify-center w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm text-stone-500 hover:bg-stone-50 hover:text-stone-800 shadow-sm transition-colors duration-200"
-          >
-            <FiEye size={16} />
-          </button>
-        </div>
-      </div>
-
-      {/* Info y controles */}
       <div className="flex flex-col gap-2 p-3 sm:p-4 sm:gap-3">
         <div>
           <h3 className="font-semibold text-stone-800 text-xs sm:text-sm leading-snug line-clamp-2">
@@ -90,7 +63,7 @@ function Product({ id, img_url, name, price, addToCart }) {
         <ModalViewProduct
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          idProduct={idProduct}
+          idProduct={id}
         />
       )}
     </div>
