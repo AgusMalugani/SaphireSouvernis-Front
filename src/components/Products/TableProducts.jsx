@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fi';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
+import { getPrimaryProductImageUrl } from '../../utils/products/productImageUrls';
 import { formatProductPrice } from '../../utils/products/formatProductPrice';
 import {
   filterInventoryProducts,
@@ -263,8 +264,9 @@ function TableProducts({ viewProduct }) {
                 {visibleProducts.map((product) => {
                   const availabilityConfig = getProductAvailabilityConfig(product);
                   const categoryName = getPrimaryCategoryName(product);
-                  const displayImageUrl = product.img_url
-                    ? toCloudinaryDisplayUrl(product.img_url)
+                  const primaryImageUrl = getPrimaryProductImageUrl(product);
+                  const displayImageUrl = primaryImageUrl
+                    ? toCloudinaryDisplayUrl(primaryImageUrl)
                     : null;
                   const isActiveProduct = isProductActive(product);
 

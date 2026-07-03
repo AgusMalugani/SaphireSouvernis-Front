@@ -1,56 +1,61 @@
 import { FiArrowLeft, FiCheck } from 'react-icons/fi';
 import ProductImagePreview from '../ProductImagePreview';
-import { hasExistingProductImage } from '../../../utils/products/canAdvanceFromImageStep';
 
 function ProductStep3({
   product,
-  previewUrl,
-  existingImageUrl = '',
-  file,
+  previewUrls = [],
+  existingImageUrls = [],
+  files = [],
   volverStep,
   handleSubmit,
 }) {
-  const renderSummaryImage = () => {
-    if (file && previewUrl?.startsWith('blob:')) {
+  const hasNewFiles = files.length > 0;
+  const summaryImageUrls = hasNewFiles ? previewUrls : existingImageUrls;
+
+  const renderSummaryTile = (imageUrl, index) => {
+    if (hasNewFiles && imageUrl?.startsWith('blob:')) {
       return (
         <img
-          src={previewUrl}
-          alt={product.name}
+          key={`summary-blob-${index}`}
+          src={imageUrl}
+          alt={`${product.name} ${index + 1}`}
           className="h-full w-full object-cover"
         />
       );
     }
 
-    if (hasExistingProductImage(existingImageUrl)) {
-      return (
-        <ProductImagePreview
-          originalUrl={existingImageUrl}
-          alt={product.name}
-          className="h-full w-full object-cover"
-        />
-      );
-    }
-
-    if (previewUrl) {
-      return (
-        <img
-          src={previewUrl}
-          alt={product.name}
-          className="h-full w-full object-cover"
-        />
-      );
-    }
-
-    return null;
+    return (
+      <ProductImagePreview
+        key={`summary-persisted-${imageUrl}-${index}`}
+        originalUrl={imageUrl}
+        alt={`${product.name} ${index + 1}`}
+        className="h-full w-full object-cover"
+      />
+    );
   };
-
-  const summaryImage = renderSummaryImage();
 
   return (
     <div className="flex flex-col gap-6">
       <div className="overflow-hidden rounded-2xl border border-stone-100 bg-stone-50/80">
-        {summaryImage && (
-          <div className="aspect-video w-full overflow-hidden">{summaryImage}</div>
+        {summaryImageUrls.length > 0 && (
+          <div
+            className={`grid gap-1 ${
+              summaryImageUrls.length === 1
+                ? 'grid-cols-1'
+                : summaryImageUrls.length === 2
+                  ? 'grid-cols-2'
+                  : 'grid-cols-3'
+            }`}
+          >
+            {summaryImageUrls.map((imageUrl, index) => (
+              <div
+                key={`${imageUrl}-${index}`}
+                className="aspect-square overflow-hidden"
+              >
+                {renderSummaryTile(imageUrl, index)}
+              </div>
+            ))}
+          </div>
         )}
 
         <div className="flex flex-col gap-3 p-5">

@@ -5,34 +5,48 @@ import ProductImagePreview from '../ProductImagePreview';
 import {
   canAdvanceFromImageStep,
   getImageStepBlockMessage,
-  hasExistingProductImage,
+  MAX_PRODUCT_IMAGES_MESSAGE,
 } from '../../../utils/products/canAdvanceFromImageStep';
+import { MAX_PRODUCT_IMAGES } from '../../../utils/products/productImageUrls';
 
 function ProductStep2({
-  handleOnChangeImage,
+  handleOnChangeImages,
   volverStep,
   avanzarStep,
-  file,
-  previewUrl,
+  files = [],
+  previewUrls = [],
   mode = 'create',
-  existingImageUrl = '',
+  existingImageUrls = [],
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
   const isEditMode = mode === 'edit';
-  const hasPersistedImage = hasExistingProductImage(existingImageUrl);
-  const showExistingImagePreview =
-    Boolean(previewUrl) || (isEditMode && hasPersistedImage);
+  const newFilesCount = files.length;
+  const hasNewFiles = newFilesCount > 0;
+  const hasPersistedImages = existingImageUrls.length > 0;
+  const showImageGrid = hasNewFiles || (isEditMode && hasPersistedImages);
 
-  const handleFileSelect = (selectedFile) => {
-    if (!selectedFile) {
+  const handleFilesSelect = (selectedFileList) => {
+    if (!selectedFileList || selectedFileList.length === 0) {
       return;
     }
-    if (!selectedFile.type.startsWith('image/')) {
+
+    const incomingFiles = Array.from(selectedFileList);
+    const invalidFile = incomingFiles.find(
+      (fileItem) => !fileItem.type.startsWith('image/'),
+    );
+
+    if (invalidFile) {
       toast.error('Solo se aceptan archivos de imagen.');
       return;
     }
-    handleOnChangeImage(selectedFile);
+
+    if (incomingFiles.length > MAX_PRODUCT_IMAGES) {
+      toast.error(MAX_PRODUCT_IMAGES_MESSAGE);
+      return;
+    }
+
+    handleOnChangeImages(incomingFiles);
   };
 
   const handleDragOver = (event) => {
@@ -48,61 +62,51 @@ function ProductStep2({
   const handleDrop = (event) => {
     event.preventDefault();
     setIsDragging(false);
-    handleFileSelect(event.dataTransfer.files[0]);
+    handleFilesSelect(event.dataTransfer.files);
   };
 
   const handleAvanzar = () => {
     const canAdvance = canAdvanceFromImageStep({
       mode,
-      hasNewFile: Boolean(file),
-      existingImageUrl,
+      newFilesCount,
+      existingImageUrls,
     });
 
     if (!canAdvance) {
-      toast.error(getImageStepBlockMessage({ mode, existingImageUrl }));
+      toast.error(getImageStepBlockMessage({ mode, existingImageUrls }));
       return;
     }
 
     avanzarStep();
   };
 
-  const handleChangeImageClick = () => {
+  const handleChangeImagesClick = () => {
     fileInputRef.current?.click();
   };
 
-  const renderPreviewImage = () => {
-    if (file && previewUrl?.startsWith('blob:')) {
+  const renderPreviewTile = (previewUrl, index, altLabel) => {
+    if (previewUrl?.startsWith('blob:')) {
       return (
         <img
+          key={`blob-${index}`}
           src={previewUrl}
-          alt="Vista previa"
+          alt={altLabel}
           className="h-full w-full object-cover"
         />
       );
     }
 
-    if (hasPersistedImage) {
-      return (
-        <ProductImagePreview
-          originalUrl={existingImageUrl}
-          alt="Vista previa"
-          className="h-full w-full object-cover"
-        />
-      );
-    }
-
-    if (previewUrl) {
-      return (
-        <img
-          src={previewUrl}
-          alt="Vista previa"
-          className="h-full w-full object-cover"
-        />
-      );
-    }
-
-    return null;
+    return (
+      <ProductImagePreview
+        key={`persisted-${previewUrl}-${index}`}
+        originalUrl={previewUrl}
+        alt={altLabel}
+        className="h-full w-full object-cover"
+      />
+    );
   };
+
+  const gridPreviewUrls = hasNewFiles ? previewUrls : existingImageUrls;
 
   return (
     <div className="flex flex-col gap-6">
@@ -110,33 +114,47 @@ function ProductStep2({
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        onChange={(event) => handleFileSelect(event.target.files[0])}
+        multiple
+        onChange={(event) => handleFilesSelect(event.target.files)}
         className="sr-only"
       />
 
-      {showExistingImagePreview ? (
+      {showImageGrid ? (
         <div className="flex flex-col items-center gap-4">
-          <div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-3xl border border-white/60 shadow-md">
-            {renderPreviewImage()}
+          <div
+            className={`grid w-full max-w-md gap-3 ${
+              gridPreviewUrls.length === 1 ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3'
+            }`}
+          >
+            {gridPreviewUrls.map((previewUrl, index) => (
+              <div
+                key={`${previewUrl}-${index}`}
+                className="relative aspect-square overflow-hidden rounded-2xl border border-white/60 shadow-md"
+              >
+                {renderPreviewTile(previewUrl, index, `Vista previa ${index + 1}`)}
+              </div>
+            ))}
           </div>
 
-          {isEditMode && hasPersistedImage && !file ? (
-            <p className="max-w-[280px] text-center text-xs text-stone-500">
-              Imagen actual — no es necesario cambiarla
+          {isEditMode && hasPersistedImages && !hasNewFiles ? (
+            <p className="max-w-md text-center text-xs text-stone-500">
+              Imágenes actuales — no es necesario cambiarlas
             </p>
           ) : (
-            <p className="max-w-[240px] truncate text-center text-xs text-stone-400">
-              {file?.name}
+            <p className="max-w-md text-center text-xs text-stone-400">
+              {hasNewFiles
+                ? `${newFilesCount} imagen${newFilesCount === 1 ? '' : 'es'} seleccionada${newFilesCount === 1 ? '' : 's'} (máx. ${MAX_PRODUCT_IMAGES})`
+                : `Hasta ${MAX_PRODUCT_IMAGES} imágenes`}
             </p>
           )}
 
           <button
             type="button"
-            onClick={handleChangeImageClick}
+            onClick={handleChangeImagesClick}
             className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-xs font-semibold text-stone-500 transition-all duration-200 hover:border-rose-300 hover:text-rose-400"
           >
             <FiRefreshCw size={13} />
-            Cambiar imagen
+            {hasNewFiles ? 'Reemplazar imágenes' : 'Cambiar imágenes'}
           </button>
         </div>
       ) : (
@@ -155,7 +173,8 @@ function ProductStep2({
           <input
             type="file"
             accept="image/*"
-            onChange={(event) => handleFileSelect(event.target.files[0])}
+            multiple
+            onChange={(event) => handleFilesSelect(event.target.files)}
             className="sr-only"
           />
 
@@ -174,9 +193,11 @@ function ProductStep2({
             <p
               className={`text-sm font-semibold transition-colors duration-300 ${isDragging ? 'text-rose-500' : 'text-stone-600'}`}
             >
-              {isDragging ? 'Soltá la imagen aquí' : 'Arrastrá una imagen o hacé clic'}
+              {isDragging ? 'Soltá las imágenes aquí' : 'Arrastrá imágenes o hacé clic'}
             </p>
-            <p className="mt-1 text-xs text-stone-400">PNG, JPG, WEBP · hasta 10MB</p>
+            <p className="mt-1 text-xs text-stone-400">
+              PNG, JPG, WEBP · hasta {MAX_PRODUCT_IMAGES} imágenes
+            </p>
           </div>
         </label>
       )}

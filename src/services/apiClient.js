@@ -51,4 +51,11 @@ export const apiClient = {
       headers: buildHeaders(true),
       body: formData,
     }).then(handleResponse),
+
+  putFormData: (path, formData) =>
+    fetch(`${envs.apiUrl}${path}`, {
+      method: 'PUT',
+      headers: buildHeaders(true),
+      body: formData,
+    }).then(handleResponse),
 };

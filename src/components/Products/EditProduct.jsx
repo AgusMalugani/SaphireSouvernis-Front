@@ -2,61 +2,68 @@ import { useContext, useEffect, useState } from 'react';
 import FormProduct from './FormProduct';
 import ProductDetailSkeleton from './ProductDetailSkeleton';
 import { toast } from 'react-toastify';
-import { ImageProduct } from '../../services/Products/ImageProduct';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProductDetail } from '../../hooks/useProductDetail';
-import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
 import { normalizeProductForEdit, resolveProductFromCatalog } from '../../utils/products/resolveProductFromCatalog';
+import { getProductImageUrls } from '../../utils/products/productImageUrls';
+import { buildProductMetadataPayload } from '../../utils/products/buildProductMetadataPayload';
+import { buildProductMultipartFormData } from '../../utils/products/buildProductMultipartFormData';
+import { UpdateProduct } from '../../services/Products/UpdateProduct';
+import { updateProductWithFiles } from '../../services/Products/updateProductWithFiles';
+import { MAX_PRODUCT_IMAGES } from '../../utils/products/productImageUrls';
+import { MAX_PRODUCT_IMAGES_MESSAGE } from '../../utils/products/canAdvanceFromImageStep';
 
 const emptyProduct = {
   name: '',
   details: '',
   price: 0,
   stock: true,
-  img_url: '',
   categories: [],
+  img_urls: [],
 };
 
 function buildEditStateFromProduct(sourceProduct) {
   const normalizedProduct = normalizeProductForEdit(sourceProduct);
   return {
     product: normalizedProduct,
-    previewUrl: normalizedProduct.img_url
-      ? toCloudinaryDisplayUrl(normalizedProduct.img_url)
-      : null,
+    existingImageUrls: getProductImageUrls(normalizedProduct),
   };
 }
 
 function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { editProduct, categories, products } = useContext(ProductsContext);
+  const { setProducts, categories, products } = useContext(ProductsContext);
 
   const cachedProduct = resolveProductFromCatalog(products, id);
   const initialEditState = cachedProduct
     ? buildEditStateFromProduct(cachedProduct)
-    : { product: emptyProduct, previewUrl: null };
+    : { product: emptyProduct, existingImageUrls: [] };
 
   const [product, setProduct] = useState(initialEditState.product);
-  const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(initialEditState.previewUrl);
+  const [files, setFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
+  const [existingImageUrls, setExistingImageUrls] = useState(
+    initialEditState.existingImageUrls,
+  );
 
   const { product: loadedProduct, isLoading, isError, errorMessage } =
     useProductDetail({ productId: id, enabled: Boolean(id) });
 
   useEffect(() => {
-    setFile(null);
+    setFiles([]);
+    setPreviewUrls([]);
     const nextCachedProduct = resolveProductFromCatalog(products, id);
     if (nextCachedProduct) {
       const nextEditState = buildEditStateFromProduct(nextCachedProduct);
       setProduct(nextEditState.product);
-      setPreviewUrl(nextEditState.previewUrl);
+      setExistingImageUrls(nextEditState.existingImageUrls);
       return;
     }
     setProduct(emptyProduct);
-    setPreviewUrl(null);
-  }, [id]);
+    setExistingImageUrls([]);
+  }, [id, products]);
 
   useEffect(() => {
     if (!loadedProduct) {
@@ -65,22 +72,47 @@ function EditProduct() {
 
     const nextEditState = buildEditStateFromProduct(loadedProduct);
     setProduct(nextEditState.product);
-    setPreviewUrl(nextEditState.previewUrl);
+    setExistingImageUrls(nextEditState.existingImageUrls);
   }, [loadedProduct]);
 
-  const handleOnChangeImage = (selectedFile) => {
-    if (!selectedFile) {
-      setFile(null);
-      if (product.img_url?.trim()) {
-        setPreviewUrl(toCloudinaryDisplayUrl(product.img_url));
-      } else {
-        setPreviewUrl(null);
-      }
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((previewUrl) => {
+        if (previewUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      });
+    };
+  }, [previewUrls]);
+
+  const handleOnChangeImages = (selectedFiles) => {
+    if (!selectedFiles || selectedFiles.length === 0) {
+      setFiles([]);
+      previewUrls.forEach((previewUrl) => {
+        if (previewUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      });
+      setPreviewUrls([]);
       return;
     }
-    setFile(selectedFile);
-    setPreviewUrl(URL.createObjectURL(selectedFile));
-    toast.success('Imagen cargada');
+
+    if (selectedFiles.length > MAX_PRODUCT_IMAGES) {
+      toast.error(MAX_PRODUCT_IMAGES_MESSAGE);
+      return;
+    }
+
+    previewUrls.forEach((previewUrl) => {
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    });
+
+    setFiles(selectedFiles);
+    setPreviewUrls(selectedFiles.map((fileItem) => URL.createObjectURL(fileItem)));
+    toast.success(
+      `${selectedFiles.length} imagen${selectedFiles.length === 1 ? '' : 'es'} cargada${selectedFiles.length === 1 ? '' : 's'}`,
+    );
   };
 
   const handleOnChange = (event) => {
@@ -102,17 +134,31 @@ function EditProduct() {
     setProduct({ ...product, [name]: value });
   };
 
+  const syncUpdatedProduct = (updatedProduct) => {
+    setProducts((previousProducts) => {
+      const nextProducts = previousProducts.map((productItem) =>
+        productItem.id === id ? updatedProduct : productItem,
+      );
+      localStorage.setItem('products', JSON.stringify(nextProducts));
+      return nextProducts;
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      if (file) {
-        const imageResponse = await ImageProduct(id, file);
-        const updatedProduct = { ...product, img_url: imageResponse.img };
-        setProduct(updatedProduct);
-        await editProduct(id, updatedProduct);
+      let updatedProduct;
+
+      if (files.length > 0) {
+        const formData = buildProductMultipartFormData({ product, files });
+        updatedProduct = await updateProductWithFiles(id, formData);
       } else {
-        await editProduct(id, product);
+        const metadataPayload = buildProductMetadataPayload(product);
+        updatedProduct = await UpdateProduct(id, metadataPayload);
       }
+
+      syncUpdatedProduct(updatedProduct);
 
       toast.success('Producto modificado correctamente.', {
         hideProgressBar: true,
@@ -120,7 +166,7 @@ function EditProduct() {
       });
       navigate('/dashboard');
     } catch (error) {
-      toast.error('Ocurrió un error al modificar el producto.');
+      toast.error(error.message || 'Ocurrió un error al modificar el producto.');
       console.error(error);
     }
   };
@@ -149,11 +195,12 @@ function EditProduct() {
     <FormProduct
       mode="edit"
       categorias={categories}
-      handleOnChangeImage={handleOnChangeImage}
+      handleOnChangeImages={handleOnChangeImages}
       handleSubmit={handleSubmit}
       product={product}
-      file={file}
-      previewUrl={previewUrl}
+      files={files}
+      previewUrls={previewUrls}
+      existingImageUrls={existingImageUrls}
       handleOnChange={handleOnChange}
     />
   );

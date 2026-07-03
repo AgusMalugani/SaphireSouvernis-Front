@@ -11,13 +11,14 @@ const STEPS = [
 ];
 
 function FormProduct({
-  handleOnChangeImage,
+  handleOnChangeImages,
   handleSubmit,
   product,
   handleOnChange,
   categorias,
-  file,
-  previewUrl,
+  files = [],
+  previewUrls = [],
+  existingImageUrls = [],
   mode = 'create',
 }) {
   const [step, setStep] = useState(1);
@@ -27,8 +28,6 @@ function FormProduct({
 
   return (
     <div className="flex flex-col gap-8">
-
-      {/* Stepper premium — burbujas numeradas con líneas conectoras */}
       <div className="flex items-center justify-center">
         {STEPS.map((stepItem, index) => {
           const isCompleted = step > stepItem.number;
@@ -37,8 +36,6 @@ function FormProduct({
           return (
             <React.Fragment key={stepItem.number}>
               <div className="flex flex-col items-center gap-1.5">
-
-                {/* Burbuja del paso */}
                 <div
                   className={`flex items-center justify-center w-9 h-9 rounded-full text-sm font-bold transition-all duration-300
                     ${isCompleted
@@ -52,7 +49,6 @@ function FormProduct({
                   {isCompleted ? <FiCheck size={16} /> : stepItem.number}
                 </div>
 
-                {/* Label del paso */}
                 <span
                   className={`text-xs font-medium transition-colors duration-300
                     ${isActive ? 'text-rose-500' : isCompleted ? 'text-stone-500' : 'text-stone-300'}
@@ -62,7 +58,6 @@ function FormProduct({
                 </span>
               </div>
 
-              {/* Línea conectora entre pasos */}
               {index < STEPS.length - 1 && (
                 <div
                   className={`h-px w-16 sm:w-24 mb-5 mx-1 transition-all duration-500
@@ -75,7 +70,6 @@ function FormProduct({
         })}
       </div>
 
-      {/* Contenido del paso activo */}
       {step === 1 && (
         <ProductStep1
           avanzarStep={avanzarStep}
@@ -86,21 +80,21 @@ function FormProduct({
       )}
       {step === 2 && (
         <ProductStep2
-          handleOnChangeImage={handleOnChangeImage}
+          handleOnChangeImages={handleOnChangeImages}
           volverStep={volverStep}
           avanzarStep={avanzarStep}
-          file={file}
-          previewUrl={previewUrl}
+          files={files}
+          previewUrls={previewUrls}
+          existingImageUrls={existingImageUrls}
           mode={mode}
-          existingImageUrl={product.img_url}
         />
       )}
       {step === 3 && (
         <ProductStep3
           product={product}
-          previewUrl={previewUrl}
-          existingImageUrl={product.img_url}
-          file={file}
+          previewUrls={previewUrls}
+          existingImageUrls={existingImageUrls}
+          files={files}
           volverStep={volverStep}
           handleSubmit={handleSubmit}
         />

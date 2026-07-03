@@ -7,6 +7,7 @@ import {
   getOrderTransactionLabel,
 } from '../../utils/orders/orderStatusConfig';
 import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
+import { getPrimaryProductImageUrl } from '../../utils/products/productImageUrls';
 import { formatProductPrice } from '../../utils/products/formatProductPrice';
 import OrderTimeline from './OrderTimeline';
 import OrderPaymentSummary from './OrderPaymentSummary';
@@ -247,9 +248,12 @@ function ViewBuyOrder({
 
           {orderDetails.map((orderDetail, index) => {
             const product = orderDetail.product ?? {};
-            const displayImageUrl = product.img_url
-              ? toCloudinaryDisplayUrl(product.img_url)
-              : null;
+            const primaryImageUrl = getPrimaryProductImageUrl(product);
+            const displayImageUrl = primaryImageUrl
+              ? toCloudinaryDisplayUrl(primaryImageUrl)
+              : product.img_url
+                ? toCloudinaryDisplayUrl(product.img_url)
+                : null;
 
             return (
             <div

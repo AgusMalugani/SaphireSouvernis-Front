@@ -13,6 +13,8 @@ import { toast } from 'react-toastify';
 import { HiShoppingBag, HiX } from 'react-icons/hi';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { getPrimaryProductImageUrl } from '../../utils/products/productImageUrls';
+import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -195,16 +197,23 @@ function Products() {
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
-                {paginatedProducts.map((prod) => (
+                {paginatedProducts.map((prod) => {
+                  const primaryImageUrl = getPrimaryProductImageUrl(prod);
+                  const displayImageUrl = primaryImageUrl
+                    ? toCloudinaryDisplayUrl(primaryImageUrl)
+                    : undefined;
+
+                  return (
                   <Product
                     key={prod.id}
                     id={prod.id}
-                    img_url={prod.img_url}
+                    img_url={displayImageUrl}
                     name={prod.name}
                     price={prod.price}
                     addToCart={addToCart}
                   />
-                ))}
+                  );
+                })}
               </div>
 
               {totalPages > 1 && (

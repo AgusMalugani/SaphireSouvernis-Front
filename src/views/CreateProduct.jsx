@@ -5,6 +5,9 @@ import FormProduct from '../components/Products/FormProduct';
 import { ProductsContext } from '../contexts/Products/ProductsContext';
 import { CreateNewProduct } from '../services/Products/CreateNewProduct';
 import { AdminGlassCard, AdminPageShell } from '../components/layout/AdminPageShell.jsx';
+import { buildProductMultipartFormData } from '../utils/products/buildProductMultipartFormData';
+import { MAX_PRODUCT_IMAGES } from '../utils/products/productImageUrls';
+import { MAX_PRODUCT_IMAGES_MESSAGE } from '../utils/products/canAdvanceFromImageStep';
 
 function CreateProduct() {
   const [product, setProduct] = useState({
@@ -12,20 +15,23 @@ function CreateProduct() {
     details: '',
     price: 0,
     stock: true,
-    img_url: '',
     categories: [],
   });
-  const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   const { setProducts, categories } = useContext(ProductsContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrls.forEach((previewUrl) => {
+        if (previewUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      });
     };
-  }, [previewUrl]);
+  }, [previewUrls]);
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -41,42 +47,58 @@ function CreateProduct() {
     setProduct((previousProduct) => ({ ...previousProduct, [name]: value }));
   };
 
-  const handleOnChangeImage = (selectedFile) => {
-    if (!selectedFile) {
-      setFile(null);
-      setPreviewUrl(null);
+  const handleOnChangeImages = (selectedFiles) => {
+    if (!selectedFiles || selectedFiles.length === 0) {
+      setFiles([]);
+      previewUrls.forEach((previewUrl) => {
+        if (previewUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      });
+      setPreviewUrls([]);
       return;
     }
-    setFile(selectedFile);
-    setPreviewUrl(URL.createObjectURL(selectedFile));
-    toast.success('Imagen cargada');
+
+    if (selectedFiles.length > MAX_PRODUCT_IMAGES) {
+      toast.error(MAX_PRODUCT_IMAGES_MESSAGE);
+      return;
+    }
+
+    previewUrls.forEach((previewUrl) => {
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    });
+
+    setFiles(selectedFiles);
+    setPreviewUrls(selectedFiles.map((fileItem) => URL.createObjectURL(fileItem)));
+    toast.success(
+      `${selectedFiles.length} imagen${selectedFiles.length === 1 ? '' : 'es'} cargada${selectedFiles.length === 1 ? '' : 's'}`,
+    );
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!file) {
-      toast.error('Debés seleccionar una imagen.');
+
+    if (files.length === 0) {
+      toast.error('Debés seleccionar al menos una imagen.');
       return;
     }
 
-    const formData = new FormData();
-    for (const key in product) {
-      if (key === 'categories') {
-        product.categories.forEach((category) => formData.append(key, category));
-      } else {
-        formData.append(key, product[key]);
-      }
+    try {
+      const formData = buildProductMultipartFormData({ product, files });
+      const createdProduct = await toast.promise(CreateNewProduct(formData), {
+        pending: 'Cargando...',
+        success: 'Producto creado ✅',
+        error: 'Falló 😓',
+      });
+
+      setProducts((previousProducts) => [...previousProducts, createdProduct]);
+      navigate('/dashboard');
+    } catch (error) {
+      toast.error(error.message || 'Ocurrió un error al crear el producto.');
+      console.error(error);
     }
-    formData.append('file', file);
-
-    const createdProduct = await toast.promise(CreateNewProduct(formData), {
-      pending: 'Cargando...',
-      success: 'Producto creado ✅',
-      error: 'Falló 😓',
-    });
-
-    setProducts((previousProducts) => [...previousProducts, createdProduct]);
-    navigate('/dashboard');
   };
 
   return (
@@ -84,17 +106,19 @@ function CreateProduct() {
       title="Nuevo Producto"
       titleId="create-product-heading"
       centered
+      showBackToDashboard
     >
       <AdminGlassCard>
         <FormProduct
           mode="create"
           categorias={categories}
           product={product}
-          file={file}
-          previewUrl={previewUrl}
+          files={files}
+          previewUrls={previewUrls}
+          existingImageUrls={[]}
           handleOnChange={handleOnChange}
           handleSubmit={handleSubmit}
-          handleOnChangeImage={handleOnChangeImage}
+          handleOnChangeImages={handleOnChangeImages}
         />
       </AdminGlassCard>
     </AdminPageShell>

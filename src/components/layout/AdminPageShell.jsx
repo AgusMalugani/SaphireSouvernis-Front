@@ -1,4 +1,15 @@
-import { PageHeader } from './ConsumerPageLayout.jsx';
+import { Link } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
+import { BACK_TO_HOME_CLASS, PageHeader } from './ConsumerPageLayout.jsx';
+
+export function BackToDashboardLink({ label = 'Volver al inventario' }) {
+  return (
+    <Link to="/dashboard" className={BACK_TO_HOME_CLASS}>
+      <FiArrowLeft size={16} aria-hidden="true" />
+      {label}
+    </Link>
+  );
+}
 
 export function AdminPageShell({
   eyebrow = 'Panel de administración',
@@ -8,10 +19,17 @@ export function AdminPageShell({
   children,
   maxWidth = 'max-w-xl',
   centered = false,
+  showBackToDashboard = false,
+  backToDashboardLabel,
 }) {
   return (
     <div className="min-h-screen bg-stone-50 px-6 py-12 sm:px-8">
       <div className={`mx-auto ${maxWidth}`}>
+        {showBackToDashboard && (
+          <div className={`mb-4 ${centered ? 'flex justify-center' : ''}`}>
+            <BackToDashboardLink label={backToDashboardLabel} />
+          </div>
+        )}
         <div className={`mb-8 ${centered ? 'text-center' : ''}`}>
           <PageHeader
             eyebrow={eyebrow}

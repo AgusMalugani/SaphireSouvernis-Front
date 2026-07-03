@@ -7,6 +7,7 @@ function ViewEditProduct() {
       title="Modificar producto"
       titleId="edit-product-heading"
       centered
+      showBackToDashboard
     >
       <AdminGlassCard>
         <EditProduct />

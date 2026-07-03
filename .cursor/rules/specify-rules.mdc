@@ -5,5 +5,5 @@ alwaysApply: true
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan at
-`specs/007-order-payments-lifecycle/plan.md` (quickstart: `specs/007-order-payments-lifecycle/quickstart.md`; spec: `specs/007-order-payments-lifecycle/spec.md`).
+`specs/008-product-multi-images/plan.md` (quickstart: `specs/008-product-multi-images/quickstart.md`; spec: `specs/008-product-multi-images/spec.md`).
 <!-- SPECKIT END -->

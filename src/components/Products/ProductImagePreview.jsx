@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
 
 function ProductImagePreview({ originalUrl, alt = 'Vista previa', className = '' }) {
   const displayUrl = toCloudinaryDisplayUrl(originalUrl);
   const [imageSource, setImageSource] = useState(displayUrl || originalUrl);
+
+  useEffect(() => {
+    setImageSource(displayUrl || originalUrl);
+  }, [originalUrl, displayUrl]);
 
   const handleImageError = () => {
     if (originalUrl && imageSource !== originalUrl) {

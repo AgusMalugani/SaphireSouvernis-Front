@@ -25,6 +25,7 @@ export function resolveProductFromCatalog(catalogProducts, productId) {
 export function normalizeProductForEdit(rawProduct) {
   return {
     ...rawProduct,
+    img_urls: Array.isArray(rawProduct.img_urls) ? rawProduct.img_urls : [],
     categories:
       rawProduct.categories?.map((category) =>
         typeof category === 'string' ? category : category.name,

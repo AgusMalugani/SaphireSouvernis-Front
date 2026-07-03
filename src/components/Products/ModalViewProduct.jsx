@@ -2,8 +2,9 @@ import Modal from 'react-modal';
 import { HiX } from 'react-icons/hi';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useProductDetail } from '../../hooks/useProductDetail';
-import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
+import { getProductImageUrls } from '../../utils/products/productImageUrls';
 import ProductDetailSkeleton from './ProductDetailSkeleton';
+import ProductImageGallery from './ProductImageGallery';
 
 const modalStyles = {
   overlay: {
@@ -31,9 +32,7 @@ function ModalViewProduct({ isOpen, onClose, idProduct }) {
 
   useBodyScrollLock(isOpen);
 
-  const displayImageUrl = product?.img_url
-    ? toCloudinaryDisplayUrl(product.img_url)
-    : undefined;
+  const galleryImageUrls = product ? getProductImageUrls(product) : [];
 
   return (
     <Modal
@@ -62,19 +61,7 @@ function ModalViewProduct({ isOpen, onClose, idProduct }) {
 
         {isSuccess && product && (
           <>
-            <div className="aspect-square w-full overflow-hidden bg-stone-100">
-              {displayImageUrl ? (
-                <img
-                  src={displayImageUrl}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-stone-400 text-sm">
-                  Sin imagen
-                </div>
-              )}
-            </div>
+            <ProductImageGallery imageUrls={galleryImageUrls} alt={product.name} />
 
             <div className="p-5 flex flex-col gap-2">
               <h2 className="font-display text-xl text-stone-800 font-semibold leading-snug">
