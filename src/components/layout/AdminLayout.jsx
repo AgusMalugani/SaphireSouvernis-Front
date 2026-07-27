@@ -3,20 +3,19 @@ import Sidebar from '../Siderbar/Sidebar';
 
 function AdminLayout() {
   return (
-    <div className="flex min-h-screen bg-stone-50">
-      {/* Sidebar persistente */}
-      <aside className="hidden lg:block lg:fixed lg:inset-y-0 lg:z-10 lg:w-56">
-        <Sidebar />
+    <div className="min-h-screen overflow-x-hidden bg-stone-50">
+      {/* Desktop sidebar fijo */}
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:w-56 lg:flex-col">
+        <Sidebar variant="desktop" />
       </aside>
 
-      {/* Mobile header con sidebar colapsable */}
-      <div className="lg:hidden">
-        <Sidebar />
+      {/* Mobile: header + drawer overlay */}
+      <div className="sticky top-0 z-30 lg:hidden">
+        <Sidebar variant="mobile" />
       </div>
 
-      {/* Contenido principal con offset para el sidebar en desktop */}
-      <main className="w-full lg:pl-56">
-        <div className="min-h-screen">
+      <main className="w-full max-w-full min-w-0 lg:pl-56">
+        <div className="min-h-screen w-full max-w-full min-w-0">
           <Outlet />
         </div>
       </main>

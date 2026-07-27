@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import ModalActionOrder from './ModalActionOrder';
 import CancelOrderModal from './CancelOrderModal';
 import OrderPaymentSummary from './OrderPaymentSummary';
@@ -19,6 +19,7 @@ import {
   getOrderTransactionConfig,
 } from '../../utils/orders/orderStatusConfig';
 import { canEditOrderIntegral } from '../../utils/orders/orderIntegralEdit';
+import { ActionMenu } from '../ui';
 
 function Order({ order }) {
   const { cancelOrderContext } = useContext(OrdersContext);
@@ -40,9 +41,61 @@ function Order({ order }) {
   const showCancelar = canCancelOrder(order);
   const showEditarPedido = canEditOrderIntegral(order);
 
+  const actionItems = useMemo(() => {
+    const items = [
+      {
+        id: 'ver',
+        label: 'Ver detalle',
+        icon: FiEye,
+        tone: 'default',
+        onClick: () => handleInteractuar('ver'),
+      },
+    ];
+
+    if (showRegistrarSeña) {
+      items.push({
+        id: 'registrarSeña',
+        label: 'Registrar seña',
+        icon: FiCreditCard,
+        tone: 'rose',
+        onClick: () => handleInteractuar('registrarSeña'),
+      });
+    }
+
+    if (showCancelar) {
+      items.push({
+        id: 'cancelar',
+        label: 'Cancelar pedido',
+        icon: FiXCircle,
+        tone: 'danger',
+        onClick: () => setIsCancelModalOpen(true),
+      });
+    }
+
+    if (showEditarPedido) {
+      items.push({
+        id: 'editarPedido',
+        label: 'Editar pedido',
+        icon: FiEdit3,
+        tone: 'violet',
+        onClick: () => handleInteractuar('editarPedido'),
+      });
+    }
+
+    items.push({
+      id: 'envioRetiro',
+      label: 'Envío / Retiro',
+      icon: FiTruck,
+      tone: 'sky',
+      onClick: () => handleInteractuar('envio/Retiro'),
+    });
+
+    return items;
+  }, [showRegistrarSeña, showCancelar, showEditarPedido]);
+
   return (
     <>
-      <div className="flex flex-col overflow-hidden rounded-3xl border border-white/60 bg-white/60 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md hover:shadow-rose-200/30">
+      <div className="relative z-0 flex flex-col rounded-3xl border border-white/60 bg-white/60 shadow-sm backdrop-blur-sm transition-all duration-300 hover:z-10 hover:shadow-md hover:shadow-rose-200/30">
         <div className="flex flex-wrap gap-2 p-4 pb-0">
           <span
             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${stateConfig.className}`}
@@ -63,11 +116,11 @@ function Order({ order }) {
 
           <div className="mt-1 flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-sm text-stone-500">
-              <FiCalendar size={13} className="shrink-0 text-stone-400" />
+              <FiCalendar size={13} className="shrink-0 text-stone-400" aria-hidden="true" />
               <span>{order.endOrder}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-stone-500">
-              <FiPhone size={13} className="shrink-0 text-stone-400" />
+              <FiPhone size={13} className="shrink-0 text-stone-400" aria-hidden="true" />
               <span>{order.numCel}</span>
             </div>
           </div>
@@ -88,68 +141,8 @@ function Order({ order }) {
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-1 border-t border-stone-100 p-3">
-          <button
-            onClick={() => handleInteractuar('ver')}
-            aria-label="Ver detalle de la orden"
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-xs font-medium text-stone-500 transition-all duration-200 hover:bg-stone-100 hover:text-stone-800"
-          >
-            <FiEye size={14} />
-            Ver
-          </button>
-
-          {showRegistrarSeña && (
-            <>
-              <div className="h-5 w-px bg-stone-100" />
-              <button
-                onClick={() => handleInteractuar('registrarSeña')}
-                aria-label="Registrar seña"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-xs font-medium text-stone-500 transition-all duration-200 hover:bg-rose-50 hover:text-rose-500"
-              >
-                <FiCreditCard size={14} />
-                Registrar seña
-              </button>
-            </>
-          )}
-
-          {showCancelar && (
-            <>
-              <div className="h-5 w-px bg-stone-100" />
-              <button
-                onClick={() => setIsCancelModalOpen(true)}
-                aria-label="Cancelar pedido"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-xs font-medium text-stone-500 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-              >
-                <FiXCircle size={14} />
-                Cancelar
-              </button>
-            </>
-          )}
-
-          {showEditarPedido && (
-            <>
-              <div className="h-5 w-px bg-stone-100" />
-              <button
-                onClick={() => handleInteractuar('editarPedido')}
-                aria-label="Editar pedido"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-xs font-medium text-stone-500 transition-all duration-200 hover:bg-violet-50 hover:text-violet-500"
-              >
-                <FiEdit3 size={14} />
-                Editar
-              </button>
-            </>
-          )}
-
-          <div className="h-5 w-px bg-stone-100" />
-
-          <button
-            onClick={() => handleInteractuar('envio/Retiro')}
-            aria-label="Cambiar método de envío"
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-xs font-medium text-stone-500 transition-all duration-200 hover:bg-sky-50 hover:text-sky-500"
-          >
-            <FiTruck size={14} />
-            Envío
-          </button>
+        <div className="relative z-20 border-t border-stone-100 p-3">
+          <ActionMenu label="Acciones" items={actionItems} />
         </div>
       </div>
 

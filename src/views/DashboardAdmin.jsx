@@ -12,10 +12,10 @@ function DashboardAdmin() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-stone-50">
+    <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden bg-stone-50">
       <section
         aria-label="Panel de productos"
-        className="overflow-auto p-6 lg:p-10"
+        className="w-full max-w-full min-w-0 px-4 py-6 sm:px-6 lg:p-10"
       >
         <TableProducts viewProduct={viewProduct} />
       </section>

@@ -164,13 +164,13 @@ function TableProducts({ viewProduct }) {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex w-full max-w-full min-w-0 flex-col gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <span className="text-xs font-medium uppercase tracking-[0.25em] text-rose-400">
             Administración
           </span>
-          <h2 className="mt-1 font-display text-3xl font-bold text-stone-800 sm:text-4xl">
+          <h2 className="mt-1 break-words font-display text-2xl font-bold text-stone-800 sm:text-3xl lg:text-4xl">
             Inventario de Productos
           </h2>
           <p className="mt-1 text-sm font-light text-stone-500">{resultCountLabel}</p>
@@ -178,20 +178,20 @@ function TableProducts({ viewProduct }) {
 
         <Link
           to="/product/create"
-          className="inline-flex items-center justify-center gap-2 self-start rounded-full bg-gradient-to-r from-rose-400 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition hover:scale-105"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition hover:brightness-105 sm:w-auto sm:self-start"
         >
           <FiPlus size={16} aria-hidden="true" />
           Cargar producto
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex w-full min-w-0 flex-col gap-3">
         <div className="flex items-center gap-2 text-stone-400">
           <FiFilter size={15} aria-hidden="true" />
           <span className="text-sm font-medium text-stone-500">Filtrar:</span>
         </div>
 
-        <div className="relative min-w-[220px] flex-1">
+        <div className="relative w-full min-w-0">
           <FiSearch
             size={15}
             className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
@@ -203,33 +203,35 @@ function TableProducts({ viewProduct }) {
             onChange={(inputEvent) => setSearchInput(inputEvent.target.value)}
             placeholder="Buscar por nombre..."
             aria-label="Buscar productos en inventario"
-            className="w-full rounded-full border border-stone-200 bg-white py-2 pl-10 pr-4 text-sm text-stone-700 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-200"
+            className="w-full rounded-full border border-stone-200 bg-white py-2.5 pl-10 pr-4 text-sm text-stone-700 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-200"
           />
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={handleStatusFilterChange}
-          className={SELECT_CLASS}
-          aria-label="Filtrar por estado de disponibilidad"
-        >
-          <option value="all">Todos los estados</option>
-          <option value="active">Activos</option>
-          <option value="disabled">Inhabilitados</option>
-        </select>
+        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+          <select
+            value={statusFilter}
+            onChange={handleStatusFilterChange}
+            className={`${SELECT_CLASS} w-full`}
+            aria-label="Filtrar por estado de disponibilidad"
+          >
+            <option value="all">Todos los estados</option>
+            <option value="active">Activos</option>
+            <option value="disabled">Inhabilitados</option>
+          </select>
 
-        <select
-          value={pageSize}
-          onChange={handlePageSizeChange}
-          className={SELECT_CLASS}
-          aria-label="Cantidad de productos por página"
-        >
-          {PAGE_SIZE_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              Mostrar {option}
-            </option>
-          ))}
-        </select>
+          <select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            className={`${SELECT_CLASS} w-full`}
+            aria-label="Cantidad de productos por página"
+          >
+            {PAGE_SIZE_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                Mostrar {option}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-3xl border border-white/60 bg-white/60 shadow-sm backdrop-blur-sm">
@@ -248,126 +250,217 @@ function TableProducts({ viewProduct }) {
             description={emptyMessage}
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse">
-              <thead className="sticky top-0 z-10 bg-stone-50/95 backdrop-blur-sm">
-                <tr className="border-b border-stone-100">
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-stone-500">
-                    Producto
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-stone-500">
-                    Precio
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-stone-500">
-                    Estado
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-stone-500">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {visibleProducts.map((product) => {
-                  const availabilityConfig = getProductAvailabilityConfig(product);
-                  const categoryName = getPrimaryCategoryName(product);
-                  const primaryImageUrl = getPrimaryProductImageUrl(product);
-                  const displayImageUrl = primaryImageUrl
-                    ? toCloudinaryDisplayUrl(primaryImageUrl)
-                    : null;
-                  const isActiveProduct = isProductActive(product);
+          <>
+            {/* Mobile: cards apiladas (sin scroll horizontal) */}
+            <ul className="flex flex-col divide-y divide-stone-100 lg:hidden">
+              {visibleProducts.map((product) => {
+                const availabilityConfig = getProductAvailabilityConfig(product);
+                const categoryName = getPrimaryCategoryName(product);
+                const primaryImageUrl = getPrimaryProductImageUrl(product);
+                const displayImageUrl = primaryImageUrl
+                  ? toCloudinaryDisplayUrl(primaryImageUrl)
+                  : null;
+                const isActiveProduct = isProductActive(product);
 
-                  return (
-                    <tr
-                      key={product.id}
-                      className={`border-b border-stone-100 transition-colors duration-200 hover:bg-rose-50/40 ${
-                        isActiveProduct ? '' : 'bg-stone-50/70 opacity-75'
-                      }`}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex min-w-0 items-center gap-3">
-                          {displayImageUrl ? (
-                            <img
-                              src={displayImageUrl}
-                              alt={product.name ?? 'Producto'}
-                              className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-stone-100"
-                            />
-                          ) : (
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-300 ring-1 ring-stone-100">
-                              <FiImage size={16} aria-hidden="true" />
+                return (
+                  <li
+                    key={product.id}
+                    className={`flex flex-col gap-3 p-4 ${
+                      isActiveProduct ? '' : 'bg-stone-50/70 opacity-75'
+                    }`}
+                  >
+                    <div className="flex min-w-0 items-start gap-3">
+                      {displayImageUrl ? (
+                        <img
+                          src={displayImageUrl}
+                          alt={product.name ?? 'Producto'}
+                          className="h-12 w-12 shrink-0 rounded-xl object-cover ring-1 ring-stone-100"
+                        />
+                      ) : (
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-300 ring-1 ring-stone-100">
+                          <FiImage size={16} aria-hidden="true" />
+                        </span>
+                      )}
+
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words text-sm font-semibold text-stone-800">
+                          {product.name}
+                        </p>
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                          {categoryName && (
+                            <span className="inline-flex rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[11px] text-stone-600">
+                              {categoryName}
                             </span>
                           )}
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-stone-800">
-                              {product.name}
-                            </p>
-                            {categoryName && (
-                              <span className="mt-1 inline-flex rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[11px] text-stone-600">
-                                {categoryName}
+                          <span
+                            className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-semibold ${availabilityConfig.className}`}
+                          >
+                            {availabilityConfig.label}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm font-bold text-rose-500">
+                          {formatProductPrice(product.price)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="inline-flex self-stretch items-center justify-end gap-1 rounded-full border border-stone-200 bg-white/80 p-1 sm:self-end">
+                      <button
+                        type="button"
+                        onClick={() => viewProduct(product.id)}
+                        aria-label={`Ver detalle de ${product.name}`}
+                        className="flex h-9 flex-1 items-center justify-center rounded-full text-stone-500 transition hover:bg-stone-100 hover:text-stone-800 sm:flex-none sm:w-9"
+                      >
+                        <FiEye size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleEditProduct(product.id)}
+                        aria-label={`Editar ${product.name}`}
+                        className="flex h-9 flex-1 items-center justify-center rounded-full text-stone-500 transition hover:bg-rose-50 hover:text-rose-500 sm:flex-none sm:w-9"
+                      >
+                        <FiEdit3 size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openAvailabilityConfirm(product)}
+                        aria-label={
+                          isActiveProduct
+                            ? `Inhabilitar ${product.name}`
+                            : `Habilitar ${product.name}`
+                        }
+                        className="flex h-9 flex-1 items-center justify-center rounded-full text-stone-500 transition hover:bg-amber-50 hover:text-amber-600 sm:flex-none sm:w-9"
+                      >
+                        {isActiveProduct ? <FiEyeOff size={15} /> : <FiEye size={15} />}
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* Desktop: tabla */}
+            <div className="hidden overflow-x-auto lg:block">
+              <table className="w-full border-collapse">
+                <thead className="sticky top-0 z-10 bg-stone-50/95 backdrop-blur-sm">
+                  <tr className="border-b border-stone-100">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-stone-500">
+                      Producto
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-stone-500">
+                      Precio
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-stone-500">
+                      Estado
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-stone-500">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visibleProducts.map((product) => {
+                    const availabilityConfig = getProductAvailabilityConfig(product);
+                    const categoryName = getPrimaryCategoryName(product);
+                    const primaryImageUrl = getPrimaryProductImageUrl(product);
+                    const displayImageUrl = primaryImageUrl
+                      ? toCloudinaryDisplayUrl(primaryImageUrl)
+                      : null;
+                    const isActiveProduct = isProductActive(product);
+
+                    return (
+                      <tr
+                        key={product.id}
+                        className={`border-b border-stone-100 transition-colors duration-200 hover:bg-rose-50/40 ${
+                          isActiveProduct ? '' : 'bg-stone-50/70 opacity-75'
+                        }`}
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex min-w-0 items-center gap-3">
+                            {displayImageUrl ? (
+                              <img
+                                src={displayImageUrl}
+                                alt={product.name ?? 'Producto'}
+                                className="h-10 w-10 shrink-0 rounded-xl object-cover ring-1 ring-stone-100"
+                              />
+                            ) : (
+                              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-300 ring-1 ring-stone-100">
+                                <FiImage size={16} aria-hidden="true" />
                               </span>
                             )}
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-semibold text-stone-800">
+                                {product.name}
+                              </p>
+                              {categoryName && (
+                                <span className="mt-1 inline-flex rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[11px] text-stone-600">
+                                  {categoryName}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right text-sm font-semibold text-stone-800">
-                        {formatProductPrice(product.price)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${availabilityConfig.className}`}
-                        >
-                          {availabilityConfig.label}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-end">
-                          <div className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white/80 p-1">
-                            <button
-                              type="button"
-                              onClick={() => viewProduct(product.id)}
-                              aria-label={`Ver detalle de ${product.name}`}
-                              className="flex h-8 w-8 items-center justify-center rounded-full text-stone-500 transition hover:bg-stone-100 hover:text-stone-800"
-                            >
-                              <FiEye size={15} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleEditProduct(product.id)}
-                              aria-label={`Editar ${product.name}`}
-                              className="flex h-8 w-8 items-center justify-center rounded-full text-stone-500 transition hover:bg-rose-50 hover:text-rose-500"
-                            >
-                              <FiEdit3 size={15} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => openAvailabilityConfirm(product)}
-                              aria-label={
-                                isActiveProduct
-                                  ? `Inhabilitar ${product.name}`
-                                  : `Habilitar ${product.name}`
-                              }
-                              className="flex h-8 w-8 items-center justify-center rounded-full text-stone-500 transition hover:bg-amber-50 hover:text-amber-600"
-                            >
-                              {isActiveProduct ? <FiEyeOff size={15} /> : <FiEye size={15} />}
-                            </button>
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm font-semibold text-stone-800">
+                          {formatProductPrice(product.price)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${availabilityConfig.className}`}
+                          >
+                            {availabilityConfig.label}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-end">
+                            <div className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white/80 p-1">
+                              <button
+                                type="button"
+                                onClick={() => viewProduct(product.id)}
+                                aria-label={`Ver detalle de ${product.name}`}
+                                className="flex h-8 w-8 items-center justify-center rounded-full text-stone-500 transition hover:bg-stone-100 hover:text-stone-800"
+                              >
+                                <FiEye size={15} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleEditProduct(product.id)}
+                                aria-label={`Editar ${product.name}`}
+                                className="flex h-8 w-8 items-center justify-center rounded-full text-stone-500 transition hover:bg-rose-50 hover:text-rose-500"
+                              >
+                                <FiEdit3 size={15} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => openAvailabilityConfirm(product)}
+                                aria-label={
+                                  isActiveProduct
+                                    ? `Inhabilitar ${product.name}`
+                                    : `Habilitar ${product.name}`
+                                }
+                                className="flex h-8 w-8 items-center justify-center rounded-full text-stone-500 transition hover:bg-amber-50 hover:text-amber-600"
+                              >
+                                {isActiveProduct ? <FiEyeOff size={15} /> : <FiEye size={15} />}
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {filteredProducts.length > 0 && (
-          <div className="flex flex-col gap-4 border-t border-stone-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 border-t border-stone-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-sm text-stone-500">
               Mostrando {rangeStart}–{rangeEnd} de {filteredProducts.length}
             </p>
 
             {paginationMeta.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-3">
                 <button
                   type="button"
                   disabled={paginationMeta.page <= 1}
@@ -377,7 +470,7 @@ function TableProducts({ viewProduct }) {
                   Anterior
                 </button>
                 <span className="text-sm text-stone-500">
-                  Página {paginationMeta.page} de {paginationMeta.totalPages}
+                  {paginationMeta.page}/{paginationMeta.totalPages}
                 </span>
                 <button
                   type="button"
