@@ -1,3 +1,7 @@
+import {
+  MIN_QUANTITY_PER_PRODUCT,
+} from '../constants/orderRules';
+
 const nameRegex    = /^(?! )[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?: [A-Za-zÁÉÍÓÚáéíóúÑñ]+)*(?<! )$/;
 const numCelRegex  = /^\d{7,15}$/;
 const emailRegex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,8 +61,8 @@ export function onValidateOrder(form) {
     isError = true;
   }
 
-  // ── Dirección ───────────────────────────────────────────────────
-  if (form.address === '') {
+  // ── Dirección (solo obligatoria en envío a domicilio) ───────────
+  if (form.transactionType === 'send' && form.address === '') {
     errors.address = "El campo 'DIRECCIÓN' no puede estar vacío.";
     isError = true;
   }
@@ -76,9 +80,17 @@ export function onValidateOrder(form) {
   }
 
   // ── Productos ───────────────────────────────────────────────────
-  if (form.products.length < 1) {
+  if (!form.products || form.products.length < 1) {
     errors.products = 'Debés agregar al menos un producto al carrito.';
     isError = true;
+  } else {
+    const invalidProducts = form.products.filter(
+      (productLine) => (productLine.cuantity ?? 0) < MIN_QUANTITY_PER_PRODUCT,
+    );
+    if (invalidProducts.length > 0) {
+      errors.products = `Todos los productos deben tener al menos ${MIN_QUANTITY_PER_PRODUCT} unidades.`;
+      isError = true;
+    }
   }
 
   return isError ? errors : null;

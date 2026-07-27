@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 
-const INTERACTION_BASE =
-  'transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]';
+export const INTERACTION_BASE =
+  'tap-highlight transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]';
 
 export const BACK_TO_HOME_CLASS = `inline-flex min-h-11 items-center gap-2 rounded-xl px-1 text-sm text-stone-500 hover:text-rose-500 ${INTERACTION_BASE}`;
 

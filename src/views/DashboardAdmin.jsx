@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Sidebar from '../components/Siderbar/Sidebar';
 import TableProducts from '../components/Products/TableProducts';
 import ModalViewProduct from '../components/Products/ModalViewProduct';
 
@@ -13,11 +12,10 @@ function DashboardAdmin() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] w-full flex-col bg-stone-50 lg:flex-row">
-      <Sidebar />
+    <div className="min-h-screen w-full bg-stone-50">
       <section
         aria-label="Panel de productos"
-        className="flex-1 overflow-auto p-6 lg:p-10"
+        className="overflow-auto p-6 lg:p-10"
       >
         <TableProducts viewProduct={viewProduct} />
       </section>

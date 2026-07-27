@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
-/* ── Design Token: fuente serif premium ── */
+/* ── Design Tokens ── */
 @theme {
   --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+/* ── Body typography ── */
+body {
+  font-family: var(--font-body);
 }
 
 /* ── Animación flotante suave para blobs decorativos ── */
@@ -14,6 +20,50 @@
 @keyframes float-slow {
   0%, 100% { transform: translateY(0px) scale(1); }
   50%       { transform: translateY(-28px) scale(1.04); }
+}
+
+/* ── Skeleton shimmer ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Slide-in animaciones ── */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ── Scrollbar global rose-gold (html/body) ── */
@@ -50,4 +100,58 @@ html::-webkit-scrollbar-thumb:hover {
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  /* ── Micro-interacciones ── */
+  .tap-highlight {
+    -webkit-tap-highlight-color: rgba(251, 113, 133, 0.1);
+  }
+
+  .smooth-bounce {
+    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .smooth-bounce:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ── Toastify — tema rose-gold / glass ── */
+.Toastify__toast {
+  border-radius: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.875rem !important;
+}
+
+.Toastify__toast--success {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #44403c !important;
+  border-left: 3px solid #fb7185 !important;
+}
+
+.Toastify__toast--error {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #44403c !important;
+  border-left: 3px solid #f43f5e !important;
+}
+
+.Toastify__toast--info,
+.Toastify__toast--default,
+.Toastify__toast--warning {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #44403c !important;
+}
+
+.Toastify__progress-bar--success {
+  background: linear-gradient(to right, #fb7185, #ec4899) !important;
+}
+
+.Toastify__progress-bar--error {
+  background: #f43f5e !important;
+}
+
+.Toastify__close-button {
+  color: #a8a29e !important;
+  opacity: 1 !important;
 }

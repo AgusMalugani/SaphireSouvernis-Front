@@ -4,38 +4,7 @@ import { toast } from 'react-toastify';
 import { FiArrowRight, FiLock } from 'react-icons/fi';
 import { AuthContext } from '../../contexts/Auth/AuthContext';
 import { Signin } from '../../services/Auth/Signin.service';
-
-const INPUT_CLASS =
-  'w-full rounded-2xl border border-stone-200 bg-white/70 px-4 py-2.5 text-sm text-stone-800 placeholder-stone-400 shadow-sm transition-all duration-200 ease-in-out focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-200';
-
-const LABEL_CLASS = 'mb-1.5 block text-sm font-semibold text-stone-700';
-
-const PRIMARY_CTA_CLASS =
-  'group mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-in-out hover:brightness-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50';
-
-const GHOST_LINK_CLASS =
-  'inline-flex min-h-11 items-center justify-center rounded-xl px-4 text-sm text-stone-500 transition-all duration-200 ease-in-out hover:text-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]';
-
-function FormField({ id, label, type, name, value, onChange, placeholder, autoComplete }) {
-  return (
-    <div>
-      <label htmlFor={id} className={LABEL_CLASS}>
-        {label}
-      </label>
-      <input
-        id={id}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        required
-        className={INPUT_CLASS}
-      />
-    </div>
-  );
-}
+import { Button, Input } from '../ui';
 
 function LoginSignin() {
   const [login, setLogin] = useState({ email: '', password: '' });
@@ -99,7 +68,7 @@ function LoginSignin() {
           className="flex flex-col gap-5"
           noValidate
         >
-          <FormField
+          <Input
             id="login-email"
             label="Email"
             type="email"
@@ -108,9 +77,10 @@ function LoginSignin() {
             onChange={handleOnChange}
             placeholder="admin@saphire.com"
             autoComplete="email"
+            required
           />
 
-          <FormField
+          <Input
             id="login-password"
             label="Contraseña"
             type="password"
@@ -119,20 +89,24 @@ function LoginSignin() {
             onChange={handleOnChange}
             placeholder="••••••••"
             autoComplete="current-password"
+            required
           />
 
-          <button type="submit" disabled={isSubmitting} className={PRIMARY_CTA_CLASS}>
+          <Button type="submit" variant="primary" className="mt-2 w-full" disabled={isSubmitting}>
             {isSubmitting ? 'Ingresando...' : 'Ingresar'}
             <FiArrowRight
               size={16}
               aria-hidden="true"
               className="transition-transform duration-200 ease-in-out group-hover:translate-x-0.5"
             />
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center">
-          <Link to="/" className={GHOST_LINK_CLASS}>
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl px-4 text-sm text-stone-500 transition-all duration-200 ease-in-out hover:text-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]"
+          >
             Volver al inicio
           </Link>
         </div>

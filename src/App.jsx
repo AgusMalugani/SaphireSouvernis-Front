@@ -18,20 +18,31 @@ import TermsOfService from './views/TermsOfService';
 import AboutUs from './views/AboutUs';
 import RedirectToWhatsapp from './components/RedirectToWhatsapp';
 import { envs } from './config/env.js';
+import AdminLayout from './components/layout/AdminLayout';
+import ScrollToTop from './components/layout/ScrollToTop';
 
 function App() {
   const { pathname } = useLocation();
   const postShopRouteMatch = useMatch('/post-shop/:id');
   const legacyPostShopRouteMatch = useMatch('/postShop/:id');
   const shopProductsRouteMatch = useMatch('/shopProducts');
+  
+  // Rutas admin que usan AdminLayout (sin Navbar/Footer)
+  const isAdminRoute =
+    pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/product/') ||
+    pathname === '/orders';
 
   const showFAB =
     postShopRouteMatch == null &&
     legacyPostShopRouteMatch == null &&
-    shopProductsRouteMatch == null;
+    shopProductsRouteMatch == null &&
+    !isAdminRoute;
 
   return (
     <>
+      <ScrollToTop />
+
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -42,64 +53,43 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="light"
+        toastClassName="saphire-toast"
       />
 
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
 
-      <main className={`w-full flex-1 overflow-x-clip${pathname !== '/' ? ' pt-20' : ''}`}>
+      <main className={`w-full flex-1 overflow-x-clip${pathname !== '/' && !isAdminRoute ? ' pt-20' : ''}`}>
         <Routes>
+          {/* Rutas públicas */}
           <Route path="/" element={<Home />} />
           <Route path="/shopProducts" element={<ShopProducts />} />
           <Route path="/post-shop/:id" element={<PostShop />} />
           <Route path="/postShop/:id" element={<LegacyPostShopRedirect />} />
           <Route path="/login" element={<Login />} />
-
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/about-us" element={<AboutUs />} />
 
+          {/* Rutas admin con layout persistente (Sidebar) */}
           <Route
-            path="/dashboard"
             element={
               <ProtectedRoute requiredRole="admin">
-                <DashboardAdmin />
+                <AdminLayout />
               </ProtectedRoute>
             }
-          />
-
-          <Route
-            path="/product/edit/:id"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <ViewEditProduct />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/product/create"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <CreateProduct />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <ViewOrders />
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route path="/dashboard" element={<DashboardAdmin />} />
+            <Route path="/product/edit/:id" element={<ViewEditProduct />} />
+            <Route path="/product/create" element={<CreateProduct />} />
+            <Route path="/orders" element={<ViewOrders />} />
+          </Route>
 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
-      <Footer />
+      {!isAdminRoute && <Footer />}
 
       {/* FAB global de WhatsApp — oculto en /post-shop/:id y /shopProducts */}
       {showFAB && (

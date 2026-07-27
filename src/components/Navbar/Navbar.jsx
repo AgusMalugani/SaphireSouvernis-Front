@@ -3,9 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../contexts/Auth/AuthContext';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
 import { envs } from '../../config/env.js';
-
-const INTERACTION_BASE =
-  'transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]';
+import { INTERACTION_BASE } from '../layout/ConsumerPageLayout.jsx';
 
 const MENU_ICON_CLASS =
   'flex min-h-11 min-w-11 items-center justify-center rounded-full text-2xl transition-all duration-200 ease-in-out hover:bg-rose-50/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-95';

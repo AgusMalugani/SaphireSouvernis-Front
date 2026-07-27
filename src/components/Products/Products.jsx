@@ -11,10 +11,12 @@ import {
 } from '../../utils/products/filterCatalogProducts';
 import { toast } from 'react-toastify';
 import { HiShoppingBag, HiX } from 'react-icons/hi';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiPackage } from 'react-icons/fi';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { getPrimaryProductImageUrl } from '../../utils/products/productImageUrls';
 import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
+import { EmptyState, Button, Pagination, Skeleton } from '../ui';
+import { MIN_QUANTITY_PER_PRODUCT } from '../../constants/orderRules';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -55,6 +57,13 @@ function Products() {
     [selectedCategory, searchQuery],
   );
 
+  const hasInvalidQuantities = useMemo(
+    () => cart.some((item) => item.cuantity < MIN_QUANTITY_PER_PRODUCT),
+    [cart],
+  );
+
+  const canCreateOrder = productsCart.length > 0 && !hasInvalidQuantities;
+
   const totalPages = Math.ceil((productsFilter?.length || 0) / ITEMS_PER_PAGE);
   const paginatedProducts = productsFilter.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -80,16 +89,18 @@ function Products() {
     const existingIndex = cart.findIndex((item) => item.id === product.id);
 
     if (existingIndex !== -1) {
+      const nextQuantity = cart[existingIndex].cuantity + product.cuantity;
+
       const updatedCart = cart.map((item, index) =>
         index === existingIndex
-          ? { ...item, cuantity: item.cuantity + product.cuantity }
+          ? { ...item, cuantity: nextQuantity }
           : item,
       );
       setCart(updatedCart);
 
       const updatedProductsCart = productsCart.map((item, index) =>
         index === existingIndex
-          ? { ...item, cuantity: item.cuantity + product.cuantity }
+          ? { ...item, cuantity: nextQuantity }
           : item,
       );
       setProductsCart(updatedProductsCart);
@@ -103,6 +114,29 @@ function Products() {
 
     setTotal(total + product.price * product.cuantity);
     toast.success(`${product.name} agregado al carrito`);
+  };
+
+  const updateCartQuantity = (index, nextQuantity) => {
+    if (nextQuantity < 1) return;
+
+    const currentItem = cart[index];
+    if (!currentItem) return;
+
+    const quantityDelta = nextQuantity - currentItem.cuantity;
+
+    setCart((previousCart) =>
+      previousCart.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, cuantity: nextQuantity } : item,
+      ),
+    );
+
+    setProductsCart((previousProductsCart) =>
+      previousProductsCart.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, cuantity: nextQuantity } : item,
+      ),
+    );
+
+    setTotal((previousTotal) => previousTotal + currentItem.price * quantityDelta);
   };
 
   const deleteToCart = (index) => {
@@ -134,8 +168,8 @@ function Products() {
         />
       </div>
 
-      <div className="mx-auto flex max-w-7xl flex-col items-start gap-8 px-4 pb-28 sm:px-8 lg:flex-row">
-        <aside className="hidden w-full shrink-0 flex-col gap-6 lg:flex lg:w-1/4">
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch gap-8 px-4 pb-28 sm:px-8 lg:flex-row">
+        <aside className="hidden w-full shrink-0 flex-col gap-6 lg:flex lg:w-72 xl:w-80">
           <CatalogFilters
             layout="sidebar"
             selectedCategory={selectedCategory}
@@ -150,9 +184,12 @@ function Products() {
             </h3>
 
             {cart.length === 0 ? (
-              <p className="py-4 text-center text-sm font-light text-stone-400">
-                Aún no hay productos
-              </p>
+              <div className="py-6">
+                <FiPackage size={32} className="mx-auto mb-2 text-stone-300" aria-hidden="true" />
+                <p className="text-center text-xs text-stone-400">
+                  Tu carrito está vacío
+                </p>
+              </div>
             ) : (
               <ul className="scrollbar-thin-rose flex max-h-[360px] flex-col gap-2 overflow-y-auto pr-1">
                 {cart.map((prod, index) => (
@@ -160,6 +197,9 @@ function Products() {
                     key={index}
                     prod={prod}
                     deleteToCart={() => deleteToCart(index)}
+                    onQuantityChange={(nextQuantity) =>
+                      updateCartQuantity(index, nextQuantity)
+                    }
                   />
                 ))}
               </ul>
@@ -171,28 +211,54 @@ function Products() {
               </p>
             </div>
 
-            <button
+            <Button
               type="button"
+              variant="primary"
+              className="mt-4 w-full shadow-md shadow-rose-300/30"
               onClick={handleOrderModal}
-              disabled={productsCart.length === 0}
-              className="mt-4 w-full rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-2.5 text-sm font-semibold text-white shadow-md shadow-rose-300/30 transition-all duration-300 hover:scale-105 hover:shadow-rose-400/50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 disabled:hover:shadow-none"
+              disabled={!canCreateOrder}
             >
               Crear orden
-            </button>
+            </Button>
+            {hasInvalidQuantities && (
+              <p className="mt-2 text-center text-[11px] text-rose-500">
+                Cada producto debe tener al menos {MIN_QUANTITY_PER_PRODUCT} unidades
+              </p>
+            )}
           </div>
         </aside>
 
-        <section aria-label="Listado de productos" className="w-full lg:w-3/4">
+        <section
+          aria-label="Listado de productos"
+          className="min-w-0 w-full flex-1"
+        >
           {isLoading ? (
-            <div className="flex items-center justify-center py-24">
-              <p className="animate-pulse font-display text-2xl text-stone-400">
-                Cargando productos...
-              </p>
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="flex flex-col gap-3 rounded-3xl border border-white/60 bg-white/60 p-3 backdrop-blur-sm sm:p-4">
+                  <Skeleton variant="card" />
+                  <Skeleton variant="text" className="w-3/4" />
+                  <Skeleton variant="text" className="w-1/2" />
+                  <div className="mt-2 flex gap-2">
+                    <Skeleton variant="button" className="h-8 w-14" />
+                    <Skeleton variant="button" className="flex-1" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : productsFilter?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-24">
-              <p className="font-display text-3xl text-stone-300">Sin resultados</p>
-              <p className="text-center text-sm font-light text-stone-400">{emptyMessage}</p>
+            <div className="flex min-h-[28rem] w-full items-center justify-center rounded-3xl border border-dashed border-stone-200/80 bg-white/40 px-6 backdrop-blur-sm">
+              <EmptyState
+                icon={FiSearch}
+                title="Sin resultados"
+                description={emptyMessage}
+                actionLabel="Ver todo el catálogo"
+                onAction={() => {
+                  setSelectedCategory('TODOS');
+                  setSearchQuery('');
+                  setCurrentPage(1);
+                }}
+              />
             </div>
           ) : (
             <>
@@ -216,46 +282,11 @@ function Products() {
                 })}
               </div>
 
-              {totalPages > 1 && (
-                <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => goToPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                    className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-rose-200 px-4 text-sm font-medium text-rose-500 transition-all duration-200 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    <FiChevronLeft size={15} />
-                    Anterior
-                  </button>
-
-                  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                    <button
-                      key={page}
-                      type="button"
-                      onClick={() => goToPage(page)}
-                      className={`h-11 w-11 rounded-full text-sm font-semibold transition-all duration-200
-                        ${
-                          currentPage === page
-                            ? 'bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-md shadow-rose-300/40'
-                            : 'text-stone-500 hover:bg-rose-50 hover:text-rose-500'
-                        }
-                      `}
-                    >
-                      {page}
-                    </button>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                    className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-rose-200 px-4 text-sm font-medium text-rose-500 transition-all duration-200 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    Siguiente
-                    <FiChevronRight size={15} />
-                  </button>
-                </div>
-              )}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+              />
             </>
           )}
         </section>
@@ -322,9 +353,12 @@ function Products() {
 
           <div className="flex-1 overflow-y-auto px-5 pb-2">
             {cart.length === 0 ? (
-              <p className="py-10 text-center text-sm font-light text-stone-400">
-                Aún no hay productos
-              </p>
+              <EmptyState
+                icon={FiPackage}
+                title="Tu carrito está vacío"
+                description="Explorá nuestro catálogo y agregá los souvenirs que más te gusten"
+                variant="cart"
+              />
             ) : (
               <ul className="flex flex-col gap-2">
                 {cart.map((prod, index) => (
@@ -332,6 +366,9 @@ function Products() {
                     key={index}
                     prod={prod}
                     deleteToCart={() => deleteToCart(index)}
+                    onQuantityChange={(nextQuantity) =>
+                      updateCartQuantity(index, nextQuantity)
+                    }
                   />
                 ))}
               </ul>
@@ -343,14 +380,20 @@ function Products() {
               <p className="text-sm font-medium text-stone-500">Total del pedido</p>
               <p className="text-base font-bold text-rose-500">${total}</p>
             </div>
-            <button
+            <Button
               type="button"
+              variant="primary"
+              className="w-full shadow-md shadow-rose-300/30"
               onClick={handleOrderModal}
-              disabled={productsCart.length === 0}
-              className="w-full rounded-full bg-gradient-to-r from-rose-400 to-pink-500 py-3 text-sm font-semibold text-white shadow-md shadow-rose-300/30 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={!canCreateOrder}
             >
               Crear orden
-            </button>
+            </Button>
+            {hasInvalidQuantities && (
+              <p className="mt-2 text-center text-[11px] text-rose-500">
+                Cada producto debe tener al menos {MIN_QUANTITY_PER_PRODUCT} unidades
+              </p>
+            )}
           </div>
         </div>
       </Modal>

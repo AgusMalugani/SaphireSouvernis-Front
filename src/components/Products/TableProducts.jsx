@@ -9,6 +9,7 @@ import {
   FiImage,
   FiPlus,
   FiSearch,
+  FiPackage,
 } from 'react-icons/fi';
 import { ProductsContext } from '../../contexts/Products/ProductsContext';
 import { toCloudinaryDisplayUrl } from '../../utils/images/cloudinaryDisplayUrl';
@@ -24,6 +25,7 @@ import {
   isProductActive,
 } from '../../utils/products/productAvailabilityConfig';
 import ConfirmProductAvailabilityModal from './ConfirmProductAvailabilityModal';
+import { EmptyState } from '../ui';
 
 const SELECT_CLASS =
   'cursor-pointer appearance-none rounded-full border border-stone-200 bg-white py-2 pl-4 pr-9 text-sm text-stone-700 transition-all duration-200 ease-in-out hover:border-rose-200 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-200';
@@ -232,15 +234,19 @@ function TableProducts({ viewProduct }) {
 
       <div className="overflow-hidden rounded-3xl border border-white/60 bg-white/60 shadow-sm backdrop-blur-sm">
         {!products || products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20">
-            <p className="font-display text-3xl text-stone-300">Sin productos</p>
-            <p className="text-sm font-light text-stone-500">{emptyMessage}</p>
-          </div>
+          <EmptyState
+            icon={FiPackage}
+            title="Inventario vacío"
+            description={emptyMessage}
+            actionLabel="Cargar primer producto"
+            onAction={() => navigate('/product/create')}
+          />
         ) : filteredProducts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20">
-            <p className="font-display text-3xl text-stone-300">Sin resultados</p>
-            <p className="text-sm font-light text-stone-500">{emptyMessage}</p>
-          </div>
+          <EmptyState
+            icon={FiSearch}
+            title="Sin resultados"
+            description={emptyMessage}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse">

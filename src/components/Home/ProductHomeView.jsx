@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { HiArrowRight } from 'react-icons/hi';
-
-const PRIMARY_CTA_CLASS =
-  'group inline-flex min-h-11 items-center gap-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 px-8 py-4 text-base font-semibold text-white shadow-sm transition-all duration-200 ease-in-out hover:brightness-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200 active:scale-[0.98]';
+import { Button } from '../ui';
 
 function ProductHomeView() {
   const navigate = useNavigate();
@@ -41,10 +39,12 @@ function ProductHomeView() {
           perfecto para tu celebración.
         </p>
 
-        <button
+        <Button
           type="button"
+          variant="primary"
+          size="lg"
           onClick={() => navigate('/shopProducts')}
-          className={PRIMARY_CTA_CLASS}
+          className="group"
         >
           Ver Productos
           <HiArrowRight
@@ -52,7 +52,7 @@ function ProductHomeView() {
             aria-hidden="true"
             className="transition-transform duration-200 ease-in-out group-hover:translate-x-1"
           />
-        </button>
+        </Button>
       </div>
     </section>
   );
